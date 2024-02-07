@@ -53,6 +53,7 @@ Binaries/Win64/*
 !Binaries/Win64/UnrealEditor.modules
 !Binaries/Win64/UnrealEditor-CoopIA.dll
 Plugins/*/Binaries/*
+
 # Builds
 Build/*
 
