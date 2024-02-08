@@ -17,8 +17,10 @@ public:
 
 	virtual void BeginPlay() override;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	//class UInputMappingContext* DefaultMappingContext;
+private:
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
 	TSubclassOf<ACharacterBase> PlayerToSpawn;
