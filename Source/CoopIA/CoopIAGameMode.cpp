@@ -17,7 +17,7 @@ void ACoopIAGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	const UWorld* World = GetWorld();
+	/*const UWorld* World = GetWorld();
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(World, APlayerStart::StaticClass(), FoundActors);
 	
@@ -67,5 +67,5 @@ void ACoopIAGameMode::BeginPlay()
 		}
 
 		arrayIndex++;
-	}
+	}*/
 }

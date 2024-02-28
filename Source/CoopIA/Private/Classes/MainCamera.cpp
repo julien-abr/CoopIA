@@ -75,10 +75,10 @@ void AMainCamera::UpdateArmLength()
 		}
 	}
 	
-	int32 IndexMaxValue;
-	float MaxValue;
+	int32 IndexMaxValue = 0;
+	float MaxValue = 0.f;
 	UKismetMathLibrary Kismet;
-	Kismet.MaxOfFloatArray(m_arrayDistances, &IndexMaxValue, &MaxValue);
+	Kismet.MaxOfFloatArray(m_arrayDistances, IndexMaxValue, MaxValue);
 	const float ArmLength = UKismetMathLibrary::Clamp(MaxValue, DACamera->m_MinArmLength, DACamera->m_MaxArmLength);
 	SpringArm->TargetArmLength = ArmLength;
 	m_arrayDistances.Empty();
