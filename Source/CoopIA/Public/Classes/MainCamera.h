@@ -11,6 +11,13 @@ class UBillboardComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
+UENUM(BlueprintType)
+enum class ECameraState : uint8 
+{
+	FOLLOW = 0		 UMETA(DisplayName = "FOLLOW"),
+	FIXED = 1        UMETA(DisplayName = "FIXED")
+};
+
 UCLASS()
 class COOPIA_API AMainCamera : public AActor
 {
@@ -26,16 +33,18 @@ class COOPIA_API AMainCamera : public AActor
 	/** SpringArm */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* SpringArm;
-
+	
+public:
 	/** Camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* Camera;
 	
 public:	
 	// Sets default values for this actor's properties
 	AMainCamera();
 
-	void AddPlayer(AActor* Actor);
+    UFUNCTION(BlueprintCallable)
+	 void AddPlayer(AActor* Actor);
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,19 +54,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetFixedPosition(FVector Position);
+
+	void SetSpline(class ASpline* NewSpline);
+
 private:
-	void CalculateCamMovement();
-
-	void UpdateArmLength();
-
+	void FollowPlayers();
 	
 	UPROPERTY() 
 	TArray<AActor*> m_arrayActors;
-	
-	UPROPERTY()
-	TObjectPtr<AActor> m_currentPlayer;
 
-	TArray<float> m_arrayDistances;
+	UPROPERTY(EditAnywhere, Category = "DefaultSpline", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AActor> DefaultSpline;
+
+	ECameraState CameraState = ECameraState::FOLLOW;
 	
-	FVector m_previousLoc;
+	UPROPERTY() 
+	class ASpline* Spline;
 };

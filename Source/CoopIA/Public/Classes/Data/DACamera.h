@@ -16,11 +16,5 @@ class COOPIA_API UDACamera : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere)
-	float m_MoveSpeed;
-	
-	UPROPERTY(EditAnywhere)
-	float m_MinArmLength;
-
-	UPROPERTY(EditAnywhere)
-	float m_MaxArmLength;
+	float InterpSpeed;
 };

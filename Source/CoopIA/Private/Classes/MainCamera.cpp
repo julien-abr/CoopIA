@@ -11,9 +11,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BillboardComponent.h"
+#include "Classes/Spline.h"
 
 //DataAsset
 #include "Classes/Data/DACamera.h"
+#include "Components/SplineComponent.h"
 
 // Sets default values
 AMainCamera::AMainCamera()
@@ -43,6 +45,8 @@ void AMainCamera::AddPlayer(AActor* Actor)
 void AMainCamera::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Spline = Cast<ASpline>(UGameplayStatics::GetActorOfClass(GetWorld(), DefaultSpline));
 }
 
 // Called every frame
@@ -50,37 +54,29 @@ void AMainCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CalculateCamMovement();
-	UpdateArmLength();
-}
-
-void AMainCamera::CalculateCamMovement()
-{
-	m_previousLoc = GetActorLocation();
-	const FVector AverageLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
-	const FVector Lerp = UKismetMathLibrary::VLerp(m_previousLoc, AverageLoc, DACamera->m_MoveSpeed);
-	SetActorLocation(Lerp);
-}
-
-void AMainCamera::UpdateArmLength()
-{
-	int ArrayIndex = 0;
-	for (auto Actor : m_arrayActors)
+	if(CameraState == ECameraState::FOLLOW && m_arrayActors.Num() > 0)
 	{
-		m_currentPlayer = Actor;
-		ArrayIndex++;
-		for(int x = ArrayIndex; m_arrayActors.Num() - 1; x++)
-		{
-			m_arrayDistances.Add(m_currentPlayer->GetDistanceTo(m_arrayActors[x]));
-		}
+		FollowPlayers();
 	}
-	
-	int32 IndexMaxValue = 0;
-	float MaxValue = 0.f;
-	UKismetMathLibrary Kismet;
-	Kismet.MaxOfFloatArray(m_arrayDistances, IndexMaxValue, MaxValue);
-	const float ArmLength = UKismetMathLibrary::Clamp(MaxValue, DACamera->m_MinArmLength, DACamera->m_MaxArmLength);
-	SpringArm->TargetArmLength = ArmLength;
-	m_arrayDistances.Empty();
+}
+void AMainCamera::FollowPlayers()
+{
+	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
+	const FVector Current = SpringArm->GetComponentLocation();
+	const FVector Target = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World);
+	const FVector SpringArmPos = UKismetMathLibrary::VInterpTo(Current, Target, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()),DACamera->InterpSpeed);
+	SpringArm->SetWorldLocation(SpringArmPos);
 }
 
+void AMainCamera::SetFixedPosition(FVector Position)
+{
+	CameraState = ECameraState::FIXED;
+
+	SpringArm->SetWorldLocation(Position);
+}
+
+void AMainCamera::SetSpline(class ASpline* NewSpline)
+{
+	Spline = NewSpline;
+	CameraState = ECameraState::FOLLOW;
+}
