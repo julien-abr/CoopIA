@@ -24,6 +24,8 @@ private:
 
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
 	TSubclassOf<ACharacterBase> PlayerToSpawn;
+
+	int16 arrayIndex = 0;
 };
 
 

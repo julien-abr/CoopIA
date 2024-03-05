@@ -2,6 +2,8 @@
 
 
 #include "Classes/CharacterBase.h"
+#include "Classes/AIManager.h"
+
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -43,14 +45,23 @@ ACharacterBase::ACharacterBase()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
 
+void ACharacterBase::Init(AAIManager* Manager)
+{
+	AIManager = Manager;
 }
 
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void ACharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -120,5 +131,17 @@ void ACharacterBase::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ACharacterBase::Hide()
+{
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+}
+
+void ACharacterBase::Show()
+{
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
 }
 

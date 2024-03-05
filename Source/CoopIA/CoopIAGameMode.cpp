@@ -10,18 +10,40 @@
 #include "Classes/CharacterBase.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Classes/MainCamera.h"
+#include "Classes/AIManager.h"
+#include "Classes/PlayerControllerBase.h"
 
 ACoopIAGameMode::ACoopIAGameMode(){}
+
 
 void ACoopIAGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	const UWorld* World = GetWorld();
 	
-	/*const UWorld* World = GetWorld();
+	AMainCamera* MainCamera = Cast<AMainCamera>(UGameplayStatics::GetActorOfClass(World, AMainCamera::StaticClass()));
+
+	TArray<AActor*> FoundManagers;
+	UGameplayStatics::GetAllActorsOfClass(World, AAIManager::StaticClass(), FoundManagers);
+
+	AAIManager* ManagerPlayer0;
+	AAIManager* ManagerPlayer1;
+	for (const auto manager : FoundManagers)
+	{
+		AAIManager* CurrentManager = Cast<AAIManager>(manager);
+		if(CurrentManager->ManagerIndex == 0)
+		{
+			ManagerPlayer0 = CurrentManager;
+		}
+		else
+		{
+			ManagerPlayer1 = CurrentManager;
+		}
+	}
+	
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(World, APlayerStart::StaticClass(), FoundActors);
-	
-	int arrayIndex = 0;
 
 	FActorSpawnParameters Params;
 	
@@ -29,43 +51,20 @@ void ACoopIAGameMode::BeginPlay()
 	{
 		APlayerController* Controller = UGameplayStatics::CreatePlayer(World, arrayIndex);
 
-		if(!Controller)
-		{
-			UE_LOG(LogTemp,Warning,TEXT("Controller NULL"));
-		}
-
 		const FVector Location = playerStart->GetActorLocation();
 		const FRotator Rotation = playerStart->GetActorRotation();
-		if(arrayIndex>0)
-		{
-			//Add Input Mapping Context
-			if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
-			{
-				if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-				{
-					Subsystem->AddMappingContext(DefaultMappingContext, 0);
-				}
-			}
-			
-			ACharacterBase* spawnedActor = GetWorld()->SpawnActor<ACharacterBase>(PlayerToSpawn, Location, Rotation);
-			APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 1);
-			playerController->Possess(Cast<APawn>(spawnedActor));
-		}
-		else
-		{
-			if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
-			{
-				if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-				{
-					Subsystem->AddMappingContext(DefaultMappingContext, 0);
-				}
-			}
-			
-			ACharacterBase* spawnedActor = GetWorld()->SpawnActor<ACharacterBase>(PlayerToSpawn, Location, Rotation);
-			APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-			playerController->Possess(Cast<APawn>(spawnedActor));
-		}
+		
+		ACharacterBase* spawnedActor = GetWorld()->SpawnActor<ACharacterBase>(PlayerToSpawn, Location, Rotation);
+		APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), arrayIndex);
+		APlayerControllerBase* ControllerBase = Cast<APlayerControllerBase>(playerController);
+		ControllerBase->Init(MainCamera);
+		playerController->Possess(Cast<APawn>(spawnedActor));
 
+		MainCamera->AddPlayer(spawnedActor);
+		AAIManager*& Manager = (arrayIndex == 0) ? ManagerPlayer0 : ManagerPlayer1;
+		spawnedActor->Init(Manager);
+		Manager->Init(spawnedActor);
+		
 		arrayIndex++;
-	}*/
+	}
 }

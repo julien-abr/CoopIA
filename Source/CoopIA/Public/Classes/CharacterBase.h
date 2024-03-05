@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIManager.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
@@ -37,9 +38,17 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	void Init(class AAIManager* Manager);
+
+	void Hide();
+
+	void Show();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void PossessedBy(AController* NewController) override;
 	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -51,4 +60,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	TObjectPtr<class AAIManager> AIManager;
 };

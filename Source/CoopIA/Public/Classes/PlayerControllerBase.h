@@ -14,4 +14,14 @@ class COOPIA_API APlayerControllerBase : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	void Init(class AMainCamera* Camera);
+
+protected:
+	virtual void OnPossess(APawn* InPawn) override;
+
+private:
+	UPROPERTY()
+	TObjectPtr<class AMainCamera> MainCamera;
+	
 };

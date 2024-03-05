@@ -55,21 +55,27 @@ ASpear::ASpear()
 void ASpear::BeginPlay()
 {
 	Super::BeginPlay();
+	GetCapsuleComponent()->SetSimulatePhysics(false);
+}
 
+void ASpear::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
+			Subsystem->RemoveMappingContext(MappingContextToRemove);
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	GetCapsuleComponent()->SetSimulatePhysics(false);
 }
 
 void ASpear::Tick(float DeltaSeconds)
 {
+	//TODO::Update timer with FTimerHandle remaining time instead of tick
 	Super::Tick(DeltaSeconds);
 
 	if(bCanUpdateTimer)

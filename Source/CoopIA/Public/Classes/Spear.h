@@ -23,6 +23,9 @@ class COOPIA_API ASpear : public ACharacter
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* BoxCollision;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* MappingContextToRemove;
+	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -48,6 +51,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void PossessedBy(AController* NewController) override;
 	
 	void StartHold();
 	
