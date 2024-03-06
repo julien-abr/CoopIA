@@ -9,30 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f81690e7-72c4-44ee-b68e-30d40399b254" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_IA.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_IA.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_Spear.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_Spear.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Controller/BP_PlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Controller/BP_PlayerController.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Core/GM_CoopIA.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Core/GM_CoopIA.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Manager/BP_AIManager.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Manager/BP_AIManager.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ThirdPerson/Input/Actions/Spear/IA_Spear.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ThirdPerson/Input/IMC_Default.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ThirdPerson/Input/IMC_Default.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ThirdPerson/Input/IMC_Spear.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ThirdPerson/Input/IMC_Spear.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/2/K1/APBAPLRSI0H2B60Z3CX4TR.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/2/K1/APBAPLRSI0H2B60Z3CX4TR.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/PlayerControllerBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/PlayerControllerBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/Spear.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/Spear.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/AIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/AIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/PlayerControllerBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/PlayerControllerBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Spear.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Spear.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -235,6 +213,7 @@
       <workItem from="1709194131358" duration="622000" />
       <workItem from="1709280559470" duration="46000" />
       <workItem from="1709626030060" duration="440000" />
+      <workItem from="1709711876687" duration="676000" />
     </task>
     <servers />
   </component>

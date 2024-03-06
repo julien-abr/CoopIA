@@ -89,6 +89,15 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACharacterBase::Look);
+
+		//Shield
+		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ACharacterBase::StartShield);
+		
+		//Ball
+		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ACharacterBase::StartBall);
+		
+		//Spear
+		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ACharacterBase::StartSpear);
 	}
 	else
 	{
@@ -145,3 +154,18 @@ void ACharacterBase::Show()
 	SetActorHiddenInGame(false);
 }
 
+void ACharacterBase::StartSpear()
+{
+	AIManager->UpdateState(EIAState::SPEAR);
+}
+
+
+void ACharacterBase::StartShield()
+{
+	AIManager->UpdateState(EIAState::SHIELD);
+}
+
+void ACharacterBase::StartBall()
+{
+	AIManager->UpdateState(EIAState::BALL);
+}

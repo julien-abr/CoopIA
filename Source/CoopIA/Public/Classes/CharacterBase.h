@@ -33,6 +33,18 @@ class COOPIA_API ACharacterBase : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
+	
+    /** Spear Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* SpearAction;
+    	
+    /** Ball Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* BallAction;
+    
+    /** Shield Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* ShieldAction;
 
 public:
 	// Sets default values for this character's properties
@@ -62,4 +74,8 @@ public:
 
 private:
 	TObjectPtr<class AAIManager> AIManager;
+
+	void StartSpear();
+	void StartBall();
+	void StartShield();
 };

@@ -22,6 +22,8 @@ public:
 
 	void IASucceededTransition();
 
+	void UpdateState(const EIAState& State);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

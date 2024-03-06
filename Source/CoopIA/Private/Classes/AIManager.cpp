@@ -15,7 +15,6 @@ AAIManager::AAIManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
 }
 
 void AAIManager::Init(ACharacterBase* Character)
@@ -63,7 +62,6 @@ void AAIManager::BeginPlay()
 void AAIManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AAIManager::IARandomMove()
@@ -77,6 +75,16 @@ void AAIManager::IARandomMove()
 	}
 
 	NumberIAToSucceed = ArrayIA.Num();
+}
+
+void AAIManager::UpdateState(const EIAState& State)
+{
+	IAState = State;
+
+	if(State == EIAState::RANDOM_MOVE) {return;}
+	
+	NumberIAToSucceed = ArrayIA.Num();
+	IARandomMove();
 }
 
 void AAIManager::Spear()
