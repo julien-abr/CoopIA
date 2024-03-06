@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Classes/CharacterBase.h"
 #include "GameFramework/GameModeBase.h"
 #include "CoopIAGameMode.generated.h"
 
@@ -13,6 +14,18 @@ class ACoopIAGameMode : public AGameModeBase
 
 public:
 	ACoopIAGameMode();
+
+	virtual void BeginPlay() override;
+
+private:
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
+	TSubclassOf<ACharacterBase> PlayerToSpawn;
+
+	int16 arrayIndex = 0;
 };
 
 
