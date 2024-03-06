@@ -10,6 +10,9 @@
 #include "Classes/CharacterBaseIA.h"
 #include "Classes/Spear.h"
 
+//Library
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 AAIManager::AAIManager()
 {
@@ -55,7 +58,6 @@ void AAIManager::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetTimerManager().SetTimer(Handle, this, &AAIManager::IARandomMove, DataAssetIA->RandomMoveTime, true);
-	
 }
 
 // Called every frame
@@ -68,13 +70,12 @@ void AAIManager::IARandomMove()
 {
 	if(IAState != EIAState::RANDOM_MOVE) {return;}
 
-	const FVector Destination =(Player->GetActorForwardVector() * DataAssetIA->RandomMoveDistanceFromPlayer) + Player->GetActorLocation();
 	for(auto IA : ArrayIA)
 	{
+		const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,Player->GetActorLocation().Z);
+		const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(Player->GetActorLocation(), halfSize);
 		IA->Move(Destination, false, DataAssetIA->BaseAcceptanceRadius);
 	}
-
-	NumberIAToSucceed = ArrayIA.Num();
 }
 
 void AAIManager::UpdateState(const EIAState& State)
@@ -84,7 +85,12 @@ void AAIManager::UpdateState(const EIAState& State)
 	if(State == EIAState::RANDOM_MOVE) {return;}
 	
 	NumberIAToSucceed = ArrayIA.Num();
-	IARandomMove();
+
+	const FVector Destination =(Player->GetActorForwardVector() * DataAssetIA->TransfoDistanceFromPlayer) + Player->GetActorLocation();
+    for(auto IA : ArrayIA)
+    {
+        IA->Move(Destination, true, DataAssetIA->BaseAcceptanceRadius);
+    }
 }
 
 void AAIManager::Spear()
@@ -95,7 +101,7 @@ void AAIManager::Spear()
 	const FVector Location = Player->GetActorLocation();
 	const FRotator Rotation = Player->GetActorRotation();
 	FActorSpawnParameters SpawnInfo;
-	ASpear* Spear = GetWorld()->SpawnActor<ASpear>(Location, Rotation, SpawnInfo);
+	ASpear* Spear = GetWorld()->SpawnActor<ASpear>(SpearBP, Location, Rotation, SpawnInfo);
 	
 	PlayerController->Possess(Spear);
 }

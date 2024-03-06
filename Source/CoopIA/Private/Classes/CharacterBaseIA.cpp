@@ -13,13 +13,13 @@
 //lib
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Tasks/AITask_MoveTo.h"
 
 // Sets default values
 ACharacterBaseIA::ACharacterBaseIA()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
 }
 
 // Called when the game starts or when spawned
@@ -48,44 +48,45 @@ void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	if(Cast<ACharacterBaseIA>(OtherActor))
 	{
 		const FVector impulseForce = Hit.ImpactPoint * DataAssetIA->CollisionImpulseMultiplier;
-		GetCharacterMovement()->AddImpulse(impulseForce, true);
+		//GetCharacterMovement()->AddImpulse(impulseForce, true);
 	}
 	else if(Cast<ACharacterBase>(OtherActor))
 	{
 		const FVector impulseForce = Hit.ImpactPoint * -1.f;
-		GetCharacterMovement()->AddImpulse(impulseForce, true);
+		//GetCharacterMovement()->AddImpulse(impulseForce, true);
 	}
 }
-
 
 void ACharacterBaseIA::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
 void ACharacterBaseIA::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
-void ACharacterBaseIA::Move(FVector Destination, bool bIsTransition, float AcceptanceRadius)
+void ACharacterBaseIA::Hide()
 {
-	AAIControllerBase* ControllerIA = Cast<AAIControllerBase>(GetController());
-	EPathFollowingRequestResult::Type MoveResult = ControllerIA->MoveToLocation(Destination, AcceptanceRadius, false);
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+}
 
-	//Need to restart move only if this is a transition to transfo, dont need if random move
-	if(!bIsTransition) return;
+void ACharacterBaseIA::Show()
+{
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
+}
 
-	switch(MoveResult)
-	{
-		case EPathFollowingRequestResult::Type::Failed:
-			Move(Destination, true, DataAssetIA->RetryAcceptanceRadius);
-			break;
-		case EPathFollowingRequestResult::Type::RequestSuccessful:
-			Manager->IASucceededTransition();
-			break;
-	}
+void ACharacterBaseIA::Succeeded()
+{
+	Manager->IASucceededTransition();
+	Hide();
+}
+
+void ACharacterBaseIA::Failed(FVector Destination)
+{
+	Move(Destination, true, DataAssetIA->RetryAcceptanceRadius);
 }

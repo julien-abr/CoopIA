@@ -22,6 +22,9 @@ public:
 	float RandomMoveDistanceFromPlayer = 200.f;
 
 	UPROPERTY(EditAnywhere)
+	float TransfoDistanceFromPlayer = 200.f;
+
+	UPROPERTY(EditAnywhere)
 	float BaseAcceptanceRadius = 10.f;
 
 	UPROPERTY(EditAnywhere)

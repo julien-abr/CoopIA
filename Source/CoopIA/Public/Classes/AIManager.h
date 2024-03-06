@@ -47,6 +47,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, category = "c++", meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UDA_IA> DataAssetIA;
+
+	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
+	TSubclassOf<class ASpear> SpearBP;
 	
 	UPROPERTY()
 	TObjectPtr<class ACharacterBase> Player;

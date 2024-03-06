@@ -94,10 +94,10 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ACharacterBase::StartShield);
 		
 		//Ball
-		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ACharacterBase::StartBall);
+		EnhancedInputComponent->BindAction(BallAction, ETriggerEvent::Started, this, &ACharacterBase::StartBall);
 		
 		//Spear
-		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ACharacterBase::StartSpear);
+		EnhancedInputComponent->BindAction(SpearAction, ETriggerEvent::Started, this, &ACharacterBase::StartSpear);
 	}
 	else
 	{
@@ -156,16 +156,19 @@ void ACharacterBase::Show()
 
 void ACharacterBase::StartSpear()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Input Spear"));
 	AIManager->UpdateState(EIAState::SPEAR);
 }
 
 
 void ACharacterBase::StartShield()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
 	AIManager->UpdateState(EIAState::SHIELD);
 }
 
 void ACharacterBase::StartBall()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
 	AIManager->UpdateState(EIAState::BALL);
 }
