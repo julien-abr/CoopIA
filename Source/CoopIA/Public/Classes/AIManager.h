@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/EIAState.h"
+//#include "Data/EIAState.h"
 #include "GameFramework/Actor.h"
 #include "AIManager.generated.h"
+
+enum class EIAState;
 
 UCLASS()
 class COOPIA_API AAIManager : public AActor
@@ -60,7 +62,7 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<class ACharacterBaseIA>> ArrayIA;
 
-	EIAState IAState = EIAState::RANDOM_MOVE;
+	EIAState IAState;
 
 	FTimerHandle Handle;
 
