@@ -13,7 +13,6 @@
 //lib
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Tasks/AITask_MoveTo.h"
 
 // Sets default values
 ACharacterBaseIA::ACharacterBaseIA()
