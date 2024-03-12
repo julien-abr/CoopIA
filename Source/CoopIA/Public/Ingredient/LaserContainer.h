@@ -3,25 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/Interface/RayHit.h"
 #include "GameFramework/Actor.h"
-#include "Laser.generated.h"
-
-class UArrowComponent;
+#include "LaserContainer.generated.h"
 
 UCLASS()
-class COOPIA_API ALaser : public AActor
+class COOPIA_API ALaserContainer : public AActor, public IRayHit
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* _body;
-
-	UPROPERTY(VisibleAnywhere)
-	UArrowComponent* _firePoint;
-
+	
 public:	
 	// Sets default values for this actor's properties
-	ALaser();
+	ALaserContainer();
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,8 +24,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private :
-	UFUNCTION()
-	void ReflectLaser(const FVector& start, const FVector& end, int count);
+	virtual void RayHitAction_Implementation() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<AActor> _door;
 };
