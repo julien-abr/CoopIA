@@ -2,7 +2,7 @@
 
 
 #include "Classes/AIManager.h"
-
+#include "Classes/Data/EIAState.h"
 #include "Classes/AIControllerBase.h"
 #include "Classes/PlayerControllerBase.h"
 #include "Classes/CharacterBase.h"
@@ -18,6 +18,7 @@ AAIManager::AAIManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	IAState = EIAState::RANDOM_MOVE;
 }
 
 void AAIManager::Init(ACharacterBase* Character)

@@ -3,7 +3,7 @@
 
 #include "Classes/CharacterBase.h"
 #include "Classes/AIManager.h"
-
+#include "Classes/Data/EIAState.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
