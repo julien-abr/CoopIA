@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
+#include "Data/Enum/SpearState.h"
 #include "GameFramework/Character.h"
 #include "Spear.generated.h"
 
@@ -76,4 +77,6 @@ private:
 
 	FTimerHandle TimerDashForward;
 	FTimerHandle TimerDash;
+
+	ESpearState SpearState = ESpearState::STATIC;
 };
