@@ -82,6 +82,18 @@ void ASpear::Tick(float DeltaSeconds)
 	{
 		HoldTimer += DeltaSeconds;
 	}
+
+	float Velocity = GetCharacterMovement()->Velocity.Length();
+
+	if(Velocity > 50 && SpearState != ESpearState::DASHING)
+	{
+		SpearState = ESpearState::DASHING;
+	}
+	
+	if(Velocity < 50  && SpearState != ESpearState::STATIC)
+	{
+		SpearState = ESpearState::STATIC;
+	}
 }
 
 void ASpear::StartHold()

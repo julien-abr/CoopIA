@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "Data/EIAState.h"
 #include "GameFramework/Actor.h"
 #include "AIManager.generated.h"
 
