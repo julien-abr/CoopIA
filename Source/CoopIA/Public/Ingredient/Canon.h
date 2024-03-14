@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Canon.generated.h"
 
@@ -10,6 +11,12 @@ UCLASS()
 class COOPIA_API ACanon : public AActor
 {
 	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* _cube;
+
+	UPROPERTY(VisibleAnywhere)
+	UBoxComponent* _box;
 	
 public:	
 	// Sets default values for this actor's properties
