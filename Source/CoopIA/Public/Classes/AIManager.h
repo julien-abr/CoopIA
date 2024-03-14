@@ -17,7 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	AAIManager();
 
-	void Init(class ACharacterBase* Character);
+	void Init(class ACharacterBase* Character, class AMainCamera* Camera);
 	
 	void AddPlayer(class ACharacterBaseIA* IA);
 
@@ -40,20 +40,38 @@ private:
 	UFUNCTION()
 	void IARandomMove();
 
-	void Spear();
+	void Spear(EIAState State);
 
-	void Shield();
+	void Shield(EIAState State);
 
-	void Ball();
+	void Ball(EIAState State);
+
+	void Neutral(EIAState State);
+
+	void HidePrevious(EIAState State);
+
+	FTransform GetTransfoPos(EIAState State);
 	
 	UPROPERTY(EditAnywhere, category = "c++", meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UDA_IA> DataAssetIA;
 
 	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
 	TSubclassOf<class ASpear> SpearBP;
+
+	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
+	TSubclassOf<class AActor> ShieldBP;
 	
 	UPROPERTY()
 	TObjectPtr<class ACharacterBase> Player;
+
+	UPROPERTY()
+	TObjectPtr<class ASpear> SpearActor;
+
+	UPROPERTY()
+	TObjectPtr<class AShield> ShieldActor;
+
+	UPROPERTY()
+	TObjectPtr<class AActor> CurrentActor;
 
 	UPROPERTY()
 	TObjectPtr<class APlayerControllerBase> PlayerController;
@@ -61,10 +79,16 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<class ACharacterBaseIA>> ArrayIA;
 
+	UPROPERTY()
+	TObjectPtr<class AMainCamera> MainCamera;
+
 	EIAState IAState;
+	EIAState PreviousState;
 
 	FTimerHandle Handle;
 
 	int16 NumberIAToSucceed;
+
+	
 
 };

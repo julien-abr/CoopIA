@@ -12,6 +12,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Classes/Data/DataAsset/DASpear.h"
+#include "Classes/AIManager.h"
+#include "Classes/Data/EIAState.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -58,6 +60,11 @@ void ASpear::BeginPlay()
 	GetCapsuleComponent()->SetSimulatePhysics(false);
 }
 
+void ASpear::SetAIManager(class AAIManager* Manager)
+{
+	AIManager = Manager;
+}
+
 void ASpear::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -67,8 +74,9 @@ void ASpear::PossessedBy(AController* NewController)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->RemoveMappingContext(MappingContextToRemove);
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(FormationMappingContext, 0);
+			Subsystem->AddMappingContext(SpearMappingContext, 0);
 		}
 	}
 }
@@ -149,6 +157,15 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASpear::Look);
+
+		//Shield
+		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ASpear::StartShield);
+		
+		//Ball
+		EnhancedInputComponent->BindAction(BallAction, ETriggerEvent::Started, this, &ASpear::StartBall);
+
+		//Neutral
+		EnhancedInputComponent->BindAction(NeutralAction, ETriggerEvent::Started, this, &ASpear::StartNeutral);
 	}
 }
 
@@ -163,4 +180,34 @@ void ASpear::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ASpear::StartBall()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
+	AIManager->UpdateState(EIAState::BALL);
+}
+
+void ASpear::StartShield()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
+	AIManager->UpdateState(EIAState::SHIELD);
+}
+
+void ASpear::StartNeutral()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
+	AIManager->UpdateState(EIAState::RANDOM_MOVE);
+}
+
+void ASpear::Hide()
+{
+	SetActorEnableCollision(false);
+	SetActorHiddenInGame(true);
+}
+
+void ASpear::Show()
+{
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
 }
