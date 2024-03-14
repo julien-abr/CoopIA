@@ -25,11 +25,11 @@ class COOPIA_API ASpear : public ACharacter
 	UBoxComponent* BoxCollision;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* MappingContextToRemove;
+	UInputMappingContext* FormationMappingContext;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
+	UInputMappingContext* SpearMappingContext;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -39,6 +39,14 @@ class COOPIA_API ASpear : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DashAction;
 
+	/** Spear Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* NeutralAction;
+    	
+	/** Ball Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* BallAction;
+
 	/** DataAsset Spear */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UDASpear* DASpear;
@@ -46,6 +54,11 @@ class COOPIA_API ASpear : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ASpear();
+	
+	void SetAIManager(class AAIManager* Manager);
+
+	void Hide();
+	void Show();
 
 protected:
 	// Called when the game starts or when spawned
@@ -70,7 +83,6 @@ public:
 private:
 	bool bCanUpdateTimer;
 	bool bCanDash = true;
-
 	bool bStartHold;
 	
 	float HoldTimer;
@@ -79,4 +91,9 @@ private:
 	FTimerHandle TimerDash;
 
 	ESpearState SpearState = ESpearState::STATIC;
+
+	TObjectPtr<class AAIManager> AIManager;
+	
+	void StartBall();
+	void StartNeutral();
 };

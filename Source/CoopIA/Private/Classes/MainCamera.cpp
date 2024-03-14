@@ -16,6 +16,7 @@
 //DataAsset
 #include "Classes/Data/DACamera.h"
 #include "Components/SplineComponent.h"
+#include "Preferences/UnrealEdKeyBindings.h"
 
 // Sets default values
 AMainCamera::AMainCamera()
@@ -36,9 +37,10 @@ AMainCamera::AMainCamera()
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 }
 
-void AMainCamera::AddPlayer(AActor* Actor)
+void AMainCamera::SetPlayer(AActor* Actor, int16 Index)
 {
-	m_arrayActors.Add(Actor);
+	TObjectPtr<class AActor>& ActorPlayer = (Index == 0) ? m_ActorPlayer0 : m_ActorPlayer1;
+	ActorPlayer = Actor;
 }
 
 // Called when the game starts or when spawned
@@ -54,13 +56,16 @@ void AMainCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(CameraState == ECameraState::FOLLOW && m_arrayActors.Num() > 0)
+	if(CameraState == ECameraState::FOLLOW && m_ActorPlayer0 && m_ActorPlayer1)
 	{
 		FollowPlayers();
 	}
 }
 void AMainCamera::FollowPlayers()
 {
+	TArray<AActor*> m_arrayActors;
+	m_arrayActors.Add(m_ActorPlayer0);
+	m_arrayActors.Add(m_ActorPlayer1);
 	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
 	const FVector Current = SpringArm->GetComponentLocation();
 	const FVector Target = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World);
