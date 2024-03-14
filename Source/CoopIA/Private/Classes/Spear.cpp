@@ -157,9 +157,6 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASpear::Look);
-
-		//Shield
-		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ASpear::StartShield);
 		
 		//Ball
 		EnhancedInputComponent->BindAction(BallAction, ETriggerEvent::Started, this, &ASpear::StartBall);
@@ -186,12 +183,6 @@ void ASpear::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
 	AIManager->UpdateState(EIAState::BALL);
-}
-
-void ASpear::StartShield()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
-	AIManager->UpdateState(EIAState::SHIELD);
 }
 
 void ASpear::StartNeutral()

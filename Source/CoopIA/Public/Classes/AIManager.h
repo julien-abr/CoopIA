@@ -59,7 +59,10 @@ private:
 	TSubclassOf<class ASpear> SpearBP;
 
 	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
-	TSubclassOf<class AActor> ShieldBP;
+	TSubclassOf<class AShield> ShieldBP;
+
+	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
+	TSubclassOf<class ABall> BallBP;
 	
 	UPROPERTY()
 	TObjectPtr<class ACharacterBase> Player;
@@ -69,6 +72,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class AShield> ShieldActor;
+
+	UPROPERTY()
+	TObjectPtr<class ABall> BallActor;
 
 	UPROPERTY()
 	TObjectPtr<class AActor> CurrentActor;

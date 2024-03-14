@@ -14,6 +14,7 @@
 #include "Components/CapsuleComponent.h"
 
 //Library
+#include "Classes/Ball.h"
 #include "Classes/MainCamera.h"
 #include "Classes/Shield.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -89,7 +90,6 @@ void AAIManager::IARandomMove()
 
 void AAIManager::UpdateState(const EIAState& State)
 {
-	if(State == EIAState::BALL){return;} //Not implemented yet
 	if(State == EIAState::SHIELD && IAState != EIAState::RANDOM_MOVE){return;}	//Cant use shield if not in neutral form
 	
 	PreviousState = IAState;
@@ -129,9 +129,9 @@ void AAIManager::Spear(EIAState State)
 	}
 	else
 	{
-		bool bTeleport = SpearActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		SpearActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
 		SpearActor->Show();
-		UE_LOG(LogTemp, Warning, TEXT("Teleport result : %s"), bTeleport ? TEXT("true") : TEXT("false"));
+		UE_LOG(LogTemp, Warning, TEXT("Pos : %s"), *SpearActor->GetActorLocation().ToString());
 	}
 	
 	SpearActor->SetAIManager(this);
@@ -157,8 +157,26 @@ void AAIManager::Shield(EIAState State)
 
 void AAIManager::Ball(EIAState State)
 {
-	//Player->Hide();
-	//PlayerController->UnPossess();
+	UE_LOG(LogTemp, Warning, TEXT("Enter Ball"));
+	HidePrevious(State);
+	PlayerController->UnPossess();
+
+	FTransform const transform = GetTransfoPos(State);
+	if(!BallActor)
+	{
+		FActorSpawnParameters SpawnInfo;
+		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
+	}
+	else
+	{
+		BallActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		BallActor->Show();
+	}
+	
+	BallActor->SetAIManager(this);
+	CurrentActor = BallActor;
+	MainCamera->SetPlayer(BallActor, ManagerIndex);
+	PlayerController->Possess(BallActor);
 }
 
 void AAIManager::Neutral(EIAState State)
@@ -182,6 +200,7 @@ void AAIManager::HidePrevious(EIAState State)
 	switch(State)
 	{
 		case EIAState::BALL:
+			BallActor->Hide();
 			break;
 		case EIAState::SPEAR:
 			SpearActor->Hide();
@@ -202,6 +221,8 @@ FTransform AAIManager::GetTransfoPos(EIAState State)
 	switch(State)
 	{
 		case EIAState::BALL:
+			transform.SetLocation(BallActor->GetActorLocation());
+			transform.SetRotation(BallActor->GetActorRotation().Quaternion());
 			return transform;
 		case EIAState::SHIELD:
 			transform.SetLocation(Player->GetActorLocation());
