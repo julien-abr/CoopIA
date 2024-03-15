@@ -95,6 +95,8 @@ private:
 
 	int16 NumberIAToSucceed;
 
+	bool bIsInTransition;
+
 	
 
 };
