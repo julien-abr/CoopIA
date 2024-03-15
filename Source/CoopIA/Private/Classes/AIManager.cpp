@@ -46,6 +46,7 @@ void AAIManager::IASucceededTransition()
 	//All IA Moved to the destination
 	if(NumberIAToSucceed == 0)
 	{
+		bIsInTransition = false;
 		UE_LOG(LogTemp, Warning, TEXT("Succeeded"));
 		switch(IAState)
 		{
@@ -91,7 +92,8 @@ void AAIManager::IARandomMove()
 void AAIManager::UpdateState(const EIAState& State)
 {
 	if(State == EIAState::SHIELD && IAState != EIAState::RANDOM_MOVE){return;}	//Cant use shield if not in neutral form
-	
+		
+	bIsInTransition = true;
 	PreviousState = IAState;
 	IAState = State;
 	
@@ -102,6 +104,7 @@ void AAIManager::UpdateState(const EIAState& State)
 
 	if(State == EIAState::RANDOM_MOVE)
 	{
+		bIsInTransition = false;
 		Neutral(PreviousState);
 		return;
 	}
@@ -117,6 +120,7 @@ void AAIManager::UpdateState(const EIAState& State)
 
 void AAIManager::Spear(EIAState State)
 {
+	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
@@ -126,6 +130,7 @@ void AAIManager::Spear(EIAState State)
 	{
 		FActorSpawnParameters SpawnInfo;
 		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
+		SpearActor->SetAIManager(this);
 	}
 	else
 	{
@@ -134,7 +139,6 @@ void AAIManager::Spear(EIAState State)
 		UE_LOG(LogTemp, Warning, TEXT("Pos : %s"), *SpearActor->GetActorLocation().ToString());
 	}
 	
-	SpearActor->SetAIManager(this);
 	CurrentActor = SpearActor;
 	MainCamera->SetPlayer(SpearActor, ManagerIndex);
 	PlayerController->Possess(SpearActor);
@@ -142,6 +146,7 @@ void AAIManager::Spear(EIAState State)
 
 void AAIManager::Shield(EIAState State)
 {
+	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter shield"));
 	if(!ShieldActor)
 	{
@@ -157,6 +162,7 @@ void AAIManager::Shield(EIAState State)
 
 void AAIManager::Ball(EIAState State)
 {
+	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter Ball"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
@@ -166,6 +172,7 @@ void AAIManager::Ball(EIAState State)
 	{
 		FActorSpawnParameters SpawnInfo;
 		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
+		BallActor->SetAIManager(this);
 	}
 	else
 	{
@@ -173,7 +180,6 @@ void AAIManager::Ball(EIAState State)
 		BallActor->Show();
 	}
 	
-	BallActor->SetAIManager(this);
 	CurrentActor = BallActor;
 	MainCamera->SetPlayer(BallActor, ManagerIndex);
 	PlayerController->Possess(BallActor);
@@ -181,6 +187,7 @@ void AAIManager::Ball(EIAState State)
 
 void AAIManager::Neutral(EIAState State)
 {
+	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter neutral"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
