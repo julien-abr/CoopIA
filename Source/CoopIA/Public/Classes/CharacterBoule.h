@@ -19,7 +19,13 @@ class COOPIA_API ACharacterBoule : public ACharacter
 	UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* MappingContextToRemove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* BouleMoveAction;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* _sphere;
 
 public:
 	// Sets default values for this character's properties
@@ -37,7 +43,10 @@ protected:
 
 	void Move(const FInputActionValue& Value);
 
-public:	
+public:
+	UPROPERTY(EditAnywhere)
+	float bouleSpeed;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
