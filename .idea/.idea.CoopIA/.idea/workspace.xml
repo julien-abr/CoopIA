@@ -11,7 +11,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f81690e7-72c4-44ee-b68e-30d40399b254" name="Changes" comment="" />
+    <list default="true" id="f81690e7-72c4-44ee-b68e-30d40399b254" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -261,7 +264,7 @@
       <workItem from="1710230718563" duration="1075000" />
       <workItem from="1710317265825" duration="8348000" />
       <workItem from="1710402874785" duration="2432000" />
-      <workItem from="1710488886423" duration="1504000" />
+      <workItem from="1710488886423" duration="1977000" />
     </task>
     <servers />
   </component>

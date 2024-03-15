@@ -13,6 +13,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Classes/Shield.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacterBase);
 
@@ -173,4 +174,50 @@ void ACharacterBase::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
 	AIManager->UpdateState(EIAState::BALL);
+}
+
+void ACharacterBase::SetupShield(class AShield* Shield)
+{
+	ShieldActor = Shield;
+	
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(ShieldMappingContext, 0);
+		}
+	}
+	
+	// Set up action bindings
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(Controller->InputComponent))
+	{
+		// JShield Rotate Left
+		EnhancedInputComponent->BindAction(ShieldRotateLeftAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateLeftStarted);
+		EnhancedInputComponent->BindAction(ShieldRotateLeftAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateLeftCompleted);
+		
+		// Shield Rotate Right
+		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateRightStarted);
+		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateRightCompleted);
+	}
+}
+
+void ACharacterBase::ShieldRotateLeftStarted()
+{
+	ShieldActor->RotationLeftStarted();
+}
+
+void ACharacterBase::ShieldRotateRightStarted()
+{
+	ShieldActor->RotationRightStarted();
+}
+
+void ACharacterBase::ShieldRotateLeftCompleted()
+{
+	ShieldActor->RotationLeftCompleted();
+}
+
+void ACharacterBase::ShieldRotateRightCompleted()
+{
+	ShieldActor->RotationRightCompleted();
 }

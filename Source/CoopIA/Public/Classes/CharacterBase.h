@@ -25,6 +25,13 @@ class COOPIA_API ACharacterBase : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* FormationMappingContext;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* ShieldMappingContext;
+
+	/** Ball Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldMoveAction;
+
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
@@ -44,16 +51,25 @@ class COOPIA_API ACharacterBase : public ACharacter
     /** Ball Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* BallAction;
+
+	/** Shield Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldAction;
     
     /** Shield Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    UInputAction* ShieldAction;
+    UInputAction* ShieldRotateLeftAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldRotateRightAction;
 
 public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
 	void Init(class AAIManager* Manager);
+
+	void SetupShield(class AShield* Shield);
 
 	void Hide();
 
@@ -77,8 +93,15 @@ public:
 
 private:
 	TObjectPtr<class AAIManager> AIManager;
+	TObjectPtr<class AShield> ShieldActor;
 
 	void StartSpear();
 	void StartBall();
 	void StartShield();
+
+	void ShieldRotateLeftStarted();
+	void ShieldRotateRightStarted();
+
+	void ShieldRotateLeftCompleted();
+	void ShieldRotateRightCompleted();
 };

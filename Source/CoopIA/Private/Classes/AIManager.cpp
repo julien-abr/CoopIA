@@ -152,12 +152,13 @@ void AAIManager::Shield(EIAState State)
 	{
 		FActorSpawnParameters SpawnInfo;
 		ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfo);
-		ShieldActor->AttachToComponent(Player->GetCapsuleComponent(), FAttachmentTransformRules::KeepWorldTransform);
+		ShieldActor->SetOwner(Player);
 	}
 	else
 	{
 		ShieldActor->Show();
 	}
+	Player->SetupShield(ShieldActor);
 }
 
 void AAIManager::Ball(EIAState State)
