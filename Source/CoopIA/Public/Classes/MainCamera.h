@@ -38,13 +38,11 @@ public:
 	/** Camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* Camera;
-	
-public:	
+
 	// Sets default values for this actor's properties
 	AMainCamera();
-
-    UFUNCTION(BlueprintCallable)
-	 void AddPlayer(AActor* Actor);
+	
+	void SetPlayer(AActor* Actor, int16 Index);
 
 protected:
 	// Called when the game starts or when spawned
@@ -62,7 +60,10 @@ private:
 	void FollowPlayers();
 	
 	UPROPERTY() 
-	TArray<AActor*> m_arrayActors;
+	TObjectPtr<class AActor> m_ActorPlayer0;
+
+	UPROPERTY() 
+	TObjectPtr<class AActor> m_ActorPlayer1;
 
 	UPROPERTY(EditAnywhere, Category = "DefaultSpline", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AActor> DefaultSpline;

@@ -1,15 +1,11 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "CoopIAGameMode.h"
-#include "CoopIACharacter.h"
 #include "GameFramework/PlayerStart.h"
 #include "UObject/ConstructorHelpers.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "InputMappingContext.h"
 #include "Classes/CharacterBase.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "Classes/MainCamera.h"
 #include "Classes/AIManager.h"
 #include "Classes/PlayerControllerBase.h"
@@ -60,10 +56,10 @@ void ACoopIAGameMode::BeginPlay()
 		ControllerBase->Init(MainCamera);
 		playerController->Possess(Cast<APawn>(spawnedActor));
 
-		MainCamera->AddPlayer(spawnedActor);
+		MainCamera->SetPlayer(spawnedActor, arrayIndex);
 		AAIManager*& Manager = (arrayIndex == 0) ? ManagerPlayer0 : ManagerPlayer1;
 		spawnedActor->Init(Manager);
-		Manager->Init(spawnedActor);
+		Manager->Init(spawnedActor, MainCamera);
 		
 		arrayIndex++;
 	}
