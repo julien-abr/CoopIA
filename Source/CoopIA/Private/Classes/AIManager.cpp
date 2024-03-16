@@ -91,7 +91,7 @@ void AAIManager::IARandomMove()
 
 void AAIManager::UpdateState(const EIAState& State)
 {
-	if(State == EIAState::SHIELD && IAState != EIAState::RANDOM_MOVE){return;}	//Cant use shield if not in neutral form
+	//if(State == EIAState::SHIELD && IAState != EIAState::RANDOM_MOVE){return;}	//Cant use shield if not in neutral form
 		
 	bIsInTransition = true;
 	PreviousState = IAState;
@@ -147,6 +147,12 @@ void AAIManager::Spear(EIAState State)
 void AAIManager::Shield(EIAState State)
 {
 	if(bIsInTransition) {return;}
+
+	if(PreviousState != EIAState::RANDOM_MOVE)
+	{
+		Neutral(PreviousState);
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("Enter shield"));
 	if(!ShieldActor)
 	{

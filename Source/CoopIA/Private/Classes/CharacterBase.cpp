@@ -90,9 +90,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterBase::Move);
 
-		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACharacterBase::Look);
-
 		//Shield
 		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ACharacterBase::StartShield);
 		
@@ -113,8 +110,9 @@ void ACharacterBase::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
+	Look(Value);
 
-	if (Controller != nullptr)
+	/*if (Controller != nullptr)
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -129,7 +127,7 @@ void ACharacterBase::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
-	}
+	}*/
 }
 
 void ACharacterBase::Look(const FInputActionValue& Value)

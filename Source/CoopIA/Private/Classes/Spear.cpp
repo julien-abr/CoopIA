@@ -163,6 +163,9 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		//Neutral
 		EnhancedInputComponent->BindAction(NeutralAction, ETriggerEvent::Started, this, &ASpear::StartNeutral);
+
+		//Shield
+		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ASpear::StartShield);
 	}
 }
 
@@ -189,6 +192,12 @@ void ASpear::StartNeutral()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
 	AIManager->UpdateState(EIAState::RANDOM_MOVE);
+}
+
+void ASpear::StartShield()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
+	AIManager->UpdateState(EIAState::SHIELD);
 }
 
 void ASpear::Hide()
