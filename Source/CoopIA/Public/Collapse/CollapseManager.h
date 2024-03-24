@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "IntVectorTypes.h"
 #include "GameFramework/Actor.h"
 #include "CollapseManager.generated.h"
+
+class AHexBehaviour;
 
 USTRUCT(BlueprintType)
 struct FHexArray
@@ -13,7 +14,7 @@ struct FHexArray
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<AActor*> _hexArray;
+	TArray<AHexBehaviour*> _hexArray;
 };
 
 UCLASS()
@@ -33,20 +34,32 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	bool CheckHexExist(FVector hexPos);
+	UPROPERTY(BlueprintReadWrite)
+	TSubclassOf<AActor> _oldHexaClass;
 
 	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<AActor> _hexaClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _hexLifeTime = 5.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _preventHexLifeTime = 2.f;
+
 	UFUNCTION(BlueprintCallable)
-	void GetAllHex();
+	bool CheckHexExist(FVector hexPos);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateAllOldHex();
 
 	UFUNCTION(BlueprintCallable)
 	void AddNewHex(AActor* newHex);
 
 	UFUNCTION(BlueprintCallable)
 	void ClearDeletedHex();
+
+	UFUNCTION(BlueprintCallable)
+	void SortLineMap();
 
 private:
 	UPROPERTY()
@@ -55,5 +68,11 @@ private:
 	UPROPERTY()
 	TMap<int, FHexArray> _hexLineMap;
 
+	FTimerHandle _collapseTimer;
+
 	FIntVector2 GenerateHexKey(FVector hexPos);
+
+	void PreventCollapseLine();
+
+	void CollapseLine();
 };
