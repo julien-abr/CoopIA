@@ -43,39 +43,39 @@ void AHexBehaviour::Tick(float DeltaTime)
 
 }
 
-void AHexBehaviour::PreventCollaspeAnim()
+void AHexBehaviour::LaunchPreventCollaspeAnim()
 {
-	FTimerDelegate ShakeDelegate;
-	ShakeDelegate.BindLambda([this]
-		{
-			FLatentActionInfo latentInfo;
-			latentInfo.CallbackTarget = this;
-			FVector pos = _hexMesh->GetRelativeLocation() + FVector(FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake));
-			UKismetSystemLibrary::MoveComponentTo(_hexMesh, pos, GetActorRotation(), false, false, 0.2f, true, EMoveComponentAction::Move, latentInfo);
-		});
-
-	GetWorld()->GetTimerManager().SetTimer(_preventTimer, ShakeDelegate, 0.2f, true);
+	GetWorld()->GetTimerManager().SetTimer(_preventTimer, this, &AHexBehaviour::PreventAnim, 0.2f, true);
 }
 
-void AHexBehaviour::CollapseAnim()
+void AHexBehaviour::LaunchCollapseAnim()
 {
-	FTimerDelegate fallDelegate;
-	fallDelegate.BindLambda([this]
-		{
-			GetWorld()->GetTimerManager().ClearTimer(_preventTimer);
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &AHexBehaviour::FallAnim, FMath::RandRange(0.f, 0.8f), false);
+}
 
-			FLatentActionInfo latentInfo;
-			latentInfo.CallbackTarget = this;
-			FVector pos = _arrowMesh->GetRelativeLocation() + FVector(0,0,-5000.f);
-			UKismetSystemLibrary::MoveComponentTo(_arrowMesh, pos, GetActorRotation(), false, true, 5.f, true, EMoveComponentAction::Move, latentInfo);
+void AHexBehaviour::PreventAnim()
+{
+	FLatentActionInfo latentInfo;
+	latentInfo.CallbackTarget = this;
+	FVector pos = _hexMesh->GetRelativeLocation() + FVector(FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake));
+	UKismetSystemLibrary::MoveComponentTo(_hexMesh, pos, GetActorRotation(), false, false, 0.2f, true, EMoveComponentAction::Move, latentInfo);
 
-			FTimerDelegate destroyDelegate;
-			destroyDelegate.BindLambda([this]
-				{
-					Destroy();
-				});
-			GetWorld()->GetTimerManager().SetTimer(_collapseTimer, destroyDelegate, 5.f, false);
-		});
+}
 
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, fallDelegate, FMath::RandRange(0.f, 0.8f), false);
+void AHexBehaviour::FallAnim()
+{
+	GetWorld()->GetTimerManager().ClearTimer(_preventTimer);
+
+	FLatentActionInfo latentInfo;
+	latentInfo.CallbackTarget = this;
+	FVector pos = _hexMesh->GetRelativeLocation() + FVector(0, 0, -5000.f);
+	UKismetSystemLibrary::MoveComponentTo(_hexMesh, pos, GetActorRotation(), false, true, 5.f, true, EMoveComponentAction::Move, latentInfo);
+	UKismetSystemLibrary::MoveComponentTo(_hexCollider, pos, GetActorRotation(), false, true, 5.f, true, EMoveComponentAction::Move, latentInfo);
+
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &AHexBehaviour::DestroyHex, 5.f, false);
+}
+
+void AHexBehaviour::DestroyHex()
+{
+	Destroy();
 }

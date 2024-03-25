@@ -37,9 +37,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void PreventCollaspeAnim();
+	void LaunchPreventCollaspeAnim();
 
-	void CollapseAnim();
+	void LaunchCollapseAnim();
 
 private:
 	FTimerHandle _preventTimer;
@@ -48,4 +48,7 @@ private:
 	float _minShake = -20.f;
 	float _maxShake = 20.f;
 
+	void PreventAnim();
+	void FallAnim();
+	void DestroyHex();
 };

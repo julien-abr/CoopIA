@@ -150,7 +150,7 @@ void ACollapseManager::PreventCollapseLine()
 	for (int i = 0; i < it->Value._hexArray.Num(); i++)
 	{
 		if (it->Value._hexArray[i])
-			it->Value._hexArray[i]->PreventCollaspeAnim();
+			it->Value._hexArray[i]->LaunchPreventCollaspeAnim();
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, _hexLifeTime, false);
@@ -166,7 +166,7 @@ void ACollapseManager::CollapseLine()
 	for(int i = 0; i < it->Value._hexArray.Num(); i++)
 	{
 		if(it->Value._hexArray[i])
-			it->Value._hexArray[i]->CollapseAnim();
+			it->Value._hexArray[i]->LaunchCollapseAnim();
 	}
 
 	it.RemoveCurrent();
