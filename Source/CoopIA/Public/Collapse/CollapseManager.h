@@ -41,6 +41,9 @@ public:
 	TSubclassOf<AActor> _hexaClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool _isCollapseOn = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _hexLifeTime = 5.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
