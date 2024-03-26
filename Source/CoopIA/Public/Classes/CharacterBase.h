@@ -18,6 +18,9 @@ class COOPIA_API ACharacterBase : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditInstanceOnly)
+	float RotSpeed;
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
