@@ -92,7 +92,7 @@
       <configuration_4>
         <option name="CONFIGURATION" value="Development Editor" />
         <option name="PLATFORM" value="Win64" />
-        <option name="EXECUTABLE_PATH" value="D:\unrealVersion\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" />
+        <option name="EXECUTABLE_PATH" value="D:\UnrealVersion\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" />
         <option name="WORKING_DIRECTORY" value="D:\unrealVersion\UE_5.3" />
         <option name="MANDATORY_PROGRAM_PARAMETERS" value=" &quot;C:\Users\jujua\OneDrive\Documents\Unreal Projects\Test\CoopIA\CoopIA.uproject&quot;" />
         <option name="CUSTOM_PROGRAM_PARAMETERS" value="" />
