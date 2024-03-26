@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Logging/StructuredLog.h"
 #include "Misc/DefaultValueHelper.h"
+#include "Tool/HexBehaviour.h"
 
 // Sets default values
 ACollapseManager::ACollapseManager()
@@ -20,7 +21,9 @@ ACollapseManager::ACollapseManager()
 void ACollapseManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if(_isCollapseOn)
+		GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _preventHexLifeTime, false);
 }
 
 // Called every frame
@@ -30,18 +33,23 @@ void ACollapseManager::Tick(float DeltaTime)
 
 }
 
-bool ACollapseManager::CheckHexExist(FVector hexPos)
+void ACollapseManager::UpdateAllOldHex()
 {
-	return _hexBuildMap.Contains(GenerateHexKey(hexPos));
-}
+	//Replace old hex by new
 
-void ACollapseManager::GetAllHex()
-{
 	TArray<AActor*> foundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), _hexaClass, foundActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), _oldHexaClass, foundActors);
+	for (int i = 0; i < foundActors.Num(); i++)
+	{
+		FVector pos = foundActors[i]->GetActorLocation();
+		foundActors[i]->Destroy();
+		GetWorld()->SpawnActor<AActor>(_hexaClass, pos, FRotator(0.f, 0.f, 0.f));
+	}
 
-	if (foundActors.Num() == _hexBuildMap.Num())
-		return;
+	//Add new ex not in map for the moment
+
+	foundActors.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), _hexaClass, foundActors);
 
 	for (int i = 0; i < foundActors.Num(); i++)
 	{
@@ -56,9 +64,26 @@ void ACollapseManager::GetAllHex()
 		}
 		else if(foundActors[i] != _hexBuildMap[key])
 		{
-			foundActors[i]->Destroy();
+			if(Cast<AHexBehaviour>(_hexBuildMap[key]))
+			{
+				foundActors[i]->Destroy();
+			}
+			else
+			{
+				AddNewHex(foundActors[i]);
+#if WITH_EDITOR
+				foundActors[i]->SetFolderPath("Level_Hex");
+#endif
+			}
 		}
 	}
+
+	ClearDeletedHex();
+}
+
+bool ACollapseManager::CheckHexExist(FVector hexPos)
+{
+	return _hexBuildMap.Contains(GenerateHexKey(hexPos));
 }
 
 void ACollapseManager::AddNewHex(AActor* newHex)
@@ -73,23 +98,39 @@ void ACollapseManager::AddNewHex(AActor* newHex)
 	if (!_hexLineMap.Contains(lineKey))
 		_hexLineMap.Add(lineKey, FHexArray());
 
-	_hexLineMap[lineKey]._hexArray.Add(newHex);
+	if(AHexBehaviour* hex = Cast<AHexBehaviour>(newHex))
+	{
+		_hexLineMap[lineKey]._hexArray.Add(hex);
+	}
 }
 
+//Remove manually removed hexagons from the map 
 void ACollapseManager::ClearDeletedHex()
 {
 	for(auto it = _hexBuildMap.CreateIterator(); it; ++it)
 	{
+
 		if(!it.Value())
 		{
-			_hexLineMap[it.Key().X]._hexArray.RemoveAll([](AActor* actor)
+			if(_hexLineMap.Find(it.Key().X))
 			{
-				return actor == nullptr;
-			});
+				_hexLineMap[it.Key().X]._hexArray.RemoveAll([](AActor* actor)
+				{
+					return actor == nullptr;
+				});
+
+				if (_hexLineMap[it.Key().X]._hexArray.IsEmpty())
+					_hexLineMap.Remove(it.Key().X);
+			}
 
 			it.RemoveCurrent();
 		}
 	}
+}
+
+void ACollapseManager::SortLineMap()
+{
+	_hexLineMap.KeySort([](int a, int b) { return a < b; });
 }
 
 FIntVector2 ACollapseManager::GenerateHexKey(FVector hexPos)
@@ -98,5 +139,39 @@ FIntVector2 ACollapseManager::GenerateHexKey(FVector hexPos)
 	int y = UKismetMathLibrary::Round(hexPos.Y);
 
 	return FIntVector2(x, y);
+}
+
+void ACollapseManager::PreventCollapseLine()
+{
+	if (_hexLineMap.IsEmpty())
+		return;
+
+	auto it = _hexLineMap.CreateIterator();
+
+	for (int i = 0; i < it->Value._hexArray.Num(); i++)
+	{
+		if (it->Value._hexArray[i])
+			it->Value._hexArray[i]->LaunchPreventCollaspeAnim();
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, _hexLifeTime, false);
+}
+
+void ACollapseManager::CollapseLine()
+{
+	if(_hexLineMap.IsEmpty())
+		return;
+
+	auto it = _hexLineMap.CreateIterator();
+
+	for(int i = 0; i < it->Value._hexArray.Num(); i++)
+	{
+		if(it->Value._hexArray[i])
+			it->Value._hexArray[i]->LaunchCollapseAnim();
+	}
+
+	it.RemoveCurrent();
+
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _preventHexLifeTime, false);
 }
 
