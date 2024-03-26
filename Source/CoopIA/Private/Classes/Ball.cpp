@@ -64,6 +64,9 @@ void ABall::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		//Neutral
 		EnhancedInputComponent->BindAction(NeutralAction, ETriggerEvent::Started, this, &ABall::StartNeutral);
+		
+		//Shield
+		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ABall::StartShield);
 	}
 }
 
@@ -75,6 +78,11 @@ void ABall::StartSpear()
 void ABall::StartNeutral()
 {
 	AIManager->UpdateState(EIAState::RANDOM_MOVE);
+}
+
+void ABall::StartShield()
+{
+	AIManager->UpdateState(EIAState::SHIELD);
 }
 
 void ABall::Hide()

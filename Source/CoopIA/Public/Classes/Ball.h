@@ -27,6 +27,10 @@ class COOPIA_API ABall : public APawn
 	/** Spear Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NeutralAction;
+	
+	/** Shield Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldAction;
     	
 	/** Spear Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -62,4 +66,5 @@ private:
 	
 	void StartSpear();
 	void StartNeutral();
+	void StartShield();
 };

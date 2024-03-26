@@ -42,6 +42,10 @@ class COOPIA_API ASpear : public ACharacter
 	/** Spear Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NeutralAction;
+
+	/** Shield Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldAction;
     	
 	/** Ball Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -96,4 +100,5 @@ private:
 	
 	void StartBall();
 	void StartNeutral();
+	void StartShield();
 };
