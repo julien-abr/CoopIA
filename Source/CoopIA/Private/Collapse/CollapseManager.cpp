@@ -22,6 +22,8 @@ void ACollapseManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ClearDeletedHex();
+
 	if(_isCollapseOn)
 		GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _preventHexLifeTime, false);
 }
