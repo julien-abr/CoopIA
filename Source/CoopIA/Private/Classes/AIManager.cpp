@@ -83,9 +83,12 @@ void AAIManager::IARandomMove()
 
 	for(auto IA : ArrayIA)
 	{
-		const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
-		const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
-		IA->Move(Destination, false, DataAssetIA->BaseAcceptanceRadius);
+		if(CurrentActor)
+		{
+			const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
+			const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
+			IA->Move(Destination, false, DataAssetIA->BaseAcceptanceRadius);
+		}
 	}
 }
 
@@ -159,6 +162,7 @@ void AAIManager::Shield(EIAState State)
 		FActorSpawnParameters SpawnInfo;
 		ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfo);
 		ShieldActor->SetOwner(Player);
+		ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
 	}
 	else
 	{
