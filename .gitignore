@@ -14,7 +14,6 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Fortran module files
 *.mod
@@ -47,7 +46,8 @@ SourceArt/**/*.tga
 
 # Binary Files
 Binaries/Win64/*.pdb
-Plugins/*/Binaries/*
+Plugins/*/Binaries/*pdb
+*.pdb
 
 # Builds
 Build/*
