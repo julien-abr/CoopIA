@@ -218,17 +218,22 @@ void AAIManager::HidePrevious(EIAState State)
 	switch(State)
 	{
 		case EIAState::BALL:
-			BallActor->Hide();
+			if(BallActor)
+				BallActor->Hide();
 			break;
 		case EIAState::SPEAR:
-			SpearActor->Hide();
+			if(SpearActor)
+				SpearActor->Hide();
 			break;
 		case EIAState::SHIELD:
-			Player->Hide();
-			ShieldActor->Hide();
+			if(Player)
+				Player->Hide();
+			if(ShieldActor)
+				ShieldActor->Hide();
 			break;
 		case EIAState::RANDOM_MOVE:
-			Player->Hide();
+			if(Player)
+				Player->Hide();
 			break;
 	}
 }
@@ -239,20 +244,32 @@ FTransform AAIManager::GetTransfoPos(EIAState State)
 	switch(State)
 	{
 		case EIAState::BALL:
-			transform.SetLocation(BallActor->GetActorLocation());
-			transform.SetRotation(BallActor->GetActorRotation().Quaternion());
+			if(BallActor)
+			{
+				transform.SetLocation(BallActor->GetActorLocation());
+				transform.SetRotation(BallActor->GetActorRotation().Quaternion());
+			}
 			return transform;
 		case EIAState::SHIELD:
-			transform.SetLocation(Player->GetActorLocation());
-			transform.SetRotation(Player->GetActorRotation().Quaternion());
+			if(Player)
+			{
+				transform.SetLocation(Player->GetActorLocation());
+				transform.SetRotation(Player->GetActorRotation().Quaternion());
+			}
 			return transform;
 		case EIAState::SPEAR:
-			transform.SetLocation(SpearActor->GetActorLocation());
-			transform.SetRotation(SpearActor->GetActorRotation().Quaternion());
+			if(SpearActor)
+			{
+				transform.SetLocation(SpearActor->GetActorLocation());
+				transform.SetRotation(SpearActor->GetActorRotation().Quaternion());
+			}
 			return transform;
 		case EIAState::RANDOM_MOVE:
-			transform.SetLocation(Player->GetActorLocation());
-			transform.SetRotation(Player->GetActorRotation().Quaternion());
+			if(Player)
+			{
+				transform.SetLocation(Player->GetActorLocation());
+				transform.SetRotation(Player->GetActorRotation().Quaternion());
+			}
 			return transform;
 	}
 	return transform;
