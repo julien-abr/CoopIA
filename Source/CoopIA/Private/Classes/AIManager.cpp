@@ -159,6 +159,7 @@ void AAIManager::Shield(EIAState State)
 		FActorSpawnParameters SpawnInfo;
 		ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfo);
 		ShieldActor->SetOwner(Player);
+		ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
 	}
 	else
 	{
