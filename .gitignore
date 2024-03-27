@@ -47,7 +47,8 @@ SourceArt/**/*.tga
 
 # Binary Files
 Binaries/Win64/*.pdb
-Plugins/*/Binaries/*
+Plugins/*/Binaries/*pdb
+*.pdb
 
 # Builds
 Build/*
