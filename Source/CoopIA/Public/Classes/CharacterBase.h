@@ -43,6 +43,10 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	/** Neutral Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* NeutralAction;
 	
     /** Spear Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -70,6 +74,7 @@ public:
 	void Init(class AAIManager* Manager);
 
 	void SetupShield(class AShield* Shield);
+	void DeactivateShield();
 
 	void Hide();
 
@@ -95,9 +100,12 @@ private:
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
 
+	bool bIsShieldActivate;
+
 	void StartSpear();
 	void StartBall();
 	void StartShield();
+	void StartNeutral();
 
 	void ShieldRotateLeftStarted();
 	void ShieldRotateRightStarted();

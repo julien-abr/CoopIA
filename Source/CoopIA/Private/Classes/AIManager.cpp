@@ -19,8 +19,6 @@
 #include "Classes/Shield.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NavigationSystem.h"
-#include "Kismet/GameplayStatics.h"
-#include "Logging/StructuredLog.h"
 
 // Sets default values
 AAIManager::AAIManager()
@@ -48,6 +46,7 @@ void AAIManager::IASucceededTransition()
 {
 	NumberIAToSucceed--;
 	UE_LOG(LogTemp, Warning, TEXT("Number IA to succeed : %d"),NumberIAToSucceed);
+	
 	//All IA Moved to the destination
 	if(NumberIAToSucceed == 0)
 	{
@@ -140,14 +139,16 @@ void AAIManager::Spear(EIAState State)
 	{
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
-		SpearActor->SetAIManager(this);
+		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), FRotator(), SpawnInfo);
+		if(SpearActor)
+		{
+			SpearActor->SetAIManager(this);
+		}
 	}
 	else
 	{
-		SpearActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		SpearActor->TeleportTo(transform.GetLocation(), FRotator(), false, true);
 		SpearActor->Show();
-		UE_LOG(LogTemp, Warning, TEXT("Pos : %s"), *SpearActor->GetActorLocation().ToString());
 	}
 	
 	CurrentActor = SpearActor;
@@ -178,15 +179,14 @@ void AAIManager::Ball(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Enter Ball"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
-
+	
 	FTransform const transform = GetTransfoPos(State);
-	UE_LOGFMT(LogTemp, Log, "x:{0}, y:{0}", transform.GetLocation().X, transform.GetLocation().Y);
-
+	UE_LOG(LogTemp, Warning, TEXT("Previous State Loc %s"), *transform.ToString());
 	if(!BallActor)
 	{
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
+		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), FRotator(), SpawnInfo);
 		if(BallActor)
 		{
 			BallActor->SetAIManager(this);
@@ -196,7 +196,6 @@ void AAIManager::Ball(EIAState State)
 	{
 		BallActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
 		BallActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
-
 		BallActor->Show();
 	}
 	
@@ -282,9 +281,10 @@ void AAIManager::HidePrevious(EIAState State)
 			break;
 		case EIAState::SHIELD:
 			if(Player)
+			{
 				Player->Hide();
-			if(ShieldActor)
-				ShieldActor->Hide();
+				Player->DeactivateShield();
+			}
 			UE_LOG(LogTemp, Warning, TEXT("Hide Player + Shield"));
 			break;
 		case EIAState::RANDOM_MOVE:
