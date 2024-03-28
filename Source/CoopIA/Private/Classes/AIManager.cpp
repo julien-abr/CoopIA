@@ -19,6 +19,7 @@
 #include "Classes/Shield.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NavigationSystem.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 AAIManager::AAIManager()
@@ -35,6 +36,8 @@ void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
 	PlayerController = Cast<APlayerControllerBase>(Player->GetController());
 	MainCamera = Camera;
 	NavSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
+
+	UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
@@ -133,6 +136,7 @@ void AAIManager::Spear(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
 
 	FTransform const transform = GetTransfoPos(State);
 	if(!SpearActor)
@@ -180,6 +184,7 @@ void AAIManager::Ball(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Enter Ball"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
 	
 	FTransform const transform = GetTransfoPos(State);
 	UE_LOG(LogTemp, Warning, TEXT("Previous State Loc %s"), *transform.ToString());
@@ -210,9 +215,11 @@ void AAIManager::Neutral(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Enter neutral"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
 	FVector Destination = GetLastPos(State);
 
-	Player->TeleportTo(Destination, Player->GetActorRotation(), false, true);
+	Player->SetActorLocation(Destination, false, nullptr, ETeleportType::TeleportPhysics);
+	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 	Player->Show();
 
 	CurrentActor = Player;

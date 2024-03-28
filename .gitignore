@@ -74,3 +74,6 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 Binaries/Win64/CoopIA.exp
+Binaries/Win64/CoopIA-Win64-Shipping.target
+Binaries/Win64/CoopIA-Win64-Shipping.exp
+Binaries/Win64/CoopIAEditor.target
