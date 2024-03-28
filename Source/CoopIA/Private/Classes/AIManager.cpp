@@ -179,8 +179,9 @@ void AAIManager::Ball(EIAState State)
 	HidePrevious(State);
 	PlayerController->UnPossess();
 
-	//UE_LOGFMT(LogTemp, Log, "State: {0}", State);
 	FTransform const transform = GetTransfoPos(State);
+	UE_LOGFMT(LogTemp, Log, "x:{0}, y:{0}", transform.GetLocation().X, transform.GetLocation().Y);
+
 	if(!BallActor)
 	{
 		FActorSpawnParameters SpawnInfo;
@@ -193,7 +194,9 @@ void AAIManager::Ball(EIAState State)
 	}
 	else
 	{
-		BallActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		BallActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		BallActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+
 		BallActor->Show();
 	}
 	
