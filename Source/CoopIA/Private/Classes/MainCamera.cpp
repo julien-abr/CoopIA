@@ -56,7 +56,7 @@ void AMainCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(CameraState == ECameraState::FOLLOW && m_ActorPlayer0 && m_ActorPlayer1)
+	if(CameraState == ECameraState::FOLLOW)
 	{
 		FollowPlayers();
 	}
@@ -64,8 +64,14 @@ void AMainCamera::Tick(float DeltaTime)
 void AMainCamera::FollowPlayers()
 {
 	TArray<AActor*> m_arrayActors;
-	m_arrayActors.Add(m_ActorPlayer0);
-	m_arrayActors.Add(m_ActorPlayer1);
+	if(m_ActorPlayer0)
+	{
+		m_arrayActors.Add(m_ActorPlayer0);
+	}
+	if(m_ActorPlayer1)
+	{
+		m_arrayActors.Add(m_ActorPlayer1);
+	}
 	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
 	const FVector Current = SpringArm->GetComponentLocation();
 	const FVector Target = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World);
