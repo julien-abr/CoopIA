@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "Data/Enum/SpearState.h"
+#include "Data/Interface/PlayerInteract.h"
 #include "GameFramework/Character.h"
 #include "Spear.generated.h"
 
@@ -14,7 +15,7 @@ class UDASpear;
 struct FInputActionValue;
 
 UCLASS(config=Game)
-class COOPIA_API ASpear : public ACharacter
+class COOPIA_API ASpear : public ACharacter, public IPlayerInteract
 {
 	GENERATED_BODY()
 

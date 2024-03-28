@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIManager.h"
+#include "Data/Interface/PlayerInteract.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
@@ -14,7 +15,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBase : public ACharacter
+class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract
 {
 	GENERATED_BODY()
 
