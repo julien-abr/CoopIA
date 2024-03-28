@@ -70,11 +70,13 @@ void ACharacterBaseIA::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ACharacterBaseIA::Hide()
 {
+	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 }
 
 void ACharacterBaseIA::Show()
 {
+	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
 }
 

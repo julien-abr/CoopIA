@@ -87,6 +87,9 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		//Neutral
+		EnhancedInputComponent->BindAction(NeutralAction, ETriggerEvent::Started, this, &ACharacterBase::StartNeutral);
 		
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterBase::Move);
@@ -168,9 +171,21 @@ void ACharacterBase::StartBall()
 	AIManager->UpdateState(EIAState::BALL);
 }
 
+void ACharacterBase::StartNeutral()
+{
+	if(bIsShieldActivate)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
+		AIManager->UpdateState(EIAState::RANDOM_MOVE);
+	}
+}
+
 void ACharacterBase::SetupShield(class AShield* Shield)
 {
-	ShieldActor = Shield;
+	if(Shield)
+	{
+		ShieldActor = Shield;
+	}
 	
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -192,6 +207,14 @@ void ACharacterBase::SetupShield(class AShield* Shield)
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateRightStarted);
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateRightCompleted);
 	}
+
+	bIsShieldActivate = true;
+}
+
+void ACharacterBase::DeactivateShield()
+{
+	ShieldActor->Hide();
+	bIsShieldActivate = false;
 }
 
 void ACharacterBase::ShieldRotateLeftStarted()

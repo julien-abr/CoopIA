@@ -40,7 +40,7 @@ class COOPIA_API ASpear : public ACharacter, public IPlayerInteract
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DashAction;
 
-	/** Spear Input Action */
+	/** Neutral Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NeutralAction;
 
