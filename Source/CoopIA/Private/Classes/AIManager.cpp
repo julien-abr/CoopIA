@@ -147,7 +147,8 @@ void AAIManager::Spear(EIAState State)
 	}
 	else
 	{
-		SpearActor->TeleportTo(transform.GetLocation(), FRotator(), false, true);
+		SpearActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		SpearActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 		SpearActor->Show();
 	}
 	
