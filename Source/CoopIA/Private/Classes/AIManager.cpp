@@ -164,6 +164,7 @@ void AAIManager::Shield(EIAState State)
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfo);
 		ShieldActor->SetOwner(Player);
+		ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
 	}
 	else
 	{
@@ -286,7 +287,6 @@ void AAIManager::HidePrevious(EIAState State)
 		case EIAState::RANDOM_MOVE:
 			if(Player)
 				Player->Hide();
-
 			UE_LOG(LogTemp, Warning, TEXT("Hide Player"));
 			break;
 	}

@@ -66,11 +66,15 @@ void AHexBehaviour::FallAnim()
 {
 	GetWorld()->GetTimerManager().ClearTimer(_preventTimer);
 
-	FLatentActionInfo latentInfo;
-	latentInfo.CallbackTarget = this;
 	FVector pos = _hexMesh->GetRelativeLocation() + FVector(0, 0, -5000.f);
-	UKismetSystemLibrary::MoveComponentTo(_hexMesh, pos, GetActorRotation(), false, true, 5.f, true, EMoveComponentAction::Move, latentInfo);
-	UKismetSystemLibrary::MoveComponentTo(_hexCollider, pos, GetActorRotation(), false, true, 5.f, true, EMoveComponentAction::Move, latentInfo);
+
+	FLatentActionInfo latentInfoMesh;
+	latentInfoMesh.CallbackTarget = _hexMesh;
+	UKismetSystemLibrary::MoveComponentTo(_hexMesh, pos, GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
+
+	FLatentActionInfo latentInfoCollider;
+	latentInfoCollider.CallbackTarget = _hexCollider;
+	UKismetSystemLibrary::MoveComponentTo(_hexCollider, pos, GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoCollider);
 
 	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &AHexBehaviour::DestroyHex, 5.f, false);
 }

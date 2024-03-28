@@ -39,8 +39,11 @@ AMainCamera::AMainCamera()
 
 void AMainCamera::SetPlayer(AActor* Actor, int16 Index)
 {
-	TObjectPtr<class AActor>& ActorPlayer = (Index == 0) ? m_ActorPlayer0 : m_ActorPlayer1;
-	ActorPlayer = Actor;
+	if(Actor)
+	{
+		TObjectPtr<class AActor>& ActorPlayer = (Index == 0) ? m_ActorPlayer0 : m_ActorPlayer1;
+		ActorPlayer = Actor;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -64,14 +67,12 @@ void AMainCamera::Tick(float DeltaTime)
 void AMainCamera::FollowPlayers()
 {
 	TArray<AActor*> m_arrayActors;
+
 	if(m_ActorPlayer0)
-	{
 		m_arrayActors.Add(m_ActorPlayer0);
-	}
-	if(m_ActorPlayer1)
-	{
+	if (m_ActorPlayer1)
 		m_arrayActors.Add(m_ActorPlayer1);
-	}
+
 	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
 	const FVector Current = SpringArm->GetComponentLocation();
 	const FVector Target = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World);
