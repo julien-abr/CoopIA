@@ -194,7 +194,8 @@ void AAIManager::Ball(EIAState State)
 	}
 	else
 	{
-		BallActor->TeleportTo(transform.GetLocation(), FRotator(), false, true);
+		BallActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		BallActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 		BallActor->Show();
 	}
 	
