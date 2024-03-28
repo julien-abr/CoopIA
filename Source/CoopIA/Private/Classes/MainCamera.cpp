@@ -16,7 +16,6 @@
 //DataAsset
 #include "Classes/Data/DACamera.h"
 #include "Components/SplineComponent.h"
-#include "Preferences/UnrealEdKeyBindings.h"
 
 // Sets default values
 AMainCamera::AMainCamera()
