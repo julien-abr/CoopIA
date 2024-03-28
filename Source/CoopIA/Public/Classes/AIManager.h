@@ -51,6 +51,10 @@ private:
 	void HidePrevious(EIAState State);
 
 	FTransform GetTransfoPos(EIAState State);
+	FVector GetLastPos(EIAState State);
+
+	void TeleportIA();
+	void TeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ);
 	
 	UPROPERTY(EditAnywhere, category = "c++", meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UDA_IA> DataAssetIA;
@@ -65,28 +69,31 @@ private:
 	TSubclassOf<class ABall> BallBP;
 	
 	UPROPERTY()
-	TObjectPtr<class ACharacterBase> Player;
+	TObjectPtr<ACharacterBase> Player;
 
 	UPROPERTY()
-	TObjectPtr<class ASpear> SpearActor;
+	TObjectPtr<ASpear> SpearActor;
 
 	UPROPERTY()
-	TObjectPtr<class AShield> ShieldActor;
+	TObjectPtr<AShield> ShieldActor;
 
 	UPROPERTY()
-	TObjectPtr<class ABall> BallActor;
+	TObjectPtr<ABall> BallActor;
 
 	UPROPERTY()
-	TObjectPtr<class AActor> CurrentActor;
+	TObjectPtr<AActor> CurrentActor;
 
 	UPROPERTY()
 	TObjectPtr<class APlayerControllerBase> PlayerController;
 
 	UPROPERTY()
-	TArray<TObjectPtr<class ACharacterBaseIA>> ArrayIA;
+	TArray<TObjectPtr<ACharacterBaseIA>> ArrayIA;
 
 	UPROPERTY()
-	TObjectPtr<class AMainCamera> MainCamera;
+	TObjectPtr<AMainCamera> MainCamera;
+
+	UPROPERTY()
+	TObjectPtr<class UNavigationSystemV1> NavSystem;
 
 	EIAState IAState;
 	EIAState PreviousState;
@@ -96,7 +103,4 @@ private:
 	int16 NumberIAToSucceed;
 
 	bool bIsInTransition;
-
-	
-
 };

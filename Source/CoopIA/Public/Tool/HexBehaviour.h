@@ -37,6 +37,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _fallAnimTime = 5.0f;
+
 	void LaunchPreventCollaspeAnim();
 
 	void LaunchCollapseAnim();
