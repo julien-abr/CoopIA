@@ -91,9 +91,12 @@ void AAIManager::IARandomMove()
 
 	for(auto IA : ArrayIA)
 	{
-		const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
-		const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
-		IA->Move(Destination, DataAssetIA->BaseAcceptanceRadius);
+		if(CurrentActor)
+		{
+			const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
+			const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
+			IA->Move(Destination, DataAssetIA->BaseAcceptanceRadius);
+		}
 	}
 }
 
