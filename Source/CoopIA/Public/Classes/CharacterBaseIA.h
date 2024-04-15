@@ -23,7 +23,7 @@ public:
 
 	void Show();
 
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup")
 	int32 PlayerIndex;
 
 protected:
