@@ -156,9 +156,6 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &ASpear::StartHold);
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Completed, this, &ASpear::DashUp);
 		
-		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASpear::Look);
-		
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASpear::Move);
 		
@@ -170,19 +167,6 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		//Shield
 		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ASpear::StartShield);
-	}
-}
-
-void ASpear::Look(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
 
