@@ -6,11 +6,6 @@
 #include "GameFramework/Character.h"
 #include "CharacterBaseIA.generated.h"
 
-namespace EPathFollowingResult
-{
-	enum Type : int;
-}
-
 UCLASS()
 class COOPIA_API ACharacterBaseIA : public ACharacter
 {
@@ -21,11 +16,14 @@ public:
 	ACharacterBaseIA();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void Move(FVector Destination, bool bIsTransition, float AcceptanceRadius);
+	void Move(FVector Destination, float AcceptanceRadius);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void MoveToActor(AActor* Target, float AcceptanceRadius);
 
 	void Show();
 
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup")
 	int32 PlayerIndex;
 
 protected:
@@ -48,7 +46,7 @@ private:
 	void Succeeded();
 
 	UFUNCTION(BlueprintCallable)
-	void Failed(FVector Destination);
+	void Failed(AActor* Target);
 	
 	UPROPERTY()
 	TObjectPtr<class AAIManager> Manager;

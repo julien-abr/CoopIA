@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIManager.h"
+#include "Data/Interface/PlayerInteract.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
@@ -14,9 +15,12 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBase : public ACharacter
+class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditInstanceOnly)
+	float RotSpeed;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -24,6 +28,13 @@ class COOPIA_API ACharacterBase : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* FormationMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* ShieldMappingContext;
+
+	/** Ball Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldMoveAction;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -33,9 +44,9 @@ class COOPIA_API ACharacterBase : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	/** Look Input Action */
+	/** Neutral Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
+	UInputAction* NeutralAction;
 	
     /** Spear Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -44,16 +55,26 @@ class COOPIA_API ACharacterBase : public ACharacter
     /** Ball Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* BallAction;
+
+	/** Shield Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldAction;
     
     /** Shield Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    UInputAction* ShieldAction;
+    UInputAction* ShieldRotateLeftAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShieldRotateRightAction;
 
 public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
 	void Init(class AAIManager* Manager);
+
+	void SetupShield(class AShield* Shield);
+	void DeactivateShield();
 
 	void Hide();
 
@@ -77,8 +98,18 @@ public:
 
 private:
 	TObjectPtr<class AAIManager> AIManager;
+	TObjectPtr<class AShield> ShieldActor;
+
+	bool bIsShieldActivate;
 
 	void StartSpear();
 	void StartBall();
 	void StartShield();
+	void StartNeutral();
+
+	void ShieldRotateLeftStarted();
+	void ShieldRotateRightStarted();
+
+	void ShieldRotateLeftCompleted();
+	void ShieldRotateRightCompleted();
 };

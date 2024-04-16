@@ -18,6 +18,8 @@
 #include "Classes/MainCamera.h"
 #include "Classes/Shield.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "NavigationSystem.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 AAIManager::AAIManager()
@@ -33,6 +35,9 @@ void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
 	CurrentActor = Player;
 	PlayerController = Cast<APlayerControllerBase>(Player->GetController());
 	MainCamera = Camera;
+	NavSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
+
+	UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
@@ -43,10 +48,11 @@ void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
 void AAIManager::IASucceededTransition()
 {
 	NumberIAToSucceed--;
+	UE_LOG(LogTemp, Warning, TEXT("Number IA to succeed : %d"),NumberIAToSucceed);
+	
 	//All IA Moved to the destination
 	if(NumberIAToSucceed == 0)
 	{
-		bIsInTransition = false;
 		UE_LOG(LogTemp, Warning, TEXT("Succeeded"));
 		switch(IAState)
 		{
@@ -60,6 +66,8 @@ void AAIManager::IASucceededTransition()
 				Shield(PreviousState);
 				break;
 		}
+
+		bIsInTransition = false;
 	}
 }
 
@@ -83,60 +91,72 @@ void AAIManager::IARandomMove()
 
 	for(auto IA : ArrayIA)
 	{
-		const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
-		const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
-		IA->Move(Destination, false, DataAssetIA->BaseAcceptanceRadius);
+		if(CurrentActor)
+		{
+			const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
+			const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
+			IA->Move(Destination, DataAssetIA->BaseAcceptanceRadius);
+		}
 	}
 }
 
 void AAIManager::UpdateState(const EIAState& State)
 {
-	if(State == EIAState::SHIELD && IAState != EIAState::RANDOM_MOVE){return;}	//Cant use shield if not in neutral form
-		
+	if(State == IAState || bIsInTransition)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trying to start same STATE"));
+		return;
+	}
+	bool bShouldGoNeutral = IAState != EIAState::RANDOM_MOVE;
+	
 	bIsInTransition = true;
 	PreviousState = IAState;
 	IAState = State;
-	
-	for(auto IA : ArrayIA)
+	//Block Player input
+
+	if(bShouldGoNeutral)
 	{
-		IA->Show();
+		Neutral(PreviousState);
 	}
 
 	if(State == EIAState::RANDOM_MOVE)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Stop transition cause RANDOM MOVE"));
 		bIsInTransition = false;
-		Neutral(PreviousState);
 		return;
 	}
 	
 	NumberIAToSucceed = ArrayIA.Num();
-
-	const FVector Destination =(CurrentActor->GetActorForwardVector() * DataAssetIA->TransfoDistanceFromPlayer) + CurrentActor->GetActorLocation();
+	
     for(auto IA : ArrayIA)
     {
-        IA->Move(Destination, true, DataAssetIA->BaseAcceptanceRadius);
+        IA->MoveToActor(CurrentActor, DataAssetIA->BaseAcceptanceRadius);
     }
 }
 
 void AAIManager::Spear(EIAState State)
 {
-	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
 
 	FTransform const transform = GetTransfoPos(State);
 	if(!SpearActor)
 	{
 		FActorSpawnParameters SpawnInfo;
-		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
-		SpearActor->SetAIManager(this);
+		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), FRotator(), SpawnInfo);
+		if(SpearActor)
+		{
+			SpearActor->SetAIManager(this);
+		}
 	}
 	else
 	{
-		SpearActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		SpearActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		SpearActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 		SpearActor->Show();
-		UE_LOG(LogTemp, Warning, TEXT("Pos : %s"), *SpearActor->GetActorLocation().ToString());
 	}
 	
 	CurrentActor = SpearActor;
@@ -146,37 +166,45 @@ void AAIManager::Spear(EIAState State)
 
 void AAIManager::Shield(EIAState State)
 {
-	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter shield"));
 	if(!ShieldActor)
 	{
 		FActorSpawnParameters SpawnInfo;
+		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfo);
-		ShieldActor->AttachToComponent(Player->GetCapsuleComponent(), FAttachmentTransformRules::KeepWorldTransform);
+		ShieldActor->SetOwner(Player);
+		ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
 	}
 	else
 	{
 		ShieldActor->Show();
 	}
+	Player->SetupShield(ShieldActor);
 }
 
 void AAIManager::Ball(EIAState State)
 {
-	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter Ball"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
-
+	PlayerController->SetControlRotation(FRotator());
+	
 	FTransform const transform = GetTransfoPos(State);
+	UE_LOG(LogTemp, Warning, TEXT("Previous State Loc %s"), *transform.ToString());
 	if(!BallActor)
 	{
 		FActorSpawnParameters SpawnInfo;
-		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
-		BallActor->SetAIManager(this);
+		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), FRotator(), SpawnInfo);
+		if(BallActor)
+		{
+			BallActor->SetAIManager(this);
+		}
 	}
 	else
 	{
-		BallActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		BallActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		BallActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 		BallActor->Show();
 	}
 	
@@ -187,19 +215,61 @@ void AAIManager::Ball(EIAState State)
 
 void AAIManager::Neutral(EIAState State)
 {
-	if(bIsInTransition) {return;}
 	UE_LOG(LogTemp, Warning, TEXT("Enter neutral"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
+	FVector Destination = GetLastPos(State);
 
-	FTransform const transform = GetTransfoPos(State);
-
-	Player->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+	Player->SetActorLocation(Destination, false, nullptr, ETeleportType::TeleportPhysics);
+	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 	Player->Show();
 
 	CurrentActor = Player;
 	MainCamera->SetPlayer(Player, ManagerIndex);
 	PlayerController->Possess(Player);
+
+	TeleportIA();
+}
+
+void AAIManager::TeleportIA()
+{
+	const FVector PlayerLoc = CurrentActor->GetActorLocation();
+	const float DestinationZ = PlayerLoc.Z;
+
+	for(auto IA : ArrayIA)
+	{
+		FNavLocation NavLoc;
+		FRotator Rotation = IA->GetActorRotation();
+		bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 200.f, NavLoc);
+		if(bFindDestination)
+		{
+			FVector TargetLoc = NavLoc.Location;
+			IA->TeleportTo(FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + DestinationZ), Rotation);
+			IA->Show();
+		}
+		else
+		{
+			TeleportIAFailed(IA, PlayerLoc, DestinationZ);
+		}
+	}
+}
+
+void AAIManager::TeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ)
+{
+	FNavLocation NavLoc;
+	FRotator Rotation = IA->GetActorRotation();
+	bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 200.f, NavLoc);
+	if(bFindDestination)
+	{
+		FVector TargetLoc = NavLoc.Location;
+		IA->TeleportTo(FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + DestinationZ), Rotation);
+		IA->Show();
+	}
+	else
+	{
+		TeleportIAFailed(IA, PlayerLoc, DestinationZ);
+	}
 }
 
 void AAIManager::HidePrevious(EIAState State)
@@ -207,17 +277,31 @@ void AAIManager::HidePrevious(EIAState State)
 	switch(State)
 	{
 		case EIAState::BALL:
-			BallActor->Hide();
+			if(Player)
+				Player->Hide();
+			if(BallActor)
+				BallActor->Hide();
+			UE_LOG(LogTemp, Warning, TEXT("Hide Ball"));
 			break;
 		case EIAState::SPEAR:
-			SpearActor->Hide();
+			if(Player)
+				Player->Hide();
+			if(SpearActor)
+				SpearActor->Hide();
+			UE_LOG(LogTemp, Warning, TEXT("Hide Spear"));
 			break;
 		case EIAState::SHIELD:
-			Player->Hide();
-			ShieldActor->Hide();
+			if(Player)
+			{
+				Player->Hide();
+				Player->DeactivateShield();
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Hide Player + Shield"));
 			break;
 		case EIAState::RANDOM_MOVE:
-			Player->Hide();
+			if(Player)
+				Player->Hide();
+			UE_LOG(LogTemp, Warning, TEXT("Hide Player"));
 			break;
 	}
 }
@@ -228,21 +312,37 @@ FTransform AAIManager::GetTransfoPos(EIAState State)
 	switch(State)
 	{
 		case EIAState::BALL:
+			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Ball"));
 			transform.SetLocation(BallActor->GetActorLocation());
-			transform.SetRotation(BallActor->GetActorRotation().Quaternion());
 			return transform;
 		case EIAState::SHIELD:
+			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Player"));
 			transform.SetLocation(Player->GetActorLocation());
-			transform.SetRotation(Player->GetActorRotation().Quaternion());
 			return transform;
 		case EIAState::SPEAR:
+			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Spear"));
 			transform.SetLocation(SpearActor->GetActorLocation());
-			transform.SetRotation(SpearActor->GetActorRotation().Quaternion());
 			return transform;
 		case EIAState::RANDOM_MOVE:
+			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Player"));
 			transform.SetLocation(Player->GetActorLocation());
-			transform.SetRotation(Player->GetActorRotation().Quaternion());
 			return transform;
 	}
 	return transform;
+}
+
+FVector AAIManager::GetLastPos(EIAState State)
+{
+	switch(State)
+	{
+        case EIAState::BALL:
+            return BallActor->GetActorLocation();
+        case EIAState::SHIELD:
+            return Player->GetActorLocation();
+        case EIAState::SPEAR:
+            return SpearActor->GetActorLocation();
+        case EIAState::RANDOM_MOVE:
+            return Player->GetActorLocation();
+	}
+	return FVector();
 }

@@ -44,6 +44,7 @@ void ACharacterBaseIA::BeginPlay()
 
 void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	return;
 	if(Cast<ACharacterBaseIA>(OtherActor))
 	{
 		const FVector impulseForce = Hit.ImpactPoint * DataAssetIA->CollisionImpulseMultiplier;
@@ -85,7 +86,7 @@ void ACharacterBaseIA::Succeeded()
 	Hide();
 }
 
-void ACharacterBaseIA::Failed(FVector Destination)
+void ACharacterBaseIA::Failed(AActor* Target)
 {
-	Move(Destination, true, DataAssetIA->RetryAcceptanceRadius);
+	MoveToActor(Target, DataAssetIA->RetryAcceptanceRadius);
 }
