@@ -3,10 +3,8 @@
 
 #include "Classes/Spear.h"
 #include "Engine/LocalPlayer.h"
-#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -107,7 +105,8 @@ void ASpear::Tick(float DeltaSeconds)
 void ASpear::StartHold()
 {
 	if(!bCanDash) {return;}
-	
+
+	GetCharacterMovement()->MaxWalkSpeed = DASpear->SpearDashMoveSpeed;
 	HoldTimer = 0.f;
 	bCanUpdateTimer = true;
 	bStartHold = true;
@@ -141,6 +140,8 @@ void ASpear::DashForward()
 
 	//UE_LOG(LogTemp, Warning, TEXT("DashPower : %f"), DashPower);
 	LaunchCharacter(DashForce, false, false);
+	
+	GetCharacterMovement()->MaxWalkSpeed = DASpear->SpearMoveSpeed;
 }
 
 // Called to bind functionality to input
@@ -157,6 +158,9 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASpear::Look);
+		
+		// Moving
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASpear::Move);
 		
 		//Ball
 		EnhancedInputComponent->BindAction(BallAction, ETriggerEvent::Started, this, &ASpear::StartBall);
@@ -179,6 +183,31 @@ void ASpear::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ASpear::Move(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Move"));
+	// input is a Vector2D
+	FVector2D MovementVector = Value.Get<FVector2D>();
+	
+	if (Controller != nullptr)
+	{
+		// find out which way is forward
+		//const FRotator Rotation = Controller->GetControlRotation();
+		//const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FRotator YawRotation(0, 0, 0);
+
+		// get forward vector
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	
+		// get right vector 
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		// add movement 
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
 
