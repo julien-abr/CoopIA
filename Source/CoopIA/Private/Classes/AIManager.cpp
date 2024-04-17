@@ -20,6 +20,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "NavigationSystem.h"
 #include "Logging/StructuredLog.h"
+#include "Tool/HexBehaviour.h"
 
 // Sets default values
 AAIManager::AAIManager()
@@ -37,7 +38,8 @@ void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
 	MainCamera = Camera;
 	NavSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
 
-	UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
+	PlayerLastHexPos = CurrentActor->GetActorLocation();
+	//UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
@@ -77,6 +79,8 @@ void AAIManager::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetTimerManager().SetTimer(Handle, this, &AAIManager::IARandomMove, DataAssetIA->RandomMoveTime, true);
+
+	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &AAIManager::FindLastHex, 1, true);
 }
 
 // Called every frame
@@ -96,6 +100,27 @@ void AAIManager::IARandomMove()
 			const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
 			const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
 			IA->Move(Destination, DataAssetIA->BaseAcceptanceRadius);
+		}
+	}
+}
+
+void AAIManager::FindLastHex()
+{
+	if(Player)
+	{
+		FHitResult HitResult;
+		FVector Start = CurrentActor->GetActorLocation();
+		FVector End = Start - (FVector::UpVector * 200);
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(CurrentActor);
+		
+		if(GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams()))
+		{
+			AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor());
+			if(Hex)
+			{
+				PlayerLastHexPos = Hex->GetActorLocation();
+			}
 		}
 	}
 }

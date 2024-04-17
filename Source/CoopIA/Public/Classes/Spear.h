@@ -32,9 +32,9 @@ class COOPIA_API ASpear : public ACharacter, public IPlayerInteract
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* SpearMappingContext;
 
-	/** Look Input Action */
+	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
+	UInputAction* MoveAction;
 
 	/** Dash Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -78,8 +78,8 @@ protected:
 	void DashUp();
 	void DashForward();
 
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
 
 public:	
 	// Called to bind functionality to input
