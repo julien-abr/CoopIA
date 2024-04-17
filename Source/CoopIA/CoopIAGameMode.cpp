@@ -70,6 +70,10 @@ void ACoopIAGameMode::BeginPlay()
 	TArray<AAIManager*> ArrayAIManager;
 	ArrayAIManager.Add(ManagerPlayer0);
 	ArrayAIManager.Add(ManagerPlayer1);
-	
-	DeathManager->Init(ArrayAIManager);
+
+	if(DeathManager)
+	{
+		DeathManager->Init(ArrayAIManager);
+	}
+
 }
