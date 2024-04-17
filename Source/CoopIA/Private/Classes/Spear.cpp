@@ -77,6 +77,8 @@ void ASpear::PossessedBy(AController* NewController)
 			Subsystem->AddMappingContext(SpearMappingContext, 0);
 		}
 	}
+
+	GetCharacterMovement()->MaxWalkSpeed = DASpear->SpearMoveSpeed;
 }
 
 void ASpear::Tick(float DeltaSeconds)
