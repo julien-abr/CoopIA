@@ -40,6 +40,8 @@ private:
 	UFUNCTION()
 	void IARandomMove();
 
+	void FindLastHex();
+
 	void Spear(EIAState State);
 
 	void Shield(EIAState State);
@@ -91,7 +93,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AMainCamera> MainCamera;
-
+	
+	FVector PlayerLastHexPos;
+	
 	UPROPERTY()
 	TObjectPtr<class UNavigationSystemV1> NavSystem;
 
@@ -99,6 +103,7 @@ private:
 	EIAState PreviousState;
 
 	FTimerHandle Handle;
+	FTimerHandle HandleHexRaycast;
 
 	int16 NumberIAToSucceed;
 
