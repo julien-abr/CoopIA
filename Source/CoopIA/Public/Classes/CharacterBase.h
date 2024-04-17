@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "AIManager.h"
+#include "GameplayTagContainer.h"
+#include "GameplayTagAssetInterface.h"
 #include "Data/Interface/PlayerInteract.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
@@ -11,11 +13,12 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+struct FGameplayTagContainer;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract
+class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -92,11 +95,17 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	//Interfaces
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
+
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	FGameplayTagContainer ActorTags;
+	
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
 

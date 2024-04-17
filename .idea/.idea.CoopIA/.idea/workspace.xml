@@ -23,8 +23,8 @@
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/AIManager.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/EIAState.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/DeathManager.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Shield.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/DeathManager.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Shield.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -273,6 +273,7 @@
       <workItem from="1711701572112" duration="802000" />
       <workItem from="1713251676447" duration="2564000" />
       <workItem from="1713337986321" duration="1513000" />
+      <workItem from="1713346048861" duration="2266000" />
     </task>
     <servers />
   </component>
