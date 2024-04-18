@@ -35,16 +35,16 @@ private:
 		void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
          
 	UPROPERTY()
-	class AMainCamera* MainCamera;
+	AMainCamera* MainCamera;
 
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
 	ECameraState TriggerCamera;
 
-	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition="TriggerCamera == ECameraState::FIXED"))
 	AActor* ActorFixedPos;
 
-	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
-	class ASpline* FollowSpline;
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition="TriggerCamera == ECameraState::FOLLOW"))
+	ASpline* FollowSpline;
 
 	bool bCanOverlap = true;
 };

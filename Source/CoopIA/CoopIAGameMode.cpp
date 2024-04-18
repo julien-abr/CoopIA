@@ -8,6 +8,7 @@
 #include "Classes/CharacterBase.h"
 #include "Classes/MainCamera.h"
 #include "Classes/AIManager.h"
+#include "Classes/DeathManager.h"
 #include "Classes/PlayerControllerBase.h"
 
 ACoopIAGameMode::ACoopIAGameMode(){}
@@ -19,6 +20,8 @@ void ACoopIAGameMode::BeginPlay()
 	const UWorld* World = GetWorld();
 	
 	AMainCamera* MainCamera = Cast<AMainCamera>(UGameplayStatics::GetActorOfClass(World, AMainCamera::StaticClass()));
+
+	ADeathManager* DeathManager = Cast<ADeathManager>(UGameplayStatics::GetActorOfClass(World, ADeathManager::StaticClass()));
 
 	TArray<AActor*> FoundManagers;
 	UGameplayStatics::GetAllActorsOfClass(World, AAIManager::StaticClass(), FoundManagers);
@@ -63,4 +66,14 @@ void ACoopIAGameMode::BeginPlay()
 		
 		arrayIndex++;
 	}
+	
+	TArray<AAIManager*> ArrayAIManager;
+	ArrayAIManager.Add(ManagerPlayer0);
+	ArrayAIManager.Add(ManagerPlayer1);
+
+	if(DeathManager)
+	{
+		DeathManager->Init(ArrayAIManager);
+	}
+
 }

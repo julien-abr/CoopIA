@@ -32,4 +32,10 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	float SpearMaxPower = 1000.f;
+
+	UPROPERTY(EditAnywhere)
+	float SpearMoveSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere)
+	float SpearDashMoveSpeed = 100.f;
 };
