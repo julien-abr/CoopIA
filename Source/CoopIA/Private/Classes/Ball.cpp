@@ -70,6 +70,11 @@ void ABall::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+EIAState ABall::GetAIState_Implementation()
+{
+	return EIAState::BALL;
+}
+
 void ABall::StartSpear()
 {
 	AIManager->UpdateState(EIAState::SPEAR);
