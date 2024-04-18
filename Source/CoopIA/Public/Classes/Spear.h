@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
+#include "GameplayTagContainer.h"
+#include "GameplayTagAssetInterface.h"
 #include "Data/Enum/SpearState.h"
 #include "Data/Interface/PlayerInteract.h"
 #include "GameFramework/Character.h"
@@ -13,9 +15,10 @@ class UInputMappingContext;
 class UInputAction;
 class UDASpear;
 struct FInputActionValue;
+struct FGameplayTagContainer;
 
 UCLASS(config=Game)
-class COOPIA_API ASpear : public ACharacter, public IPlayerInteract
+class COOPIA_API ASpear : public ACharacter, public IPlayerInteract, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -81,11 +84,17 @@ protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
+	//Interfaces
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
+
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	FGameplayTagContainer ActorTags;
+	
 	bool bCanUpdateTimer;
 	bool bCanDash = true;
 	bool bStartHold;

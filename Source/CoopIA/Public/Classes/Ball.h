@@ -3,14 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+#include "GameplayTagAssetInterface.h"
 #include "GameFramework/Pawn.h"
 #include "Ball.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
+struct FGameplayTagContainer;
 
 UCLASS()
-class COOPIA_API ABall : public APawn
+class COOPIA_API ABall : public APawn, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -57,11 +60,17 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//Interfaces
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
+
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	FGameplayTagContainer ActorTags;
+	
 	TObjectPtr<class AAIManager> AIManager;
 	
 	void StartSpear();
