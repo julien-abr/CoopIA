@@ -12,6 +12,8 @@
 
 class UInputMappingContext;
 class UInputAction;
+class UDAPlayer;
+class UDAShield;
 struct FInputActionValue;
 struct FGameplayTagContainer;
 
@@ -103,6 +105,13 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UDAPlayer> DAPlayer;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UDAShield> DAShield;
+
+	
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
 	

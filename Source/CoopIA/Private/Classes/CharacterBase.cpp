@@ -13,6 +13,9 @@
 #include "InputActionValue.h"
 #include "Classes/Shield.h"
 
+#include "Classes/Data/DataAsset/DAPlayer.h"
+#include "Classes/Data/DataAsset/DAShield.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacterBase);
 
 // Sets default values
@@ -37,7 +40,15 @@ ACharacterBase::ACharacterBase()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	if(DAPlayer)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DAPlayer->MaxSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	}
+
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -161,6 +172,10 @@ void ACharacterBase::StartShield()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
 	AIManager->UpdateState(EIAState::SHIELD);
+	if(DAShield)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DAShield->MaxSpeed;
+	}
 }
 
 void ACharacterBase::StartBall()
@@ -213,6 +228,10 @@ void ACharacterBase::DeactivateShield()
 {
 	ShieldActor->Hide();
 	bIsShieldActivate = false;
+	if(DAPlayer)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DAPlayer->MaxSpeed;
+	}
 }
 
 void ACharacterBase::ShieldRotateLeftStarted()

@@ -15,6 +15,8 @@ ADeathManager::ADeathManager()
 	DeathZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathZoneBox"));
 	DeathZone->SetupAttachment(RootComponent);
 
+	OnPlayerGlobalStateChangedDelegate.AddUObject(this, &ThisClass::OnPlayerGlobalStateChanged);
+
 }
 
 void ADeathManager::Init(TArray<AAIManager*>& ArrayAIManager)
@@ -38,9 +40,16 @@ void ADeathManager::Tick(float DeltaTime)
 
 }
 
-void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ADeathManager::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Delegate called"));
+}
+
+void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	OnPlayerGlobalStateChangedDelegate.Broadcast(0, EPlayerGlobalState::Alive);
+	
 	if(OtherActor->GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass()))
 	{
 		const IGameplayTagAssetInterface* Interface = Cast<IGameplayTagAssetInterface>(OtherActor);
