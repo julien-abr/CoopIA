@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTagAssetInterface.h"
+#include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Pawn.h"
 #include "Ball.generated.h"
 
@@ -13,7 +14,7 @@ class UInputAction;
 struct FGameplayTagContainer;
 
 UCLASS()
-class COOPIA_API ABall : public APawn, public IGameplayTagAssetInterface
+class COOPIA_API ABall : public APawn, public IGameplayTagAssetInterface, public IPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -50,6 +51,9 @@ public:
 	
 	void Hide();
 	void Show();
+	
+	//Interface IPlayerInterface
+	virtual EIAState GetAIState_Implementation() override;
 
 protected:
 	// Called when the game starts or when spawned

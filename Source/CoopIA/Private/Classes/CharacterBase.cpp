@@ -118,6 +118,16 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+EIAState ACharacterBase::GetAIState_Implementation()
+{
+	if(bIsShieldActivate)
+	{
+		return EIAState::RANDOM_MOVE;
+	}
+	
+	return EIAState::SHIELD;
+}
+
 void ACharacterBase::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D

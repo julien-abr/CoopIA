@@ -226,3 +226,8 @@ void ASpear::Show()
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
 }
+
+EIAState ASpear::GetAIState_Implementation()
+{
+	return EIAState::SPEAR;
+}

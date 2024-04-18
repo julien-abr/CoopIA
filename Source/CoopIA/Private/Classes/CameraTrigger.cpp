@@ -2,12 +2,12 @@
 
 
 #include "Classes/CameraTrigger.h"
-#include "Classes/CharacterBase.h"
 #include "Classes/MainCamera.h"
 
 //Library
+#include <Data/Interface/PlayerInterface.h>
+
 #include "Kismet/GameplayStatics.h"
-#include "Logging/StructuredLog.h"
 
 // Sets default values
 ACameraTrigger::ACameraTrigger()
@@ -37,7 +37,7 @@ void ACameraTrigger::Tick(float DeltaTime)
 
 void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if(UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInteract::StaticClass()) && bCanOverlap)
+    if(UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()) && bCanOverlap)
     {
     	switch(TriggerCamera)
     	{

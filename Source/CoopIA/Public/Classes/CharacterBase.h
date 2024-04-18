@@ -6,7 +6,7 @@
 #include "AIManager.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTagAssetInterface.h"
-#include "Data/Interface/PlayerInteract.h"
+#include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
@@ -20,7 +20,7 @@ struct FGameplayTagContainer;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract, public IGameplayTagAssetInterface
+class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -103,6 +103,9 @@ protected:
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	//Interface IPlayerInterface
+	virtual EIAState GetAIState_Implementation() override;
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
