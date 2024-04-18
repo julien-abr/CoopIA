@@ -3,10 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Classes/Data/Enum/PlayerGlobalState.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "DeathManager.generated.h"
 
 class AAIManager;
+class UBoxComponent;
+
+// Delegate signature
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPlayerGlobalStateChangedSignature, int32 /* PlayerIndex */, EPlayerGlobalState /* NewPlayerState */);
 
 UCLASS()
 class COOPIA_API ADeathManager : public AActor
@@ -21,6 +27,8 @@ public:
 	ADeathManager();
 
 	void Init(TArray<AAIManager*>& ArrayAIManager);
+	
+	FOnPlayerGlobalStateChangedSignature OnPlayerGlobalStateChangedDelegate;
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,13 +38,23 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+	void OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState);
+	
 	UPROPERTY()
 	TObjectPtr<AAIManager> AIManager0;
 
 	UPROPERTY()
 	TObjectPtr<AAIManager> AIManager1;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
+	FGameplayTag PlayerTag;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
+	FGameplayTag AITag;
 	
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void RevivePlayer();
 };

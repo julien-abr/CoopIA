@@ -25,6 +25,8 @@ public:
 
 	void UpdateState(const EIAState& State);
 
+	FVector FindLastPos();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

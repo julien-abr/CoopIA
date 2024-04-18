@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+#include "GameplayTagAssetInterface.h"
 #include "GameFramework/Character.h"
 #include "CharacterBaseIA.generated.h"
 
+struct FGameplayTagContainer;
+
 UCLASS()
-class COOPIA_API ACharacterBaseIA : public ACharacter
+class COOPIA_API ACharacterBaseIA : public ACharacter, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -29,6 +33,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	//Interfaces
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
 
 public:	
 	// Called every frame
@@ -37,6 +44,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	FGameplayTagContainer ActorTags;
+	
 	void Hide();
 
 	UFUNCTION()
