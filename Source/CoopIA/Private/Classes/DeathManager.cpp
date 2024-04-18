@@ -2,6 +2,7 @@
 
 
 #include "Classes/DeathManager.h"
+#include "GameplayTagAssetInterface.h"
 #include "Classes/AIManager.h"
 #include "Components/BoxComponent.h"
 
@@ -13,6 +14,8 @@ ADeathManager::ADeathManager()
 
 	DeathZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathZoneBox"));
 	DeathZone->SetupAttachment(RootComponent);
+
+	OnPlayerGlobalStateChangedDelegate.AddUObject(this, &ThisClass::OnPlayerGlobalStateChanged);
 
 }
 
@@ -37,12 +40,40 @@ void ADeathManager::Tick(float DeltaTime)
 
 }
 
-void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ADeathManager::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
-	if(OtherActor)
+	UE_LOG(LogTemp, Warning, TEXT("Delegate called"));
+}
+
+void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	OnPlayerGlobalStateChangedDelegate.Broadcast(0, EPlayerGlobalState::Alive);
+	
+	if(OtherActor->GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass()))
 	{
-		
+		const IGameplayTagAssetInterface* Interface = Cast<IGameplayTagAssetInterface>(OtherActor);
+		FGameplayTagContainer OtherActorTag;
+		Interface->GetOwnedGameplayTags(OtherActorTag);
+		if(OtherActorTag.HasTag(PlayerTag))
+		{
+			//Revive char, loose IA, update State To Dead
+		}
+		else if(OtherActorTag.HasTag(AITag))
+		{
+		}
 	}
+}
+
+void ADeathManager::RevivePlayer()
+{
+	//Check players State, if both dead GAMEOVER
+
+	//Else
+	//Loose IA
+
+	//Revive
+	
+	
 }
 
