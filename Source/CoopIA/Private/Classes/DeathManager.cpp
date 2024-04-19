@@ -47,9 +47,7 @@ void ADeathManager::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalS
 
 void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	OnPlayerGlobalStateChangedDelegate.Broadcast(0, EPlayerGlobalState::Alive);
-	
+{		
 	if(OtherActor->GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass()))
 	{
 		const IGameplayTagAssetInterface* Interface = Cast<IGameplayTagAssetInterface>(OtherActor);
@@ -58,10 +56,11 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		if(OtherActorTag.HasTag(PlayerTag))
 		{
 			//Revive char, loose IA, update State To Dead
+			OnPlayerGlobalStateChangedDelegate.Broadcast(0, EPlayerGlobalState::Dead);
 		}
 		else if(OtherActorTag.HasTag(AITag))
 		{
-		
+			UE_LOG(LogTemp, Warning, TEXT("AI falled in DeathZone"));
 		}
 	}
 }
