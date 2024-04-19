@@ -85,8 +85,8 @@ void AMainCamera::SetFixedPosition(FTransform Transform)
 {
 	CameraState = ECameraState::FIXED;
 
-	Camera->SetRelativeRotation(FRotator(0, 0, 0));
-	SpringArm->SetWorldTransform(Transform);
+	SpringArm->SetWorldLocation(Transform.GetLocation());
+	Camera->SetRelativeRotation(Transform.GetRotation());
 }
 
 void AMainCamera::SetSpline(class ASpline* NewSpline)
