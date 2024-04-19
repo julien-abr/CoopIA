@@ -159,6 +159,11 @@ void AAIManager::UpdateState(const EIAState& State)
     }
 }
 
+FVector AAIManager::FindLastPos()
+{
+	return PlayerLastHexPos;
+}
+
 void AAIManager::Spear(EIAState State)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
