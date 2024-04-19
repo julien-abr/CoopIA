@@ -83,6 +83,8 @@ public :
 	UFUNCTION(BlueprintCallable)
 	void UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList);
 	UFUNCTION(BlueprintCallable)
+	void ClearPuzzleZone();
+	UFUNCTION(BlueprintCallable)
 	TArray<FPuzzleZoneData> GetPuzzleZone();
 
 private:
