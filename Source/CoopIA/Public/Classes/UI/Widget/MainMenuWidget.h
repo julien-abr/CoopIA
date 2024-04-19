@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/HUD.h"
-#include "HUDBase.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "MainMenuWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class COOPIA_API AHUDBase : public AHUD
+class COOPIA_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
+	
 };
