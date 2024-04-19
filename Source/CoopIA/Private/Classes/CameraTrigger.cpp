@@ -42,7 +42,7 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
     	switch(TriggerCamera)
     	{
     		case ECameraState::FIXED:
-    			MainCamera->SetFixedPosition(ActorFixedPos->GetActorLocation());
+    			MainCamera->SetFixedPosition(ActorFixedPos->GetActorTransform());
     			break;
     		case ECameraState::FOLLOW:
     			MainCamera->SetSpline(FollowSpline);
