@@ -44,6 +44,8 @@ public:
 
 	void LaunchCollapseAnim();
 
+	UStaticMeshComponent* GetMesh();
+
 private:
 	FTimerHandle _preventTimer;
 	FTimerHandle _collapseTimer;
