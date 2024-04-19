@@ -81,12 +81,12 @@ void AMainCamera::FollowPlayers()
 	SpringArm->SetWorldLocation(SpringArmPos);
 }
 
-void AMainCamera::SetFixedPosition(FVector Position)
+void AMainCamera::SetFixedPosition(FTransform Transform)
 {
 	CameraState = ECameraState::FIXED;
 
 	Camera->SetRelativeRotation(FRotator(0, 0, 0));
-	SpringArm->SetWorldLocation(Position);
+	SpringArm->SetWorldTransform(Transform);
 }
 
 void AMainCamera::SetSpline(class ASpline* NewSpline)
