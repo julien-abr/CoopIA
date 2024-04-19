@@ -77,16 +77,16 @@ void AMainCamera::FollowPlayers()
 	const FVector Target = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World);
 	const FVector SpringArmPos = UKismetMathLibrary::VInterpTo(Current, Target, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()),DACamera->InterpSpeed);
 
-	Camera->SetRelativeRotation(DACamera->FollowCamRotation);
-	SpringArm->SetWorldLocation(SpringArmPos);
+	SetActorLocation(SpringArmPos);
+	SetActorRotation(DACamera->FollowCamRotation);
+
 }
 
 void AMainCamera::SetFixedPosition(FTransform Transform)
 {
 	CameraState = ECameraState::FIXED;
 
-	SpringArm->SetWorldLocation(Transform.GetLocation());
-	Camera->SetRelativeRotation(Transform.GetRotation());
+	SetActorTransform(Transform);
 }
 
 void AMainCamera::SetSpline(class ASpline* NewSpline)
