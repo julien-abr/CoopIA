@@ -5,8 +5,6 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Logging/StructuredLog.h"
-#include "Misc/DefaultValueHelper.h"
 #include "Tool/HexBehaviour.h"
 
 // Sets default values
@@ -35,6 +33,40 @@ void ACollapseManager::Tick(float DeltaTime)
 
 }
 
+void ACollapseManager::PreventCollapseLine()
+{
+	if (_hexLineMap.IsEmpty())
+		return;
+
+	auto it = _hexLineMap.CreateIterator();
+
+	for (int i = 0; i < it->Value._hexArray.Num(); i++)
+	{
+		if (it->Value._hexArray[i])
+			it->Value._hexArray[i]->LaunchPreventCollaspeAnim();
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, _hexLifeTime, false);
+}
+void ACollapseManager::CollapseLine()
+{
+	if(_hexLineMap.IsEmpty())
+		return;
+
+	auto it = _hexLineMap.CreateIterator();
+
+	for(int i = 0; i < it->Value._hexArray.Num(); i++)
+	{
+		if(it->Value._hexArray[i])
+			it->Value._hexArray[i]->LaunchCollapseAnim();
+	}
+
+	it.RemoveCurrent();
+
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _preventHexLifeTime, false);
+}
+
+//TOOL ONLY
 void ACollapseManager::UpdateAllOldHex()
 {
 	//Replace old hex by new
@@ -82,12 +114,10 @@ void ACollapseManager::UpdateAllOldHex()
 
 	ClearDeletedHex();
 }
-
 bool ACollapseManager::CheckHexExist(FVector hexPos)
 {
 	return _hexBuildMap.Contains(GenerateHexKey(hexPos));
 }
-
 void ACollapseManager::AddNewHex(AActor* newHex)
 {
 	FVector hexPos = newHex->GetActorLocation();
@@ -105,7 +135,6 @@ void ACollapseManager::AddNewHex(AActor* newHex)
 		_hexLineMap[lineKey]._hexArray.Add(hex);
 	}
 }
-
 //Remove manually removed hexagons from the map 
 void ACollapseManager::ClearDeletedHex()
 {
@@ -129,10 +158,58 @@ void ACollapseManager::ClearDeletedHex()
 		}
 	}
 }
-
 void ACollapseManager::SortLineMap()
 {
 	_hexLineMap.KeySort([](int a, int b) { return a < b; });
+}
+
+void ACollapseManager::UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList)
+{
+	ClearPuzzleZone();
+
+	_puzzleZoneList = puzzleZoneList;
+
+	for(int i = 0; i < _puzzleZoneList.Num(); i++)
+	{
+		if(!_puzzleZoneList[i].watchOnMap)
+			continue;
+
+		TArray<int> mapKey;
+		_hexLineMap.GetKeys(mapKey);
+
+		for (int j = 0; j < mapKey.Num(); j++)
+		{
+			if (mapKey[j] >= _puzzleZoneList[i].startZone && mapKey[j] <= _puzzleZoneList[i].endZone)
+			{
+				_toolPuzzleHexLineMap.Add(mapKey[j], _hexLineMap[mapKey[j]]);
+
+				for(int k = 0; k < _hexLineMap[mapKey[j]]._hexArray.Num(); k++)
+				{
+					_hexLineMap[mapKey[j]]._hexArray[k]->GetMesh()->SetOverlayMaterial(_overlayMat);
+				}
+			}
+		}
+	} 
+}
+void ACollapseManager::ClearPuzzleZone()
+{
+	if (!_toolPuzzleHexLineMap.IsEmpty())
+	{
+		for (auto it = _toolPuzzleHexLineMap.CreateIterator(); it; ++it)
+		{
+			for (int i = 0; i < it->Value._hexArray.Num(); i++)
+			{
+				if (it->Value._hexArray[i])
+					it->Value._hexArray[i]->GetMesh()->SetOverlayMaterial(nullptr);
+			}
+		}
+
+		_toolPuzzleHexLineMap.Empty();
+	}
+}
+TArray<FPuzzleZoneData> ACollapseManager::GetPuzzleZone()
+{
+	return _puzzleZoneList;
 }
 
 FIntVector2 ACollapseManager::GenerateHexKey(FVector hexPos)
@@ -142,38 +219,3 @@ FIntVector2 ACollapseManager::GenerateHexKey(FVector hexPos)
 
 	return FIntVector2(x, y);
 }
-
-void ACollapseManager::PreventCollapseLine()
-{
-	if (_hexLineMap.IsEmpty())
-		return;
-
-	auto it = _hexLineMap.CreateIterator();
-
-	for (int i = 0; i < it->Value._hexArray.Num(); i++)
-	{
-		if (it->Value._hexArray[i])
-			it->Value._hexArray[i]->LaunchPreventCollaspeAnim();
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, _hexLifeTime, false);
-}
-
-void ACollapseManager::CollapseLine()
-{
-	if(_hexLineMap.IsEmpty())
-		return;
-
-	auto it = _hexLineMap.CreateIterator();
-
-	for(int i = 0; i < it->Value._hexArray.Num(); i++)
-	{
-		if(it->Value._hexArray[i])
-			it->Value._hexArray[i]->LaunchCollapseAnim();
-	}
-
-	it.RemoveCurrent();
-
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _preventHexLifeTime, false);
-}
-

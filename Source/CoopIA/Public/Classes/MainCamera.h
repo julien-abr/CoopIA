@@ -52,7 +52,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetFixedPosition(FVector Position);
+	void SetFixedPosition(FTransform Transform);
 
 	void SetSpline(class ASpline* NewSpline);
 

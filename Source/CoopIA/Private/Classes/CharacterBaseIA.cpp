@@ -41,8 +41,8 @@ void ACharacterBaseIA::BeginPlay()
 
 void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	return;
-	if(Cast<ACharacterBaseIA>(OtherActor))
+	
+	/*if(Cast<ACharacterBaseIA>(OtherActor))
 	{
 		const FVector impulseForce = Hit.ImpactPoint * DataAssetIA->CollisionImpulseMultiplier;
 		//GetCharacterMovement()->AddImpulse(impulseForce, true);
@@ -51,7 +51,8 @@ void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	{
 		const FVector impulseForce = Hit.ImpactPoint * -1.f;
 		//GetCharacterMovement()->AddImpulse(impulseForce, true);
-	}
+	}*/
+	
 }
 
 void ACharacterBaseIA::Tick(float DeltaTime)
