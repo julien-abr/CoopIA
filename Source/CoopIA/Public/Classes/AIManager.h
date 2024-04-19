@@ -25,6 +25,8 @@ public:
 
 	void UpdateState(const EIAState& State);
 
+	FVector FindLastPos();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,6 +41,8 @@ public:
 private:
 	UFUNCTION()
 	void IARandomMove();
+
+	void FindLastHex();
 
 	void Spear(EIAState State);
 
@@ -91,7 +95,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AMainCamera> MainCamera;
-
+	
+	FVector PlayerLastHexPos;
+	
 	UPROPERTY()
 	TObjectPtr<class UNavigationSystemV1> NavSystem;
 
@@ -99,6 +105,7 @@ private:
 	EIAState PreviousState;
 
 	FTimerHandle Handle;
+	FTimerHandle HandleHexRaycast;
 
 	int16 NumberIAToSucceed;
 
