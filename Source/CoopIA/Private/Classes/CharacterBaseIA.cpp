@@ -2,10 +2,7 @@
 
 
 #include "Classes/CharacterBaseIA.h"
-#include "Classes/AIControllerBase.h"
 #include "Classes/AIManager.h"
-#include "AIController.h"
-#include "Navigation/PathFollowingComponent.h"
 #include "Classes/Data/DataAsset/DA_IA.h"
 #include "Classes/CharacterBase.h"
 #include "Components/CapsuleComponent.h"
@@ -70,11 +67,13 @@ void ACharacterBaseIA::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ACharacterBaseIA::Hide()
 {
+	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
 }
 
 void ACharacterBaseIA::Show()
 {
+	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
 }
 

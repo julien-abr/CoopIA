@@ -4,18 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "AIManager.h"
-#include "Data/Interface/PlayerInteract.h"
+#include "GameplayTagContainer.h"
+#include "GameplayTagAssetInterface.h"
+#include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
+class UDAPlayer;
+class UDAShield;
 struct FInputActionValue;
+struct FGameplayTagContainer;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract
+class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -43,6 +48,10 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInteract
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	/** Neutral Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* NeutralAction;
 	
     /** Spear Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -70,6 +79,7 @@ public:
 	void Init(class AAIManager* Manager);
 
 	void SetupShield(class AShield* Shield);
+	void DeactivateShield();
 
 	void Hide();
 
@@ -87,17 +97,36 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	//Interfaces
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
+
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Interface IPlayerInterface
+	virtual EIAState GetAIState_Implementation() override;
+
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UDAPlayer> DAPlayer;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UDAShield> DAShield;
+
+	
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	FGameplayTagContainer ActorTags;
+	
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
+
+	bool bIsShieldActivate;
 
 	void StartSpear();
 	void StartBall();
 	void StartShield();
+	void StartNeutral();
 
 	void ShieldRotateLeftStarted();
 	void ShieldRotateRightStarted();

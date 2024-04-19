@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
+#include "GameplayTagContainer.h"
+#include "GameplayTagAssetInterface.h"
 #include "Data/Enum/SpearState.h"
-#include "Data/Interface/PlayerInteract.h"
+#include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Character.h"
 #include "Spear.generated.h"
 
@@ -13,9 +15,10 @@ class UInputMappingContext;
 class UInputAction;
 class UDASpear;
 struct FInputActionValue;
+struct FGameplayTagContainer;
 
 UCLASS(config=Game)
-class COOPIA_API ASpear : public ACharacter, public IPlayerInteract
+class COOPIA_API ASpear : public ACharacter, public IPlayerInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -32,15 +35,15 @@ class COOPIA_API ASpear : public ACharacter, public IPlayerInteract
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* SpearMappingContext;
 
-	/** Look Input Action */
+	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
+	UInputAction* MoveAction;
 
 	/** Dash Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DashAction;
 
-	/** Spear Input Action */
+	/** Neutral Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* NeutralAction;
 
@@ -65,6 +68,9 @@ public:
 	void Hide();
 	void Show();
 
+	//Interface IPlayerInterface
+	virtual EIAState GetAIState_Implementation() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -78,14 +84,20 @@ protected:
 	void DashUp();
 	void DashForward();
 
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
+
+	//Interfaces
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
 
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 private:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	FGameplayTagContainer ActorTags;
+	
 	bool bCanUpdateTimer;
 	bool bCanDash = true;
 	bool bStartHold;

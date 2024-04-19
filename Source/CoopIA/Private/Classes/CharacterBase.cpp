@@ -5,16 +5,16 @@
 #include "Classes/AIManager.h"
 #include "Classes/Data/EIAState.h"
 #include "Engine/LocalPlayer.h"
-#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Classes/Shield.h"
-#include "Kismet/KismetMathLibrary.h"
+
+#include "Classes/Data/DataAsset/DAPlayer.h"
+#include "Classes/Data/DataAsset/DAShield.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacterBase);
 
@@ -40,7 +40,15 @@ ACharacterBase::ACharacterBase()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	if(DAPlayer)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DAPlayer->MaxSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	}
+
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -87,6 +95,9 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		//Neutral
+		EnhancedInputComponent->BindAction(NeutralAction, ETriggerEvent::Started, this, &ACharacterBase::StartNeutral);
 		
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterBase::Move);
@@ -107,6 +118,16 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+EIAState ACharacterBase::GetAIState_Implementation()
+{
+	if(bIsShieldActivate)
+	{
+		return EIAState::RANDOM_MOVE;
+	}
+	
+	return EIAState::SHIELD;
+}
+
 void ACharacterBase::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
@@ -115,8 +136,9 @@ void ACharacterBase::Move(const FInputActionValue& Value)
 	if (Controller != nullptr)
 	{
 		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		//const FRotator Rotation = Controller->GetControlRotation();
+		//const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FRotator YawRotation(0, 0, 0);
 
 		// get forward vector
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -160,6 +182,10 @@ void ACharacterBase::StartShield()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
 	AIManager->UpdateState(EIAState::SHIELD);
+	if(DAShield)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DAShield->MaxSpeed;
+	}
 }
 
 void ACharacterBase::StartBall()
@@ -168,9 +194,21 @@ void ACharacterBase::StartBall()
 	AIManager->UpdateState(EIAState::BALL);
 }
 
+void ACharacterBase::StartNeutral()
+{
+	if(bIsShieldActivate)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
+		AIManager->UpdateState(EIAState::RANDOM_MOVE);
+	}
+}
+
 void ACharacterBase::SetupShield(class AShield* Shield)
 {
-	ShieldActor = Shield;
+	if(Shield)
+	{
+		ShieldActor = Shield;
+	}
 	
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -191,6 +229,18 @@ void ACharacterBase::SetupShield(class AShield* Shield)
 		// Shield Rotate Right
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateRightStarted);
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateRightCompleted);
+	}
+
+	bIsShieldActivate = true;
+}
+
+void ACharacterBase::DeactivateShield()
+{
+	ShieldActor->Hide();
+	bIsShieldActivate = false;
+	if(DAPlayer)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DAPlayer->MaxSpeed;
 	}
 }
 

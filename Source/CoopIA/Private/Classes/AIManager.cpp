@@ -19,8 +19,8 @@
 #include "Classes/Shield.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NavigationSystem.h"
-#include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
+#include "Tool/HexBehaviour.h"
 
 // Sets default values
 AAIManager::AAIManager()
@@ -37,6 +37,9 @@ void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
 	PlayerController = Cast<APlayerControllerBase>(Player->GetController());
 	MainCamera = Camera;
 	NavSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
+
+	PlayerLastHexPos = CurrentActor->GetActorLocation();
+	//UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
@@ -48,6 +51,7 @@ void AAIManager::IASucceededTransition()
 {
 	NumberIAToSucceed--;
 	UE_LOG(LogTemp, Warning, TEXT("Number IA to succeed : %d"),NumberIAToSucceed);
+	
 	//All IA Moved to the destination
 	if(NumberIAToSucceed == 0)
 	{
@@ -75,6 +79,8 @@ void AAIManager::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetTimerManager().SetTimer(Handle, this, &AAIManager::IARandomMove, DataAssetIA->RandomMoveTime, true);
+
+	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &AAIManager::FindLastHex, 1, true);
 }
 
 // Called every frame
@@ -89,9 +95,33 @@ void AAIManager::IARandomMove()
 
 	for(auto IA : ArrayIA)
 	{
-		const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
-		const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
-		IA->Move(Destination, DataAssetIA->BaseAcceptanceRadius);
+		if(CurrentActor)
+		{
+			const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
+			const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
+			IA->Move(Destination, DataAssetIA->BaseAcceptanceRadius);
+		}
+	}
+}
+
+void AAIManager::FindLastHex()
+{
+	if(Player)
+	{
+		FHitResult HitResult;
+		FVector Start = CurrentActor->GetActorLocation();
+		FVector End = Start - (FVector::UpVector * 200);
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(CurrentActor);
+		
+		if(GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams()))
+		{
+			AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor());
+			if(Hex)
+			{
+				PlayerLastHexPos = Hex->GetActorLocation();
+			}
+		}
 	}
 }
 
@@ -129,25 +159,34 @@ void AAIManager::UpdateState(const EIAState& State)
     }
 }
 
+FVector AAIManager::FindLastPos()
+{
+	return PlayerLastHexPos;
+}
+
 void AAIManager::Spear(EIAState State)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
 
 	FTransform const transform = GetTransfoPos(State);
 	if(!SpearActor)
 	{
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
-		SpearActor->SetAIManager(this);
+		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), FRotator(), SpawnInfo);
+		if(SpearActor)
+		{
+			SpearActor->SetAIManager(this);
+		}
 	}
 	else
 	{
-		SpearActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		SpearActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		SpearActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 		SpearActor->Show();
-		UE_LOG(LogTemp, Warning, TEXT("Pos : %s"), *SpearActor->GetActorLocation().ToString());
 	}
 	
 	CurrentActor = SpearActor;
@@ -178,14 +217,15 @@ void AAIManager::Ball(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Enter Ball"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
-
-	//UE_LOGFMT(LogTemp, Log, "State: {0}", State);
+	PlayerController->SetControlRotation(FRotator());
+	
 	FTransform const transform = GetTransfoPos(State);
+	UE_LOG(LogTemp, Warning, TEXT("Previous State Loc %s"), *transform.ToString());
 	if(!BallActor)
 	{
 		FActorSpawnParameters SpawnInfo;
 		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), transform.GetRotation().Rotator(), SpawnInfo);
+		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), FRotator(), SpawnInfo);
 		if(BallActor)
 		{
 			BallActor->SetAIManager(this);
@@ -193,7 +233,8 @@ void AAIManager::Ball(EIAState State)
 	}
 	else
 	{
-		BallActor->TeleportTo(transform.GetLocation(), transform.GetRotation().Rotator(), false, true);
+		BallActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		BallActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 		BallActor->Show();
 	}
 	
@@ -207,9 +248,11 @@ void AAIManager::Neutral(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Enter neutral"));
 	HidePrevious(State);
 	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
 	FVector Destination = GetLastPos(State);
 
-	Player->TeleportTo(Destination, Player->GetActorRotation(), false, true);
+	Player->SetActorLocation(Destination, false, nullptr, ETeleportType::TeleportPhysics);
+	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 	Player->Show();
 
 	CurrentActor = Player;
@@ -279,9 +322,10 @@ void AAIManager::HidePrevious(EIAState State)
 			break;
 		case EIAState::SHIELD:
 			if(Player)
+			{
 				Player->Hide();
-			if(ShieldActor)
-				ShieldActor->Hide();
+				Player->DeactivateShield();
+			}
 			UE_LOG(LogTemp, Warning, TEXT("Hide Player + Shield"));
 			break;
 		case EIAState::RANDOM_MOVE:
