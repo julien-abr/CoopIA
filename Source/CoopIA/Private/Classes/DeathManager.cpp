@@ -61,6 +61,7 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		}
 		else if(OtherActorTag.HasTag(AITag))
 		{
+		
 		}
 	}
 }

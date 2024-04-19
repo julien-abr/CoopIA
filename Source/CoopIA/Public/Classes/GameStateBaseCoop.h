@@ -31,6 +31,8 @@ private:
 	EPlayerGlobalState Player0GlobalState;
 	EPlayerGlobalState Player1GlobalState;
 
+	bool bGameIsPaused = false;
+
 	UFUNCTION()
 	void OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState);
 
