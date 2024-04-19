@@ -165,21 +165,9 @@ void ACollapseManager::SortLineMap()
 
 void ACollapseManager::UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList)
 {
+	ClearPuzzleZone();
+
 	_puzzleZoneList = puzzleZoneList;
-
-	if(!_toolPuzzleHexLineMap.IsEmpty())
-	{
-		for(auto it = _toolPuzzleHexLineMap.CreateIterator(); it; ++it)
-		{
-			for (int i = 0; i < it->Value._hexArray.Num(); i++)
-			{
-				if (it->Value._hexArray[i])
-					it->Value._hexArray[i]->GetMesh()->SetOverlayMaterial(nullptr);
-			}
-		}
-
-		_toolPuzzleHexLineMap.Empty();
-	}
 
 	for(int i = 0; i < _puzzleZoneList.Num(); i++)
 	{
@@ -202,6 +190,22 @@ void ACollapseManager::UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList)
 			}
 		}
 	} 
+}
+void ACollapseManager::ClearPuzzleZone()
+{
+	if (!_toolPuzzleHexLineMap.IsEmpty())
+	{
+		for (auto it = _toolPuzzleHexLineMap.CreateIterator(); it; ++it)
+		{
+			for (int i = 0; i < it->Value._hexArray.Num(); i++)
+			{
+				if (it->Value._hexArray[i])
+					it->Value._hexArray[i]->GetMesh()->SetOverlayMaterial(nullptr);
+			}
+		}
+
+		_toolPuzzleHexLineMap.Empty();
+	}
 }
 TArray<FPuzzleZoneData> ACollapseManager::GetPuzzleZone()
 {
