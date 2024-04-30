@@ -27,8 +27,6 @@ public:
 
 	FVector FindLastPos();
 
-	void PlayerDied();
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -55,6 +53,8 @@ private:
 	void Neutral(EIAState State);
 
 	void HidePrevious(EIAState State);
+
+	void PlayerDied(EIAState State);
 
 	FTransform GetTransfoPos(EIAState State);
 	FVector GetLastPos(EIAState State);

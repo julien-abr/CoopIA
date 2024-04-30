@@ -3,7 +3,6 @@
 
 #include "Classes/DeathManager.h"
 #include "GameplayTagAssetInterface.h"
-#include "Classes/AIManager.h"
 #include "Components/BoxComponent.h"
 #include "Data/Interface/PlayerInterface.h"
 
@@ -15,12 +14,6 @@ ADeathManager::ADeathManager()
 
 	DeathZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathZoneBox"));
 	DeathZone->SetupAttachment(RootComponent);
-}
-
-void ADeathManager::Init(TArray<AAIManager*>& ArrayAIManager)
-{
-	AIManager0 = ArrayAIManager[0];
-	AIManager1 = ArrayAIManager[1];
 }
 
 // Called when the game starts or when spawned
@@ -44,18 +37,8 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			//Revive char, loose IA, update State To Dead
 			if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
 			{
-				PlayerToRevive = OtherActor;
 				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
 				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
-
-				if(Index == 0)
-				{
-					AIManager0->PlayerDied();
-				}
-				else
-				{
-					AIManager1->PlayerDied();
-				}
 			}
 
 		}
@@ -64,16 +47,5 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			UE_LOG(LogTemp, Warning, TEXT("AI falled in DeathZone"));
 		}
 	}
-}
-
-void ADeathManager::RevivePlayer()
-{
-
-	//Else
-	//Loose IA => Explode
-
-	//Revive
-	
-	
 }
 

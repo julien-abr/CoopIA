@@ -37,11 +37,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY()
-	TObjectPtr<AAIManager> AIManager0;
 
-	UPROPERTY()
-	TObjectPtr<AAIManager> AIManager1;
 
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
 	FGameplayTag PlayerTag;
