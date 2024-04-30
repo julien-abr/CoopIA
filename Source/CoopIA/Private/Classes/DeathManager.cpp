@@ -5,18 +5,16 @@
 #include "GameplayTagAssetInterface.h"
 #include "Classes/AIManager.h"
 #include "Components/BoxComponent.h"
+#include "Data/Interface/PlayerInterface.h"
 
 // Sets default values
 ADeathManager::ADeathManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	DeathZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathZoneBox"));
 	DeathZone->SetupAttachment(RootComponent);
-
-	OnPlayerGlobalStateChangedDelegate.AddUObject(this, &ThisClass::OnPlayerGlobalStateChanged);
-
 }
 
 void ADeathManager::Init(TArray<AAIManager*>& ArrayAIManager)
@@ -33,18 +31,6 @@ void ADeathManager::BeginPlay()
 	DeathZone->OnComponentBeginOverlap.AddDynamic(this, &ADeathManager::OnBoxBeginOverlap);
 }
 
-// Called every frame
-void ADeathManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void ADeathManager::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Delegate called"));
-}
-
 void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {		
@@ -56,7 +42,22 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		if(OtherActorTag.HasTag(PlayerTag))
 		{
 			//Revive char, loose IA, update State To Dead
-			OnPlayerGlobalStateChangedDelegate.Broadcast(0, EPlayerGlobalState::Dead);
+			if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
+			{
+				PlayerToRevive = OtherActor;
+				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
+
+				if(Index == 0)
+				{
+					AIManager0->PlayerDied();
+				}
+				else
+				{
+					AIManager1->PlayerDied();
+				}
+			}
+
 		}
 		else if(OtherActorTag.HasTag(AITag))
 		{
@@ -67,10 +68,9 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 
 void ADeathManager::RevivePlayer()
 {
-	//Check players State, if both dead GAMEOVER
 
 	//Else
-	//Loose IA
+	//Loose IA => Explode
 
 	//Revive
 	

@@ -29,18 +29,14 @@ public:
 	void Init(TArray<AAIManager*>& ArrayAIManager);
 	
 	FOnPlayerGlobalStateChangedSignature OnPlayerGlobalStateChangedDelegate;
+	
+	void RevivePlayer();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
-	UFUNCTION()
-	void OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState);
-	
 	UPROPERTY()
 	TObjectPtr<AAIManager> AIManager0;
 
@@ -52,9 +48,12 @@ private:
 
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
 	FGameplayTag AITag;
+
+	UPROPERTY()
+	TObjectPtr<AActor> PlayerToRevive;
 	
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	void RevivePlayer();
+
 };

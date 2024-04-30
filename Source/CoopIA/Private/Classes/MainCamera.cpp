@@ -72,6 +72,7 @@ void AMainCamera::FollowPlayers()
 	if (m_ActorPlayer1)
 		m_arrayActors.Add(m_ActorPlayer1);
 
+	SpringArm->TargetArmLength = DACamera->DistanceCamFollow;
 	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
 	const FVector Current = SpringArm->GetComponentLocation();
 	const FVector Target = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World);
@@ -86,6 +87,7 @@ void AMainCamera::SetFixedPosition(FTransform Transform)
 {
 	CameraState = ECameraState::FIXED;
 
+	SpringArm->TargetArmLength = 0.f;
 	SetActorTransform(Transform);
 }
 

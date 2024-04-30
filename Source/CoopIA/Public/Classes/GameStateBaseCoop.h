@@ -8,7 +8,7 @@
 #include "Classes/Data/Enum/PlayerGlobalState.h"
 #include "GameStateBaseCoop.generated.h"
 
-
+class ADeathManager;
 /**
  * 
  */
@@ -28,10 +28,19 @@ public:
 private:
 	EZoneType ZoneType;
 
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	EPlayerGlobalState Player0GlobalState;
+	
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	EPlayerGlobalState Player1GlobalState;
 
+	UPROPERTY(EditAnywhere)
+	TAssetPtr<UWorld> GameOverMap;
+	
 	bool bGameIsPaused = false;
+
+	UPROPERTY()
+	TObjectPtr<ADeathManager> DeathManager;
 
 	UFUNCTION()
 	void OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState);
