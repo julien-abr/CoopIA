@@ -17,4 +17,7 @@ class COOPIA_API UDACamera : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere)
 	float InterpSpeed;
+
+	UPROPERTY(EditAnywhere)
+	FRotator FollowCamRotation = FRotator(320, 0, 0);
 };

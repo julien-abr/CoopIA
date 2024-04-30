@@ -113,7 +113,6 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDAShield> DAShield;
-
 	
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
