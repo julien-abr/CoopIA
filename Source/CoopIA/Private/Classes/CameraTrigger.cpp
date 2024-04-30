@@ -7,6 +7,7 @@
 //Library
 #include <Data/Interface/PlayerInterface.h>
 
+#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values

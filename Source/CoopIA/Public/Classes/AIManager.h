@@ -54,6 +54,8 @@ private:
 
 	void HidePrevious(EIAState State);
 
+	void PlayerDied(EIAState State);
+
 	FTransform GetTransfoPos(EIAState State);
 	FVector GetLastPos(EIAState State);
 
