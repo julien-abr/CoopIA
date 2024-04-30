@@ -2,15 +2,16 @@
 
 
 #include "Classes/GameStateBaseCoop.h"
-
 #include "Classes/DeathManager.h"
+
+//Libraries
 #include "Kismet/GameplayStatics.h"
 
 AGameStateBaseCoop::AGameStateBaseCoop()
 {
 	//Get DeathManager and Subscribe to the Delegate
 	AActor* Actor = UGameplayStatics::GetActorOfClass(GetWorld(), ADeathManager::StaticClass());
-	ADeathManager* DeathManager = Cast<ADeathManager>(Actor);
+	DeathManager = Cast<ADeathManager>(Actor);
 
 	if(DeathManager)
 	{
@@ -20,8 +21,6 @@ AGameStateBaseCoop::AGameStateBaseCoop()
 
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Delegate called in GameState"));
-
 	if(PlayerIndex == 0)
 	{
 		Player0GlobalState = NewPlayerState;
@@ -32,7 +31,6 @@ void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGl
 	}
 
 	CheckGameOver();
-	
 }
 
 void AGameStateBaseCoop::CheckGameOver()
@@ -40,5 +38,9 @@ void AGameStateBaseCoop::CheckGameOver()
 	if(Player0GlobalState == EPlayerGlobalState::Dead && Player1GlobalState == EPlayerGlobalState::Dead)
 	{
 		//Play game over menu
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
+		return;
 	}
+
+	DeathManager->RevivePlayer();
 }

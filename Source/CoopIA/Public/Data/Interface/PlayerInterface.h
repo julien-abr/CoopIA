@@ -25,4 +25,7 @@ class COOPIA_API IPlayerInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	EIAState GetAIState();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	int32 GetPlayerIndex();
 };

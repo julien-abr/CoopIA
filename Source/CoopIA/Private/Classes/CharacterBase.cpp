@@ -128,6 +128,11 @@ EIAState ACharacterBase::GetAIState_Implementation()
 	return EIAState::SHIELD;
 }
 
+int32 ACharacterBase::GetPlayerIndex_Implementation()
+{
+	return AIManager->ManagerIndex;
+}
+
 void ACharacterBase::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D

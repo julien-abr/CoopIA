@@ -19,5 +19,10 @@ public:
 	float InterpSpeed;
 
 	UPROPERTY(EditAnywhere)
+	float DistanceCamFollow;
+
+	UPROPERTY(EditAnywhere)
 	FRotator FollowCamRotation = FRotator(320, 0, 0);
+
+	
 };

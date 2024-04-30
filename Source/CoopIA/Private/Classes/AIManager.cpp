@@ -164,6 +164,17 @@ FVector AAIManager::FindLastPos()
 	return PlayerLastHexPos;
 }
 
+void AAIManager::PlayerDied()
+{
+	for(auto IA : ArrayIA)
+	{
+		IA->Destroy();
+	}
+	ArrayIA.Empty();
+	NumberIAToSucceed = 0;
+	MainCamera->SetPlayer(nullptr, ManagerIndex);
+}
+
 void AAIManager::Spear(EIAState State)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
