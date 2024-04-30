@@ -166,6 +166,7 @@ FVector AAIManager::FindLastPos()
 
 void AAIManager::PlayerDied()
 {
+	IAState = EIAState::DEAD;
 	for(auto IA : ArrayIA)
 	{
 		IA->Destroy();

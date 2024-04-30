@@ -22,6 +22,9 @@ public:
 	float DistanceCamFollow;
 
 	UPROPERTY(EditAnywhere)
+	float Offset;
+
+	UPROPERTY(EditAnywhere)
 	FRotator FollowCamRotation = FRotator(320, 0, 0);
 
 	
