@@ -8,7 +8,8 @@
 #include "Classes/Data/Enum/PlayerGlobalState.h"
 #include "GameStateBaseCoop.generated.h"
 
-
+class ADeathManager;
+class AAIManager;
 /**
  * 
  */
@@ -20,18 +21,35 @@ class COOPIA_API AGameStateBaseCoop : public AGameStateBase
 public:
 	AGameStateBaseCoop();
 	
+	void Init(TArray<AAIManager*>& ArrayAIManager);
+	
 	EZoneType GetZoneType() {return ZoneType;}
 
 	EPlayerGlobalState GetPlayer0GlobalState() {return Player0GlobalState;}
 	EPlayerGlobalState GetPlayer1GlobalState() {return Player1GlobalState;}
 	
 private:
+	UPROPERTY()
+	TObjectPtr<AAIManager> AIManager0;
+
+	UPROPERTY()
+	TObjectPtr<AAIManager> AIManager1;
+	
 	EZoneType ZoneType;
 
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	EPlayerGlobalState Player0GlobalState;
+	
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	EPlayerGlobalState Player1GlobalState;
 
+	UPROPERTY(EditAnywhere)
+	TAssetPtr<UWorld> GameOverMap;
+	
 	bool bGameIsPaused = false;
+
+	UPROPERTY()
+	TObjectPtr<ADeathManager> DeathManager;
 
 	UFUNCTION()
 	void OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState);
