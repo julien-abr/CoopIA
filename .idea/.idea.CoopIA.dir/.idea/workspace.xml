@@ -9,18 +9,11 @@
   <component name="ChangeListManager">
     <list default="true" id="0e89a2e9-8907-41ad-979d-24d35127dc88" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_Spear.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_Spear.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Controller/BP_AIController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Controller/BP_AIController.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Controller/BP_PlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Controller/BP_PlayerController.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/3/ZR/CDYAPUN7NQOD6JQMJ09FV4.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/3/ZR/CDYAPUN7NQOD6JQMJ09FV4.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CameraTrigger.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CameraTrigger.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/GameStateBaseCoop.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/GameStateBaseCoop.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CameraTrigger.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CameraTrigger.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +181,7 @@
       <workItem from="1713425808525" duration="3127000" />
       <workItem from="1713431667664" duration="2084000" />
       <workItem from="1714460345169" duration="7196000" />
-      <workItem from="1714632893844" duration="6403000" />
+      <workItem from="1714632893844" duration="7976000" />
     </task>
     <servers />
   </component>
