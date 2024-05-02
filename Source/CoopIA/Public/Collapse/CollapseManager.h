@@ -71,15 +71,8 @@ private:
 	//TOOL ONLY
 public :
 	//CREATE HEX
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<AActor> _oldHexaClass;
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<AActor> _hexaClass;
-
 	UFUNCTION(BlueprintCallable)
 	bool CheckHexExist(FVector hexPos);
-	UFUNCTION(BlueprintCallable)
-	void UpdateAllOldHex();
 	UFUNCTION(BlueprintCallable)
 	void AddNewHex(AActor* newHex);
 	UFUNCTION(BlueprintCallable)
