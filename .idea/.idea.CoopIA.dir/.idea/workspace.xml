@@ -9,17 +9,18 @@
   <component name="ChangeListManager">
     <list default="true" id="0e89a2e9-8907-41ad-979d-24d35127dc88" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_IA.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_IA.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Core/GM_CoopIA.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Core/GM_CoopIA.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Map/BP_MAiNMENU.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Map/BP_MAiNMENU.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Map/MM.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Map/MM.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CoopIA.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/CoopIA.uproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBaseIA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBaseIA.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_Camera.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_Camera.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/DeathManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/DeathManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/GameStateBaseCoop.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/GameStateBaseCoop.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/MainCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/MainCamera.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/AIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/AIManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/DeathManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/DeathManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/UI/HUDBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/UI/HUDBase.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +95,7 @@
       <configuration_4>
         <option name="CONFIGURATION" value="Development Editor" />
         <option name="PLATFORM" value="Win64" />
-        <option name="EXECUTABLE_PATH" value="D:\unrealVersion\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" />
+        <option name="EXECUTABLE_PATH" value="D:\UnrealVersion\UE_5.3\Engine\Binaries\Win64\UnrealEditor.exe" />
         <option name="WORKING_DIRECTORY" value="D:\unrealVersion\UE_5.3" />
         <option name="MANDATORY_PROGRAM_PARAMETERS" value=" &quot;C:\Users\jujua\OneDrive\Documents\Unreal Projects\Test\CoopIA\CoopIA.uproject&quot;" />
         <option name="CUSTOM_PROGRAM_PARAMETERS" value="" />
@@ -158,6 +159,7 @@
       <workItem from="1713424290540" duration="416000" />
       <workItem from="1713425808525" duration="3127000" />
       <workItem from="1713431667664" duration="2084000" />
+      <workItem from="1714460345169" duration="7196000" />
     </task>
     <servers />
   </component>

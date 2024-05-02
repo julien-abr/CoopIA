@@ -55,6 +55,8 @@ public:
 	//Interface IPlayerInterface
 	virtual EIAState GetAIState_Implementation() override;
 
+	virtual int32 GetPlayerIndex_Implementation() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
