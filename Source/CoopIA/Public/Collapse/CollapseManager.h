@@ -48,6 +48,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float hexTotalLifeTime = 5.f;
 
+	UFUNCTION(BlueprintCallable)
+	void GetAllHex();
 private:
 	UPROPERTY()
 	TMap<int, FHexArray> _hexLineMap;
@@ -62,7 +64,6 @@ private:
 	int _key;
 	AGameStateBaseCoop* _gameStateCoop;
 
-	void GetAllHex();
 	void NextKey();
 	void PreventCollapseLine();
 	void CollapseLine();
