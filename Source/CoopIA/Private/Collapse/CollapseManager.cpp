@@ -51,7 +51,7 @@ void ACollapseManager::GetAllHex()
 	_hexLineMap.Empty();
 
 	TArray<AActor*> foundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), _hexaClass, foundActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHexBehaviour::StaticClass(), foundActors);
 	for (int i = 0; i < foundActors.Num(); i++)
 	{
 		FVector hexPos = foundActors[i]->GetActorLocation();
@@ -135,6 +135,7 @@ void ACollapseManager::NextKey()
 }
 
 void ACollapseManager::PreventCollapseLine()
+
 {
 	if (_hexLineMap.IsEmpty())
 		return;
@@ -190,53 +191,6 @@ void ACollapseManager::CollapseLine()
 }
 
 //TOOL ONLY
-void ACollapseManager::UpdateAllOldHex()
-{
-	//Replace old hex by new
-
-	TArray<AActor*> foundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), _oldHexaClass, foundActors);
-	for (int i = 0; i < foundActors.Num(); i++)
-	{
-		FVector pos = foundActors[i]->GetActorLocation();
-		foundActors[i]->Destroy();
-		GetWorld()->SpawnActor<AActor>(_hexaClass, pos, FRotator(0.f, 0.f, 0.f));
-	}
-
-	//Add new ex not in map for the moment
-
-	foundActors.Empty();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), _hexaClass, foundActors);
-
-	for (int i = 0; i < foundActors.Num(); i++)
-	{
-		FIntVector2 key = GenerateHexKey(foundActors[i]->GetActorLocation());
-
-		if(!_hexBuildMap.Contains(key))
-		{
-			AddNewHex(foundActors[i]);
-#if WITH_EDITOR
-			foundActors[i]->SetFolderPath("Level_Hex");
-#endif
-		}
-		else if(foundActors[i] != _hexBuildMap[key])
-		{
-			if(Cast<AHexBehaviour>(_hexBuildMap[key]))
-			{
-				foundActors[i]->Destroy();
-			}
-			else
-			{
-				AddNewHex(foundActors[i]);
-#if WITH_EDITOR
-				foundActors[i]->SetFolderPath("Level_Hex");
-#endif
-			}
-		}
-	}
-
-	ClearDeletedHex();
-}
 bool ACollapseManager::CheckHexExist(FVector hexPos)
 {
 	return _hexBuildMap.Contains(GenerateHexKey(hexPos));
