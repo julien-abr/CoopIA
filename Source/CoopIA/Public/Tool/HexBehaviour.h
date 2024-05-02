@@ -40,11 +40,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _fallAnimTime = 5.0f;
 
-	void LaunchPreventCollaspeAnim();
-
-	void LaunchCollapseAnim();
-
 	UStaticMeshComponent* GetMesh();
+
+	void PreventAnim();
+	void FallAnim();
 
 private:
 	FTimerHandle _preventTimer;
@@ -52,8 +51,4 @@ private:
 
 	float _minShake = -20.f;
 	float _maxShake = 20.f;
-
-	void PreventAnim();
-	void FallAnim();
-	void DestroyHex();
 };
