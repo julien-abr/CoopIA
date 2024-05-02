@@ -20,10 +20,22 @@ void ACollapseManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetAllHex();
+
+	//Activate Collapse
+	if(!isCollapseOn || _hexLineMap.IsEmpty())
+		return;
+
 	ClearDeletedHex();
 
-	if(_isCollapseOn)
-		GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _preventHexLifeTime, false);
+	AGameStateBase* gameState = UGameplayStatics::GetGameState(GetWorld());
+	_gameStateCoop = Cast<AGameStateBaseCoop>(gameState);
+
+	//Get First Key
+	auto it = _hexLineMap.CreateIterator();
+	_key = it->Key - 450;
+
+	NextKey();
 }
 
 // Called every frame
@@ -33,37 +45,148 @@ void ACollapseManager::Tick(float DeltaTime)
 
 }
 
+void ACollapseManager::GetAllHex()
+
+{
+	_hexLineMap.Empty();
+
+	TArray<AActor*> foundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), _hexaClass, foundActors);
+	for (int i = 0; i < foundActors.Num(); i++)
+	{
+		FVector hexPos = foundActors[i]->GetActorLocation();
+		FIntVector2 key = GenerateHexKey(hexPos);
+
+		int lineKey = UKismetMathLibrary::Round(hexPos.X);
+
+		if (!_hexLineMap.Contains(lineKey))
+			_hexLineMap.Add(lineKey, FHexArray());
+
+		if (AHexBehaviour* hex = Cast<AHexBehaviour>(foundActors[i]))
+		{
+			_hexLineMap[lineKey].hexArray.Add(hex);
+		}
+	}
+
+	SortLineMap();
+}
+
+void ACollapseManager::NextKey()
+{
+	_key += 450; //450 = distance btw each Hex on X
+
+	//Go Next
+	if(!_hexLineMap.Contains(_key))
+	{
+		GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::NextKey, voidTime, false);
+		return;
+	}
+
+	bool inPuzzle = false;
+	//For Each puzzle zone
+	for(auto it = _puzzleZoneArray.CreateIterator(); it; ++it)
+	{
+		//Zone exceed
+		if (it->startZone < _key)
+		{
+			it.RemoveCurrent();
+			continue;
+		}
+
+		//Zone far away
+		if (it->startZone > _key)
+			break;
+
+		//Zone actual
+		if(it->startZone == _key)
+		{
+			//Not on the good side, remove it
+			if(_gameStateCoop->GetLevelSide() != it->side)
+			{
+				it.RemoveCurrent();
+				continue;
+			}
+
+			//Take all line
+			while(it->endZone > _key)
+			{
+				if(_hexLineMap.Contains(_key))
+				{
+					auto it2 = _hexLineMap.CreateIterator();
+					_puzzleHexArray.Append(it2->Value.hexArray);
+					it2.RemoveCurrent();
+				}
+
+				_key += 450;
+			}
+
+			inPuzzle = true;
+			GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, it->duration - startOfCollaspeTime, false);
+			it.RemoveCurrent();
+			return;
+		}
+	}
+
+	if (inPuzzle)
+		return;
+
+	//If no puzzle zone, take next line
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, hexTotalLifeTime - startOfCollaspeTime, false);
+}
+
 void ACollapseManager::PreventCollapseLine()
 {
 	if (_hexLineMap.IsEmpty())
 		return;
 
-	auto it = _hexLineMap.CreateIterator();
-
-	for (int i = 0; i < it->Value._hexArray.Num(); i++)
+	//If puzzle zone exist
+	if(!_puzzleHexArray.IsEmpty())
 	{
-		if (it->Value._hexArray[i])
-			it->Value._hexArray[i]->LaunchPreventCollaspeAnim();
+		for (int i = 0; i < _puzzleHexArray.Num(); i++)
+			_puzzleHexArray[i]->PreventAnim();
+	}
+	//Else, juste take the next hex line
+	else
+	{
+		auto it = _hexLineMap.CreateIterator();
+
+		for (int i = 0; i < it->Value.hexArray.Num(); i++)
+		{
+			if (it->Value.hexArray[i])
+				it->Value.hexArray[i]->PreventAnim();
+		}
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, _hexLifeTime, false);
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, startOfCollaspeTime, false);
 }
 void ACollapseManager::CollapseLine()
 {
 	if(_hexLineMap.IsEmpty())
 		return;
 
-	auto it = _hexLineMap.CreateIterator();
-
-	for(int i = 0; i < it->Value._hexArray.Num(); i++)
+	//If puzzle zone exist
+	if (!_puzzleHexArray.IsEmpty())
 	{
-		if(it->Value._hexArray[i])
-			it->Value._hexArray[i]->LaunchCollapseAnim();
+		for (int i = 0; i < _puzzleHexArray.Num(); i++)
+			_puzzleHexArray[i]->FallAnim();
+
+		_puzzleHexArray.Empty();
+	}
+	//Else, juste take the next hex line
+	else
+	{
+		auto it = _hexLineMap.CreateIterator();
+
+		for(int i = 0; i < it->Value.hexArray.Num(); i++)
+		{
+			if(it->Value.hexArray[i])
+				it->Value.hexArray[i]->FallAnim();
+		}
+
+		it.RemoveCurrent();
 	}
 
-	it.RemoveCurrent();
-
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _preventHexLifeTime, false);
+	NextKey();
 }
 
 //TOOL ONLY
@@ -132,7 +255,7 @@ void ACollapseManager::AddNewHex(AActor* newHex)
 
 	if(AHexBehaviour* hex = Cast<AHexBehaviour>(newHex))
 	{
-		_hexLineMap[lineKey]._hexArray.Add(hex);
+		_hexLineMap[lineKey].hexArray.Add(hex);
 	}
 }
 //Remove manually removed hexagons from the map 
@@ -140,17 +263,16 @@ void ACollapseManager::ClearDeletedHex()
 {
 	for(auto it = _hexBuildMap.CreateIterator(); it; ++it)
 	{
-
 		if(!it.Value())
 		{
 			if(_hexLineMap.Find(it.Key().X))
 			{
-				_hexLineMap[it.Key().X]._hexArray.RemoveAll([](AActor* actor)
+				_hexLineMap[it.Key().X].hexArray.RemoveAll([](AActor* actor)
 				{
 					return actor == nullptr;
 				});
 
-				if (_hexLineMap[it.Key().X]._hexArray.IsEmpty())
+				if (_hexLineMap[it.Key().X].hexArray.IsEmpty())
 					_hexLineMap.Remove(it.Key().X);
 			}
 
@@ -167,11 +289,11 @@ void ACollapseManager::UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList)
 {
 	ClearPuzzleZone();
 
-	_puzzleZoneList = puzzleZoneList;
+	_puzzleZoneArray = puzzleZoneList;
 
-	for(int i = 0; i < _puzzleZoneList.Num(); i++)
+	for(int i = 0; i < _puzzleZoneArray.Num(); i++)
 	{
-		if(!_puzzleZoneList[i].watchOnMap)
+		if(!_puzzleZoneArray[i].watchOnMap)
 			continue;
 
 		TArray<int> mapKey;
@@ -179,37 +301,44 @@ void ACollapseManager::UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList)
 
 		for (int j = 0; j < mapKey.Num(); j++)
 		{
-			if (mapKey[j] >= _puzzleZoneList[i].startZone && mapKey[j] <= _puzzleZoneList[i].endZone)
+			if (mapKey[j] >= _puzzleZoneArray[i].startZone && mapKey[j] <= _puzzleZoneArray[i].endZone)
 			{
 				_toolPuzzleHexLineMap.Add(mapKey[j], _hexLineMap[mapKey[j]]);
 
-				for(int k = 0; k < _hexLineMap[mapKey[j]]._hexArray.Num(); k++)
+				for(int k = 0; k < _hexLineMap[mapKey[j]].hexArray.Num(); k++)
 				{
-					_hexLineMap[mapKey[j]]._hexArray[k]->GetMesh()->SetOverlayMaterial(_overlayMat);
+					_hexLineMap[mapKey[j]].hexArray[k]->GetMesh()->SetOverlayMaterial(_overlayMat);
 				}
 			}
 		}
 	} 
 }
+
 void ACollapseManager::ClearPuzzleZone()
 {
 	if (!_toolPuzzleHexLineMap.IsEmpty())
 	{
 		for (auto it = _toolPuzzleHexLineMap.CreateIterator(); it; ++it)
 		{
-			for (int i = 0; i < it->Value._hexArray.Num(); i++)
+			for (int i = 0; i < it->Value.hexArray.Num(); i++)
 			{
-				if (it->Value._hexArray[i])
-					it->Value._hexArray[i]->GetMesh()->SetOverlayMaterial(nullptr);
+				if (it->Value.hexArray[i])
+					it->Value.hexArray[i]->GetMesh()->SetOverlayMaterial(nullptr);
 			}
 		}
 
 		_toolPuzzleHexLineMap.Empty();
 	}
+
+}
+void ACollapseManager::SortPuzzleZone()
+{
+	if(!_puzzleZoneArray.IsEmpty())
+		_puzzleZoneArray.Sort([](FPuzzleZoneData a, FPuzzleZoneData b) { return a.startZone < b.startZone; });
 }
 TArray<FPuzzleZoneData> ACollapseManager::GetPuzzleZone()
 {
-	return _puzzleZoneList;
+	return _puzzleZoneArray;
 }
 
 FIntVector2 ACollapseManager::GenerateHexKey(FVector hexPos)

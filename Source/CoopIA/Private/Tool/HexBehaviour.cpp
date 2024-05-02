@@ -38,31 +38,23 @@ void AHexBehaviour::Tick(float DeltaTime)
 
 }
 
-void AHexBehaviour::LaunchPreventCollaspeAnim()
-{
-	GetWorld()->GetTimerManager().SetTimer(_preventTimer, this, &AHexBehaviour::PreventAnim, 0.2f, true);
-}
-void AHexBehaviour::PreventAnim()
-{
-	FLatentActionInfo latentInfo;
-	latentInfo.CallbackTarget = this;
-	FVector pos = _hexMesh->GetRelativeLocation() + FVector(FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake));
-	UKismetSystemLibrary::MoveComponentTo(_hexMesh, pos, GetActorRotation(), false, false, 0.2f, true, EMoveComponentAction::Move, latentInfo);
-}
-
-void AHexBehaviour::LaunchCollapseAnim()
-{
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &AHexBehaviour::FallAnim, FMath::RandRange(0.f, 0.8f), false);
-}
-
 UStaticMeshComponent* AHexBehaviour::GetMesh()
 {
 	return _hexMesh;
 }
 
+void AHexBehaviour::PreventAnim()
+{
+	FLatentActionInfo latentInfo;
+	latentInfo.CallbackTarget = this;
+	//FVector pos = _hexMesh->GetRelativeLocation() + FVector(FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake), FMath::RandRange(_minShake, _maxShake));
+	//UKismetSystemLibrary::MoveComponentTo(_hexMesh, pos, GetActorRotation(), false, false, 0.2f, true, EMoveComponentAction::Move, latentInfo);
+	UKismetSystemLibrary::MoveComponentTo(_hexMesh, _hexMesh->GetRelativeLocation() + FVector(0.f, 0.f, -500.f), GetActorRotation(), false, false, 0.2f, true, EMoveComponentAction::Move, latentInfo);
+}
+
 void AHexBehaviour::FallAnim()
 {
-	GetWorld()->GetTimerManager().ClearTimer(_preventTimer);
+	//GetWorld()->GetTimerManager().ClearTimer(_preventTimer);
 
 	FVector pos = _hexMesh->GetRelativeLocation() + FVector(0, 0, -5000.f);
 
@@ -73,10 +65,4 @@ void AHexBehaviour::FallAnim()
 	FLatentActionInfo latentInfoCollider;
 	latentInfoCollider.CallbackTarget = _hexCollider;
 	UKismetSystemLibrary::MoveComponentTo(_hexCollider, pos, GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoCollider);
-
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &AHexBehaviour::DestroyHex, 5.f, false);
-}
-void AHexBehaviour::DestroyHex()
-{
-	Destroy();
 }
