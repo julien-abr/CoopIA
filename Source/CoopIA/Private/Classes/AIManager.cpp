@@ -127,6 +127,10 @@ void AAIManager::FindLastHex()
 
 void AAIManager::UpdateState(const EIAState& State)
 {
+	if(State == EIAState::DEAD)
+	{
+		PlayerDied(IAState);
+	}
 	if(State == IAState || bIsInTransition)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trying to start same STATE"));
@@ -164,7 +168,7 @@ FVector AAIManager::FindLastPos()
 	return PlayerLastHexPos;
 }
 
-void AAIManager::PlayerDied()
+void AAIManager::PlayerDied(EIAState State)
 {
 	IAState = EIAState::DEAD;
 	for(auto IA : ArrayIA)
@@ -174,6 +178,22 @@ void AAIManager::PlayerDied()
 	ArrayIA.Empty();
 	NumberIAToSucceed = 0;
 	MainCamera->SetPlayer(nullptr, ManagerIndex);
+
+	//Wait time
+	UE_LOG(LogTemp, Warning, TEXT("Enter Dead"));
+	HidePrevious(State);
+	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
+
+	Player->SetActorLocation(PlayerLastHexPos, false, nullptr, ETeleportType::TeleportPhysics);
+	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+	Player->Show();
+
+	CurrentActor = Player;
+	MainCamera->SetPlayer(Player, ManagerIndex);
+	PlayerController->Possess(Player);
+
+	TeleportIA();
 }
 
 void AAIManager::Spear(EIAState State)

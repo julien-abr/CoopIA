@@ -2,9 +2,11 @@
 
 
 #include "Classes/GameStateBaseCoop.h"
+#include "Classes/AIManager.h"
 #include "Classes/DeathManager.h"
 
 //Libraries
+#include "Classes/Data/EIAState.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameStateBaseCoop::AGameStateBaseCoop()
@@ -19,15 +21,23 @@ AGameStateBaseCoop::AGameStateBaseCoop()
 	}
 }
 
+void AGameStateBaseCoop::Init(TArray<AAIManager*>& ArrayAIManager)
+{
+	AIManager0 = ArrayAIManager[0];
+	AIManager1 = ArrayAIManager[1];
+}
+
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
 	if(PlayerIndex == 0)
 	{
 		Player0GlobalState = NewPlayerState;
+		AIManager0->UpdateState(EIAState::DEAD);
 	}
 	else if(PlayerIndex == 1)
 	{
 		Player1GlobalState = NewPlayerState;
+		AIManager1->UpdateState(EIAState::DEAD);
 	}
 
 	CheckGameOver();
@@ -39,8 +49,5 @@ void AGameStateBaseCoop::CheckGameOver()
 	{
 		//Play game over menu
 		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
-		return;
 	}
-
-	DeathManager->RevivePlayer();
 }
