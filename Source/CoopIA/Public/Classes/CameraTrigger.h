@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "MainCamera.h"
 #include "Components/BoxComponent.h"
+#include "Classes/Data/Enum/ZoneType.h"
+#include "Data/Enum/ELevelSide.h"
 #include "GameFramework/Actor.h"
 #include "CameraTrigger.generated.h"
 
@@ -45,6 +47,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition="TriggerCamera == ECameraState::FOLLOW"))
 	ASpline* FollowSpline;
+
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	EZoneType ZoneType;
+
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	ELevelSide LevelSide;
 
 	bool bCanOverlap = true;
 };
