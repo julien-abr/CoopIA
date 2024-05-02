@@ -154,7 +154,8 @@ private:
 
 	void ShieldRotateLeftCompleted();
 	void ShieldRotateRightCompleted();
-
+	bool isBind;
+	
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> MaterialAlive0;
 
