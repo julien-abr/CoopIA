@@ -134,4 +134,6 @@ private:
 
 	void ShieldRotateLeftCompleted();
 	void ShieldRotateRightCompleted();
+
+	bool isBind;
 };

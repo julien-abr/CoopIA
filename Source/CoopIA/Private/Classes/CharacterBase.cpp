@@ -224,9 +224,16 @@ void ACharacterBase::SetupShield(class AShield* Shield)
 		}
 	}
 	
+	bIsShieldActivate = true;
+
+	if(isBind)
+		return;
+
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(Controller->InputComponent))
 	{
+		isBind = true;
+
 		// JShield Rotate Left
 		EnhancedInputComponent->BindAction(ShieldRotateLeftAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateLeftStarted);
 		EnhancedInputComponent->BindAction(ShieldRotateLeftAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateLeftCompleted);
@@ -235,8 +242,6 @@ void ACharacterBase::SetupShield(class AShield* Shield)
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateRightStarted);
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateRightCompleted);
 	}
-
-	bIsShieldActivate = true;
 }
 
 void ACharacterBase::DeactivateShield()
