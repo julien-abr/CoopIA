@@ -125,6 +125,7 @@ void AAIManager::FindLastHex()
 	}
 }
 
+
 void AAIManager::UpdateState(const EIAState& State)
 {
 	if(State == EIAState::DEAD)
@@ -187,13 +188,10 @@ void AAIManager::PlayerDied(EIAState State)
 
 	Player->SetActorLocation(PlayerLastHexPos, false, nullptr, ETeleportType::TeleportPhysics);
 	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
-	Player->Show();
-
+	PlayerController->Possess(Player);
+	Player->Died();
 	CurrentActor = Player;
 	MainCamera->SetPlayer(Player, ManagerIndex);
-	PlayerController->Possess(Player);
-
-	TeleportIA();
 }
 
 void AAIManager::Spear(EIAState State)

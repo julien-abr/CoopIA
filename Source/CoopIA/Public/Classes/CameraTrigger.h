@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "MainCamera.h"
 #include "Components/BoxComponent.h"
+#include "Classes/Data/Enum/ZoneType.h"
+#include "Data/Enum/ELevelSide.h"
 #include "GameFramework/Actor.h"
 #include "CameraTrigger.generated.h"
 
@@ -25,20 +27,22 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
 
 	UFUNCTION()
 		void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-         
+
+	UFUNCTION()
+		void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	UPROPERTY()
 	AMainCamera* MainCamera;
 
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
 	ECameraState TriggerCamera;
+
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<AActor> WallActor;
 
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition="TriggerCamera == ECameraState::FIXED"))
 	AActor* ActorFixedPos;
@@ -46,5 +50,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition="TriggerCamera == ECameraState::FOLLOW"))
 	ASpline* FollowSpline;
 
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	EZoneType ZoneType;
+
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	ELevelSide LevelSide;
+
+	UPROPERTY()
+	TObjectPtr<AActor> Player0;
+
+	UPROPERTY()
+	TObjectPtr<AActor> Player1;
+	
 	bool bCanOverlap = true;
 };
