@@ -7,6 +7,7 @@
 //Library
 #include <Data/Interface/PlayerInterface.h>
 
+#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -42,7 +43,7 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
     	switch(TriggerCamera)
     	{
     		case ECameraState::FIXED:
-    			MainCamera->SetFixedPosition(ActorFixedPos->GetActorLocation());
+    			MainCamera->SetFixedPosition(ActorFixedPos->GetActorTransform());
     			break;
     		case ECameraState::FOLLOW:
     			MainCamera->SetSpline(FollowSpline);

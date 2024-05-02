@@ -75,6 +75,11 @@ EIAState ABall::GetAIState_Implementation()
 	return EIAState::BALL;
 }
 
+int32 ABall::GetPlayerIndex_Implementation()
+{
+	return AIManager->ManagerIndex;
+}
+
 void ABall::StartSpear()
 {
 	AIManager->UpdateState(EIAState::SPEAR);

@@ -107,13 +107,14 @@ public:
 	//Interface IPlayerInterface
 	virtual EIAState GetAIState_Implementation() override;
 
+	virtual int32 GetPlayerIndex_Implementation() override;
+
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDAPlayer> DAPlayer;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDAShield> DAShield;
-
 	
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
@@ -133,4 +134,6 @@ private:
 
 	void ShieldRotateLeftCompleted();
 	void ShieldRotateRightCompleted();
+
+	bool isBind;
 };

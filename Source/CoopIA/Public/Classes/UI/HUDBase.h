@@ -13,5 +13,4 @@ UCLASS()
 class COOPIA_API AHUDBase : public AHUD
 {
 	GENERATED_BODY()
-	
 };

@@ -2,7 +2,10 @@
 
 #pragma once
 
+#include <Classes/GameStateBaseCoop.h>
+
 #include "CoreMinimal.h"
+#include "FPuzzleZoneData.h"
 #include "GameFramework/Actor.h"
 #include "CollapseManager.generated.h"
 
@@ -14,7 +17,7 @@ struct FHexArray
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<AHexBehaviour*> _hexArray;
+	TArray<AHexBehaviour*> hexArray;
 };
 
 UCLASS()
@@ -34,48 +37,70 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<AActor> _oldHexaClass;
-
-	UPROPERTY(BlueprintReadWrite)
-	TSubclassOf<AActor> _hexaClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool _isCollapseOn = false;
+	bool isCollapseOn = false;
 
+	//Set Time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float _hexLifeTime = 5.f;
-
+	float voidTime = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float _preventHexLifeTime = 2.f;
+	float startOfCollaspeTime = 2.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float hexTotalLifeTime = 5.f;
 
 	UFUNCTION(BlueprintCallable)
-	bool CheckHexExist(FVector hexPos);
-
-	UFUNCTION(BlueprintCallable)
-	void UpdateAllOldHex();
-
-	UFUNCTION(BlueprintCallable)
-	void AddNewHex(AActor* newHex);
-
-	UFUNCTION(BlueprintCallable)
-	void ClearDeletedHex();
-
-	UFUNCTION(BlueprintCallable)
-	void SortLineMap();
-
+	void GetAllHex();
 private:
 	UPROPERTY()
-	TMap<FIntVector2, AActor*> _hexBuildMap;
+	TMap<int, FHexArray> _hexLineMap;
+	UPROPERTY()
+	TArray<FPuzzleZoneData> _puzzleZoneArray;
 
 	UPROPERTY()
-	TMap<int, FHexArray> _hexLineMap;
+	TArray<AHexBehaviour*> _puzzleHexArray;
 
 	FTimerHandle _collapseTimer;
 
+	int _key;
+	AGameStateBaseCoop* _gameStateCoop;
+
+	void NextKey();
+	void PreventCollapseLine();
+	void CollapseLine();
+
+	//TOOL ONLY
+public :
+	//CREATE HEX
+	UFUNCTION(BlueprintCallable)
+	bool CheckHexExist(FVector hexPos);
+	UFUNCTION(BlueprintCallable)
+	void AddNewHex(AActor* newHex);
+	UFUNCTION(BlueprintCallable)
+	void ClearDeletedHex();
+	UFUNCTION(BlueprintCallable)
+	void SortLineMap();
+
+	//PUZZLE
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<UMaterial> _overlayMat;
+
+	UFUNCTION(BlueprintCallable)
+	void UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList);
+	UFUNCTION(BlueprintCallable)
+	void ClearPuzzleZone();
+	UFUNCTION(BlueprintCallable)
+	void SortPuzzleZone();
+	UFUNCTION(BlueprintCallable)
+	TArray<FPuzzleZoneData> GetPuzzleZone();
+
+private:
+	//CREATE HEX
+	UPROPERTY()
+	TMap<FIntVector2, AActor*> _hexBuildMap;
+
 	FIntVector2 GenerateHexKey(FVector hexPos);
 
-	void PreventCollapseLine();
-
-	void CollapseLine();
+	//PUZZLE
+	UPROPERTY()
+	TMap<int, FHexArray> _toolPuzzleHexLineMap;
 };
