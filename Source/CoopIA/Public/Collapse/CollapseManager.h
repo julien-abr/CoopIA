@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <Classes/GameStateBaseCoop.h>
+
 #include "CoreMinimal.h"
 #include "FPuzzleZoneData.h"
 #include "GameFramework/Actor.h"
@@ -58,6 +60,7 @@ private:
 	FTimerHandle _collapseTimer;
 
 	int _key;
+	AGameStateBaseCoop* _gameStateCoop;
 
 	void GetAllHex();
 	void NextKey();

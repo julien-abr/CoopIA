@@ -5,7 +5,6 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Logging/StructuredLog.h"
 #include "Tool/HexBehaviour.h"
 
 // Sets default values
@@ -21,14 +20,16 @@ void ACollapseManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ClearDeletedHex();
 	GetAllHex();
 
 	//Activate Collapse
 	if(!isCollapseOn || _hexLineMap.IsEmpty())
 		return;
 
-	//GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, startOfCollaspeTime, false);
+	ClearDeletedHex();
+
+	AGameStateBase* gameState = UGameplayStatics::GetGameState(GetWorld());
+	_gameStateCoop = Cast<AGameStateBaseCoop>(gameState);
 
 	//Get First Key
 	auto it = _hexLineMap.CreateIterator();
@@ -45,6 +46,7 @@ void ACollapseManager::Tick(float DeltaTime)
 }
 
 void ACollapseManager::GetAllHex()
+
 {
 	_hexLineMap.Empty();
 
@@ -71,45 +73,56 @@ void ACollapseManager::GetAllHex()
 
 void ACollapseManager::NextKey()
 {
-	UE_LOGFMT(LogTemp, Log, "Next Key {0}", _key);
-
 	_key += 450; //450 = distance btw each Hex on X
 
+	//Go Next
 	if(!_hexLineMap.Contains(_key))
 	{
-		UE_LOGFMT(LogTemp, Log, "Nothing, go next");
 		GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::NextKey, voidTime, false);
 		return;
 	}
 
 	bool inPuzzle = false;
-	//Pour chaque zone puzzle encore existante
-	for(int i = 0; i < _puzzleZoneArray.Num(); i++)
+	//For Each puzzle zone
+	for(auto it = _puzzleZoneArray.CreateIterator(); it; ++it)
 	{
-		if (_puzzleZoneArray[i].startZone > _key)
+		//Zone exceed
+		if (it->startZone < _key)
+		{
+			it.RemoveCurrent();
+			continue;
+		}
+
+		//Zone far away
+		if (it->startZone > _key)
 			break;
 
-		if(_puzzleZoneArray[i].startZone == _key)
+		//Zone actual
+		if(it->startZone == _key)
 		{
-			UE_LOGFMT(LogTemp, Log, "Puzzle Zone Detected");
-			//Attention, check dans quel endroit nous sommes, pas possible d'avoir une autre zone en meme temps
-			//Si ta une zone Left et une Mid, et que tu es Mid, vire celle de gauche dans la liste et retry la loop
+			//Not on the good side, remove it
+			if(_gameStateCoop->GetLevelSide() != it->side)
+			{
+				it.RemoveCurrent();
+				continue;
+			}
 
-			//Ici, je sais que la prochaine ligne a tomber est un puzzle, donc je dois stocker dans une liste (deja faites) tout les hex concernés
-			while(_puzzleZoneArray[i].endZone > _key)
+			//Take all line
+			while(it->endZone > _key)
 			{
 				if(_hexLineMap.Contains(_key))
 				{
-					auto it = _hexLineMap.CreateIterator();
-					_puzzleHexArray.Append(it->Value.hexArray);
-					it.RemoveCurrent();
+					auto it2 = _hexLineMap.CreateIterator();
+					_puzzleHexArray.Append(it2->Value.hexArray);
+					it2.RemoveCurrent();
 				}
 
 				_key += 450;
 			}
-			UE_LOGFMT(LogTemp, Log, "Puzzle Timer");
+
 			inPuzzle = true;
-			GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, _puzzleZoneArray[i].duration - startOfCollaspeTime, false);
+			GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, it->duration - startOfCollaspeTime, false);
+			it.RemoveCurrent();
 			return;
 		}
 	}
@@ -117,29 +130,24 @@ void ACollapseManager::NextKey()
 	if (inPuzzle)
 		return;
 
-	UE_LOGFMT(LogTemp, Log, "Line Timer");
-	//Si pas de zone puzzle, loop classique
+	//If no puzzle zone, take next line
 	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, hexTotalLifeTime - startOfCollaspeTime, false);
 }
 
 void ACollapseManager::PreventCollapseLine()
 {
-	UE_LOGFMT(LogTemp, Log, "Prevent Collapse");
-
 	if (_hexLineMap.IsEmpty())
 		return;
 
 	//If puzzle zone exist
 	if(!_puzzleHexArray.IsEmpty())
 	{
-		UE_LOGFMT(LogTemp, Log, "PUZZLE Prevent Collapse");
 		for (int i = 0; i < _puzzleHexArray.Num(); i++)
 			_puzzleHexArray[i]->PreventAnim();
 	}
 	//Else, juste take the next hex line
 	else
 	{
-		UE_LOGFMT(LogTemp, Log, "LINE Prevent Collapse");
 		auto it = _hexLineMap.CreateIterator();
 
 		for (int i = 0; i < it->Value.hexArray.Num(); i++)
@@ -153,8 +161,6 @@ void ACollapseManager::PreventCollapseLine()
 }
 void ACollapseManager::CollapseLine()
 {
-	UE_LOGFMT(LogTemp, Log, "Collapse Hex");
-
 	if(_hexLineMap.IsEmpty())
 		return;
 
