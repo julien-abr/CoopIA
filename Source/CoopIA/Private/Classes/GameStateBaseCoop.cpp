@@ -27,6 +27,12 @@ void AGameStateBaseCoop::Init(TArray<AAIManager*>& ArrayAIManager)
 	AIManager1 = ArrayAIManager[1];
 }
 
+void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side)
+{
+	ZoneType = Zone;
+	LevelSide = Side;
+}
+
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
 	if(PlayerIndex == 0)
