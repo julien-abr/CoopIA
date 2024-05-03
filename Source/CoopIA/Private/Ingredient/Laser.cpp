@@ -56,7 +56,6 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count, A
 		if(hitResult.GetActor()->Implements<URayHit>())
 		{
 			IRayHit::Execute_RayHitAction(hitResult.GetActor());
-			return;
 		}
 		else if(hitResult.GetActor()->ActorHasTag("Reflect"))
 		{
@@ -66,18 +65,16 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count, A
 			FVector dir = (end - start).GetUnsafeNormal();
 			FVector reflectDir = dir - 2 * UKismetMathLibrary::Dot_VectorVector(dir, hitResult.ImpactNormal) * hitResult.ImpactNormal;
 			ReflectLaser(hitPos, hitPos + reflectDir * 10000, ++count, hitResult.GetActor());
-			return;
 		}
 		else
 		{
 			DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Red, false, 0.1f, 0, 10.f);
 		}
-	}
-	else
-	{
-		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.1f, 0, 10.f);
+
+		return;
 	}
 
+	DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.1f, 0, 10.f);
 }
 
 //hitResult.GetActor()->IsA<>()
