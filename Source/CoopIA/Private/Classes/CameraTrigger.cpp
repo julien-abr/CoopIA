@@ -47,19 +47,23 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 	{
 		switch (TriggerCamera)
 		{
-		case ECameraState::FIXED:
-			MainCamera->SetFixedPosition(ActorFixedPos->GetActorTransform());
-			break;
-		case ECameraState::FOLLOW:
-			MainCamera->SetSpline(FollowSpline);
-			break;
+			case ECameraState::FIXED:
+				MainCamera->SetFixedPosition(ActorFixedPos->GetActorTransform());
+				break;
+			case ECameraState::FOLLOW:
+				MainCamera->SetSpline(FollowSpline);
+				break;
 		}
 
 		AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
-		GameState->SetZoneInfo(ZoneType, LevelSide);
+		if(GameState)
+			GameState->SetZoneInfo(ZoneType, LevelSide);
 
-		WallActor->SetActorEnableCollision(true);
-		WallActor->SetActorHiddenInGame(false);
+		if(WallActor)
+		{
+			WallActor->SetActorEnableCollision(true);
+			WallActor->SetActorHiddenInGame(false);
+		}
 		bCanOverlap = false;
 	}
 }
