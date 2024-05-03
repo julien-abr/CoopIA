@@ -12,9 +12,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Classes/Shield.h"
+#include "Classes/GameStateBaseCoop.h"
 
 #include "Classes/Data/DataAsset/DAPlayer.h"
 #include "Classes/Data/DataAsset/DAShield.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacterBase);
 
@@ -60,6 +62,28 @@ ACharacterBase::ACharacterBase()
 void ACharacterBase::Init(AAIManager* Manager)
 {
 	AIManager = Manager;
+	GetMesh()->GetMaterial(0);
+	GetMesh()->GetMaterial(1);
+}
+
+void ACharacterBase::ImpulseTowardActor()
+{
+	const UWorld* World = GetWorld();
+	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(World));
+	//int32 Index = IAsset
+	//const AActor* OtherPlayer = GameState->GetPlayer()
+	//const FVector End = OtherPlayer->GetActorLocation();
+	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelDead);
+	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+	CharacterMovementComponent->GravityScale = 0.f;
+	CharacterMovementComponent->GroundFriction = 0.f;
+	CharacterMovementComponent->BrakingDecelerationWalking = 200;
+	CharacterMovementComponent->BrakingDecelerationFalling = 200;
+	const FVector Start = GetActorLocation();
+	FVector LaunchVelocity;
+		//UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
+	LaunchVelocity.Z = 0;
+	LaunchCharacter(LaunchVelocity, false, false);	
 }
 
 // Called when the game starts or when spawned
@@ -72,16 +96,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			Subsystem->AddMappingContext(FormationMappingContext, 0);
-		}
-	}
+	SetupDefaultMapping();
 }
 
 // Called to bind functionality to input
@@ -110,6 +125,9 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		
 		//Spear
 		EnhancedInputComponent->BindAction(SpearAction, ETriggerEvent::Started, this, &ACharacterBase::StartSpear);
+
+		//Dead
+		EnhancedInputComponent->BindAction(DeadImpulseAction, ETriggerEvent::Started, this, &ACharacterBase::ImpulseTowardActor);
 	}
 	else
 	{
@@ -176,10 +194,53 @@ void ACharacterBase::Show()
 	SetActorHiddenInGame(false);
 }
 
+void ACharacterBase::SetupDefaultMapping()
+{
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			Subsystem->AddMappingContext(FormationMappingContext, 0);
+		}
+	}
+}
+
+void ACharacterBase::SetupDeadMapping()
+{
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(DeadMappingContext, 0);
+		}
+	}
+}
+
 void ACharacterBase::StartSpear()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Spear"));
 	AIManager->UpdateState(EIAState::SPEAR);
+}
+
+void ACharacterBase::Died()
+{
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
+	GetMesh()->SetMaterial(0, MaterialDead0);
+	GetMesh()->SetMaterial(1, MaterialDead1);
+	SetupDeadMapping();
+}
+
+void ACharacterBase::Revive()
+{
+	GetMesh()->SetMaterial(0, MaterialAlive0);
+	GetMesh()->SetMaterial(1, MaterialAlive1);
+	SetupDefaultMapping();
 }
 
 

@@ -6,6 +6,7 @@
 #include "AIManager.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTagAssetInterface.h"
+#include "Data/Interface/Interact.h"
 #include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
@@ -20,12 +21,9 @@ struct FGameplayTagContainer;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, public IGameplayTagAssetInterface
+class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, public IInteract, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditInstanceOnly)
-	float RotSpeed;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -36,6 +34,9 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, pu
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* ShieldMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* DeadMappingContext;
 
 	/** Ball Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -64,6 +65,10 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, pu
 	/** Shield Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ShieldAction;
+
+	/** Dead Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DeadImpulseAction;
     
     /** Shield Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -71,6 +76,12 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, pu
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ShieldRotateRightAction;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> MaterialDead0;
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> MaterialDead1;
 
 public:
 	// Sets default values for this character's properties
@@ -85,6 +96,15 @@ public:
 
 	void Show();
 
+	void Died();
+	
+	void Revive();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void Impulse();
+
+	UFUNCTION()
+	void ImpulseTowardActor();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -118,22 +138,34 @@ private:
 	
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<ECollisionChannel> collisionChannelDead;
 	
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
 
 	bool bIsShieldActivate;
 
+	void SetupDefaultMapping();
+
+	void SetupDeadMapping();
+
 	void StartSpear();
 	void StartBall();
 	void StartShield();
 	void StartNeutral();
-
+	
 	void ShieldRotateLeftStarted();
 	void ShieldRotateRightStarted();
 
 	void ShieldRotateLeftCompleted();
 	void ShieldRotateRightCompleted();
-
 	bool isBind;
+	
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> MaterialAlive0;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> MaterialAlive1;
 };

@@ -25,4 +25,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Interact();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void Wind(FVector windDirection);
 };
