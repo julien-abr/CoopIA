@@ -231,3 +231,8 @@ EIAState ASpear::GetAIState_Implementation()
 {
 	return EIAState::SPEAR;
 }
+
+int32 ASpear::GetPlayerIndex_Implementation()
+{
+	return AIManager->ManagerIndex;
+}

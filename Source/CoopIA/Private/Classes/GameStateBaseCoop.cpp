@@ -2,15 +2,18 @@
 
 
 #include "Classes/GameStateBaseCoop.h"
-
+#include "Classes/AIManager.h"
 #include "Classes/DeathManager.h"
+
+//Libraries
+#include "Classes/Data/EIAState.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameStateBaseCoop::AGameStateBaseCoop()
 {
 	//Get DeathManager and Subscribe to the Delegate
 	AActor* Actor = UGameplayStatics::GetActorOfClass(GetWorld(), ADeathManager::StaticClass());
-	ADeathManager* DeathManager = Cast<ADeathManager>(Actor);
+	DeathManager = Cast<ADeathManager>(Actor);
 
 	if(DeathManager)
 	{
@@ -18,21 +21,32 @@ AGameStateBaseCoop::AGameStateBaseCoop()
 	}
 }
 
+void AGameStateBaseCoop::Init(TArray<AAIManager*>& ArrayAIManager)
+{
+	AIManager0 = ArrayAIManager[0];
+	AIManager1 = ArrayAIManager[1];
+}
+
+void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side)
+{
+	ZoneType = Zone;
+	LevelSide = Side;
+}
+
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Delegate called in GameState"));
-
 	if(PlayerIndex == 0)
 	{
 		Player0GlobalState = NewPlayerState;
+		AIManager0->UpdateState(EIAState::DEAD);
 	}
 	else if(PlayerIndex == 1)
 	{
 		Player1GlobalState = NewPlayerState;
+		AIManager1->UpdateState(EIAState::DEAD);
 	}
 
 	CheckGameOver();
-	
 }
 
 void AGameStateBaseCoop::CheckGameOver()
@@ -40,5 +54,6 @@ void AGameStateBaseCoop::CheckGameOver()
 	if(Player0GlobalState == EPlayerGlobalState::Dead && Player1GlobalState == EPlayerGlobalState::Dead)
 	{
 		//Play game over menu
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
 	}
 }

@@ -60,6 +60,8 @@ ACharacterBase::ACharacterBase()
 void ACharacterBase::Init(AAIManager* Manager)
 {
 	AIManager = Manager;
+	GetMesh()->GetMaterial(0);
+	GetMesh()->GetMaterial(1);
 }
 
 // Called when the game starts or when spawned
@@ -72,16 +74,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			Subsystem->AddMappingContext(FormationMappingContext, 0);
-		}
-	}
+	SetupDefaultMapping();
 }
 
 // Called to bind functionality to input
@@ -110,6 +103,9 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		
 		//Spear
 		EnhancedInputComponent->BindAction(SpearAction, ETriggerEvent::Started, this, &ACharacterBase::StartSpear);
+
+		//Dead
+		EnhancedInputComponent->BindAction(DeadImpulseAction, ETriggerEvent::Started, this, &ACharacterBase::Impulse);
 	}
 	else
 	{
@@ -126,6 +122,11 @@ EIAState ACharacterBase::GetAIState_Implementation()
 	}
 	
 	return EIAState::SHIELD;
+}
+
+int32 ACharacterBase::GetPlayerIndex_Implementation()
+{
+	return AIManager->ManagerIndex;
 }
 
 void ACharacterBase::Move(const FInputActionValue& Value)
@@ -171,10 +172,53 @@ void ACharacterBase::Show()
 	SetActorHiddenInGame(false);
 }
 
+void ACharacterBase::SetupDefaultMapping()
+{
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			Subsystem->AddMappingContext(FormationMappingContext, 0);
+		}
+	}
+}
+
+void ACharacterBase::SetupDeadMapping()
+{
+	//Add Input Mapping Context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(DeadMappingContext, 0);
+		}
+	}
+}
+
 void ACharacterBase::StartSpear()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Spear"));
 	AIManager->UpdateState(EIAState::SPEAR);
+}
+
+void ACharacterBase::Died()
+{
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
+	GetMesh()->SetMaterial(0, MaterialDead0);
+	GetMesh()->SetMaterial(1, MaterialDead1);
+	SetupDeadMapping();
+}
+
+void ACharacterBase::Revive()
+{
+	GetMesh()->SetMaterial(0, MaterialAlive0);
+	GetMesh()->SetMaterial(1, MaterialAlive1);
+	SetupDefaultMapping();
 }
 
 
@@ -219,9 +263,16 @@ void ACharacterBase::SetupShield(class AShield* Shield)
 		}
 	}
 	
+	bIsShieldActivate = true;
+
+	if(isBind)
+		return;
+
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(Controller->InputComponent))
 	{
+		isBind = true;
+
 		// JShield Rotate Left
 		EnhancedInputComponent->BindAction(ShieldRotateLeftAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateLeftStarted);
 		EnhancedInputComponent->BindAction(ShieldRotateLeftAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateLeftCompleted);
@@ -230,8 +281,6 @@ void ACharacterBase::SetupShield(class AShield* Shield)
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Started, this, &ACharacterBase::ShieldRotateRightStarted);
 		EnhancedInputComponent->BindAction(ShieldRotateRightAction, ETriggerEvent::Completed, this, &ACharacterBase::ShieldRotateRightCompleted);
 	}
-
-	bIsShieldActivate = true;
 }
 
 void ACharacterBase::DeactivateShield()

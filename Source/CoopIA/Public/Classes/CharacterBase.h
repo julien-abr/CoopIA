@@ -25,9 +25,6 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, pu
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditInstanceOnly)
-	float RotSpeed;
-
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -37,6 +34,9 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, pu
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* ShieldMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* DeadMappingContext;
 
 	/** Ball Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -65,6 +65,10 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, pu
 	/** Shield Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ShieldAction;
+
+	/** Dead Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DeadImpulseAction;
     
     /** Shield Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -72,6 +76,12 @@ class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, pu
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ShieldRotateRightAction;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> MaterialDead0;
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> MaterialDead1;
 
 public:
 	// Sets default values for this character's properties
@@ -86,6 +96,12 @@ public:
 
 	void Show();
 
+	void Died();
+	
+	void Revive();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void Impulse();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -108,6 +124,8 @@ public:
 	//Interface IPlayerInterface
 	virtual EIAState GetAIState_Implementation() override;
 
+	virtual int32 GetPlayerIndex_Implementation() override;
+
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDAPlayer> DAPlayer;
@@ -123,14 +141,25 @@ private:
 
 	bool bIsShieldActivate;
 
+	void SetupDefaultMapping();
+
+	void SetupDeadMapping();
+
 	void StartSpear();
 	void StartBall();
 	void StartShield();
 	void StartNeutral();
-
+	
 	void ShieldRotateLeftStarted();
 	void ShieldRotateRightStarted();
 
 	void ShieldRotateLeftCompleted();
 	void ShieldRotateRightCompleted();
+	bool isBind;
+	
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> MaterialAlive0;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> MaterialAlive1;
 };

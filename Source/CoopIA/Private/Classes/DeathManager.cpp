@@ -3,26 +3,17 @@
 
 #include "Classes/DeathManager.h"
 #include "GameplayTagAssetInterface.h"
-#include "Classes/AIManager.h"
 #include "Components/BoxComponent.h"
+#include "Data/Interface/PlayerInterface.h"
 
 // Sets default values
 ADeathManager::ADeathManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	DeathZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathZoneBox"));
 	DeathZone->SetupAttachment(RootComponent);
-
-	OnPlayerGlobalStateChangedDelegate.AddUObject(this, &ThisClass::OnPlayerGlobalStateChanged);
-
-}
-
-void ADeathManager::Init(TArray<AAIManager*>& ArrayAIManager)
-{
-	AIManager0 = ArrayAIManager[0];
-	AIManager1 = ArrayAIManager[1];
 }
 
 // Called when the game starts or when spawned
@@ -31,18 +22,6 @@ void ADeathManager::BeginPlay()
 	Super::BeginPlay();
 
 	DeathZone->OnComponentBeginOverlap.AddDynamic(this, &ADeathManager::OnBoxBeginOverlap);
-}
-
-// Called every frame
-void ADeathManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void ADeathManager::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Delegate called"));
 }
 
 void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -56,24 +35,17 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		if(OtherActorTag.HasTag(PlayerTag))
 		{
 			//Revive char, loose IA, update State To Dead
-			OnPlayerGlobalStateChangedDelegate.Broadcast(0, EPlayerGlobalState::Dead);
+			if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
+			{
+				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
+			}
+
 		}
 		else if(OtherActorTag.HasTag(AITag))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("AI falled in DeathZone"));
 		}
 	}
-}
-
-void ADeathManager::RevivePlayer()
-{
-	//Check players State, if both dead GAMEOVER
-
-	//Else
-	//Loose IA
-
-	//Revive
-	
-	
 }
 
