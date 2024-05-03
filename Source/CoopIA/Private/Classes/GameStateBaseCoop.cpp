@@ -51,13 +51,33 @@ void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGl
 {
 	if(PlayerIndex == 0)
 	{
-		Player0GlobalState = NewPlayerState;
-		AIManager0->UpdateState(EIAState::DEAD);
+		if(Player0GlobalState != NewPlayerState)
+		{		
+			Player0GlobalState = NewPlayerState;		
+			if(NewPlayerState == EPlayerGlobalState::Alive)
+			{
+				AIManager0->UpdateState(EIAState::REVIVE);
+			}
+			else
+			{			
+				AIManager0->UpdateState(EIAState::DEAD);
+			}
+		}
 	}
 	else if(PlayerIndex == 1)
-	{
-		Player1GlobalState = NewPlayerState;
-		AIManager1->UpdateState(EIAState::DEAD);
+	{	
+		if(Player1GlobalState != NewPlayerState)
+		{		
+			Player1GlobalState = NewPlayerState;
+			if(NewPlayerState == EPlayerGlobalState::Alive)
+			{
+				AIManager1->UpdateState(EIAState::REVIVE);
+			}
+			else
+			{			
+				AIManager1->UpdateState(EIAState::DEAD);
+			}
+		}
 	}
 
 	CheckGameOver();
