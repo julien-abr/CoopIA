@@ -70,9 +70,9 @@ void ACharacterBase::ImpulseTowardActor()
 {
 	const UWorld* World = GetWorld();
 	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(World));
-	//int32 Index = IAsset
-	//const AActor* OtherPlayer = GameState->GetPlayer()
-	//const FVector End = OtherPlayer->GetActorLocation();
+	const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(this);
+	const AActor* OtherPlayer = (Index == 0) ? GameState->GetPlayer(1) : GameState->GetPlayer(0);
+	const FVector End = OtherPlayer->GetActorLocation();
 	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelDead);
 	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
 	CharacterMovementComponent->GravityScale = 0.f;
@@ -81,7 +81,7 @@ void ACharacterBase::ImpulseTowardActor()
 	CharacterMovementComponent->BrakingDecelerationFalling = 200;
 	const FVector Start = GetActorLocation();
 	FVector LaunchVelocity;
-		//UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
+	UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
 	LaunchVelocity.Z = 0;
 	LaunchCharacter(LaunchVelocity, false, false);	
 }
