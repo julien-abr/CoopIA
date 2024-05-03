@@ -39,35 +39,45 @@ void ALaser::Tick(float DeltaTime)
 
 	int count = 0;
 
-	ReflectLaser(start, end, count);
+	ReflectLaser(start, end, count, this);
 }
 
-void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count)
+void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count, AActor* actor)
 {
 	if (count >= 5)
 		return;
 
+	FCollisionQueryParams param;
+	param.AddIgnoredActor(actor);
+
 	FHitResult hitResult;
-
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic))
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic, param))
 	{
-		DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Green, false, 0.1f, 0, 10.f);
-
-		if(UKismetSystemLibrary::DoesImplementInterface(hitResult.GetActor(), URayHit::StaticClass()))
+		if(hitResult.GetActor()->Implements<URayHit>())
 		{
 			IRayHit::Execute_RayHitAction(hitResult.GetActor());
 			return;
 		}
+		else if(hitResult.GetActor()->ActorHasTag("Reflect"))
+		{
+			DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Green, false, 0.1f, 0, 10.f);
+
+			FVector hitPos = hitResult.ImpactPoint;
+			FVector dir = (end - start).GetUnsafeNormal();
+			FVector reflectDir = dir - 2 * UKismetMathLibrary::Dot_VectorVector(dir, hitResult.ImpactNormal) * hitResult.ImpactNormal;
+			ReflectLaser(hitPos, hitPos + reflectDir * 10000, ++count, hitResult.GetActor());
+			return;
+		}
 		else
 		{
-			FVector hitPos = hitResult.ImpactPoint;
-			FVector reflectDir = end - 2 * UKismetMathLibrary::Dot_VectorVector(end, hitResult.ImpactNormal) * hitResult.ImpactNormal;
-			ReflectLaser(hitPos, reflectDir, ++count);
+			DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Red, false, 0.1f, 0, 10.f);
 		}
 	}
 	else
 	{
 		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.1f, 0, 10.f);
 	}
+
 }
 
+//hitResult.GetActor()->IsA<>()

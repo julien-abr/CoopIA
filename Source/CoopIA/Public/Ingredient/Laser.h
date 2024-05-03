@@ -33,6 +33,6 @@ public:
 
 private :
 	UFUNCTION()
-	void ReflectLaser(const FVector& start, const FVector& end, int count);
+	void ReflectLaser(const FVector& start, const FVector& end, int count, AActor* actor);
 
 };
