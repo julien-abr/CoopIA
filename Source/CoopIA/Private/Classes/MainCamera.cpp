@@ -80,7 +80,6 @@ void AMainCamera::FollowPlayers()
 	
 	SetActorLocation(SpringArmPos);
 	SetActorRotation(DACamera->FollowCamRotation);
-
 }
 
 void AMainCamera::SetFixedPosition(FTransform Transform)
@@ -88,6 +87,7 @@ void AMainCamera::SetFixedPosition(FTransform Transform)
 	CameraState = ECameraState::FIXED;
 
 	SpringArm->TargetArmLength = 0.f;
+	Camera->SetRelativeRotation(FRotator());
 	SetActorTransform(Transform);
 }
 
