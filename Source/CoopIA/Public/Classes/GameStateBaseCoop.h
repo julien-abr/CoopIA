@@ -29,6 +29,8 @@ public:
 
 	void SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side);
 
+	const AActor* GetPlayer(int Index);
+
 	EPlayerGlobalState GetPlayer0GlobalState() {return Player0GlobalState;}
 	EPlayerGlobalState GetPlayer1GlobalState() {return Player1GlobalState;}
 	
