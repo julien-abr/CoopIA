@@ -159,7 +159,21 @@ void AAIManager::UpdateState(const EIAState& State)
 	if(State == EIAState::DEAD)
 	{
 		PlayerDied(IAState);
+		return;
 	}
+	
+	if(State == EIAState::REVIVE)
+	{
+		PlayerRevived(IAState);
+		return;
+	}
+
+	if(ArrayIA.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trying to transfo but dont have AI"));
+		return;
+	}
+	
 	if(State == IAState || bIsInTransition)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trying to start same STATE"));
@@ -218,6 +232,23 @@ void AAIManager::PlayerDied(EIAState State)
 	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 	PlayerController->Possess(Player);
 	Player->Died();
+	CurrentActor = Player;
+	MainCamera->SetPlayer(Player, ManagerIndex);
+}
+
+void AAIManager::PlayerRevived(EIAState State)
+{
+	IAState = EIAState::REVIVE;
+	//Wait time
+	UE_LOG(LogTemp, Warning, TEXT("Enter Revive"));
+	HidePrevious(State);
+	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
+
+	Player->SetActorLocation(Player->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+	PlayerController->Possess(Player);
+	Player->Revive();
 	CurrentActor = Player;
 	MainCamera->SetPlayer(Player, ManagerIndex);
 }
