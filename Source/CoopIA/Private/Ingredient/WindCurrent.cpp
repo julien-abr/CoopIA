@@ -44,9 +44,7 @@ void AWindCurrent::Tick(float DeltaTime)
 	FVector forceDirection = _cube->GetForwardVector() * windForce;
 
 	
-	//UStaticMeshComponent* playerMesh = Cast<UStaticMeshComponent>(GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass())->GetRootComponent());
-	//if (playerMesh) playerMesh->AddForce(forceDirection);
-	//if (actorInWind) InteractInterface->Execute_Wind(actorInWind, forceDirection);
+	
 	for (int i = 0; i<actorsInWind.Num(); i++)
 	{
 		
@@ -62,9 +60,6 @@ void AWindCurrent::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 	{
 		inTheCurrent = true;
-		//InteractInterface = Cast<IInteract>(OtherActor);
-		//playerMesh = Cast<UStaticMeshComponent>(OtherActor->GetRootComponent());
-		//actorInWind = OtherActor;
 		InteractInterfaces.Emplace(Cast<IInteract>(OtherActor));
 		actorsInWind.Emplace(OtherActor);
 	}
