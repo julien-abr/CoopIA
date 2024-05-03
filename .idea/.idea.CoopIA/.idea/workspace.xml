@@ -26,6 +26,7 @@
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DAPlayer.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DAShield.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/EIAState.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/Enum/ZoneType.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/DeathManager.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Shield.h" root0="FORCE_HIGHLIGHTING" />
@@ -287,6 +288,7 @@
       <workItem from="1714459738987" duration="597000" />
       <workItem from="1714631555185" duration="1324000" />
       <workItem from="1714718470503" duration="4276000" />
+      <workItem from="1714730049144" duration="980000" />
     </task>
     <servers />
   </component>
