@@ -100,9 +100,6 @@ public:
 	
 	void Revive();
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void Impulse();
-
 	UFUNCTION()
 	void ImpulseTowardActor();
 protected:
@@ -141,6 +138,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<ECollisionChannel> collisionChannelDead;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<ECollisionChannel> collisionChannelAlive;
 	
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
@@ -162,6 +162,9 @@ private:
 	void ShieldRotateLeftCompleted();
 	void ShieldRotateRightCompleted();
 	bool isBind;
+
+	UFUNCTION()
+		void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> MaterialAlive0;
