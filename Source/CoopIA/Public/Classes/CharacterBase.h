@@ -101,6 +101,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void Impulse();
+
+	UFUNCTION()
+	void ImpulseTowardActor();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -134,6 +137,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<ECollisionChannel> collisionChannelDead;
 	
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
