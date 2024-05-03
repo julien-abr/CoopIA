@@ -19,6 +19,9 @@ class COOPIA_API ALaser : public AActor
 	UPROPERTY(VisibleAnywhere)
 	UArrowComponent* _firePoint;
 
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* _laserCylinder;
+
 public:	
 	// Sets default values for this actor's properties
 	ALaser();
@@ -31,8 +34,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+	int reflexionNbr = 5;
+
 private :
 	UFUNCTION()
 	void ReflectLaser(const FVector& start, const FVector& end, int count, AActor* actor);
 
+	void HideAllLaser();
+
+	TArray<UStaticMeshComponent*> _laserCylinderArray;
 };
