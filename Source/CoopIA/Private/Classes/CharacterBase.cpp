@@ -12,9 +12,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Classes/Shield.h"
+#include "Classes/GameStateBaseCoop.h"
 
 #include "Classes/Data/DataAsset/DAPlayer.h"
 #include "Classes/Data/DataAsset/DAShield.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacterBase);
 
@@ -64,6 +66,26 @@ void ACharacterBase::Init(AAIManager* Manager)
 	GetMesh()->GetMaterial(1);
 }
 
+void ACharacterBase::ImpulseTowardActor()
+{
+	const UWorld* World = GetWorld();
+	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(World));
+	//int32 Index = IAsset
+	//const AActor* OtherPlayer = GameState->GetPlayer()
+	//const FVector End = OtherPlayer->GetActorLocation();
+	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelDead);
+	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+	CharacterMovementComponent->GravityScale = 0.f;
+	CharacterMovementComponent->GroundFriction = 0.f;
+	CharacterMovementComponent->BrakingDecelerationWalking = 200;
+	CharacterMovementComponent->BrakingDecelerationFalling = 200;
+	const FVector Start = GetActorLocation();
+	FVector LaunchVelocity;
+		//UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
+	LaunchVelocity.Z = 0;
+	LaunchCharacter(LaunchVelocity, false, false);	
+}
+
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
 {
@@ -105,7 +127,7 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(SpearAction, ETriggerEvent::Started, this, &ACharacterBase::StartSpear);
 
 		//Dead
-		EnhancedInputComponent->BindAction(DeadImpulseAction, ETriggerEvent::Started, this, &ACharacterBase::Impulse);
+		EnhancedInputComponent->BindAction(DeadImpulseAction, ETriggerEvent::Started, this, &ACharacterBase::ImpulseTowardActor);
 	}
 	else
 	{

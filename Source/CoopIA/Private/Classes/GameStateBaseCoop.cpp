@@ -7,6 +7,7 @@
 
 //Libraries
 #include "Classes/Data/EIAState.h"
+#include "Classes/AIManager.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameStateBaseCoop::AGameStateBaseCoop()
@@ -31,6 +32,19 @@ void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Si
 {
 	ZoneType = Zone;
 	LevelSide = Side;
+}
+
+const AActor* AGameStateBaseCoop::GetPlayer(int Index)
+{
+	if(Index == 0)
+	{	
+		return AIManager0->GetCurrentActor();
+	}
+	else if(Index == 1)
+	{
+		return AIManager1->GetCurrentActor();
+	}
+	return nullptr;
 }
 
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)

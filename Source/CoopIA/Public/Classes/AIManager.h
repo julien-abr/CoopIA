@@ -37,7 +37,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	int32 ManagerIndex;
-	
+
+	const AActor* GetCurrentActor() const
+	{
+		return CurrentActor;
+	}
+
 private:
 	UFUNCTION()
 	void IARandomMove();

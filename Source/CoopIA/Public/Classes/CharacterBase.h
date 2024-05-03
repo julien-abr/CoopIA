@@ -6,6 +6,7 @@
 #include "AIManager.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTagAssetInterface.h"
+#include "Data/Interface/Interact.h"
 #include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Character.h"
 #include "CharacterBase.generated.h"
@@ -20,7 +21,7 @@ struct FGameplayTagContainer;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, public IGameplayTagAssetInterface
+class COOPIA_API ACharacterBase : public ACharacter, public IPlayerInterface, public IInteract, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -101,6 +102,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void Impulse();
+
+	UFUNCTION()
+	void ImpulseTowardActor();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -134,6 +138,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<ECollisionChannel> collisionChannelDead;
 	
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
