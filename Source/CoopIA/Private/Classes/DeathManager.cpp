@@ -16,6 +16,11 @@ ADeathManager::ADeathManager()
 	DeathZone->SetupAttachment(RootComponent);
 }
 
+void ADeathManager::RevivePlayer(int32 Index)
+{
+	OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Alive);
+}
+
 // Called when the game starts or when spawned
 void ADeathManager::BeginPlay()
 {
