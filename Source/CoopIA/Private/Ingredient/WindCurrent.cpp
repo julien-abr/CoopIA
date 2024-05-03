@@ -2,6 +2,10 @@
 
 
 #include "Ingredient/WindCurrent.h"
+
+#include "GameplayTagAssetInterface.h"
+#include "Classes/CharacterBaseIA.h"
+#include "Data/Interface/Interact.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -39,25 +43,41 @@ void AWindCurrent::Tick(float DeltaTime)
 
 	FVector forceDirection = _cube->GetForwardVector() * windForce;
 
-	UStaticMeshComponent* playerMesh = Cast<UStaticMeshComponent>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetRootComponent());
-	if (playerMesh) playerMesh->AddForce(forceDirection);
+	
+	//UStaticMeshComponent* playerMesh = Cast<UStaticMeshComponent>(GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass())->GetRootComponent());
+	//if (playerMesh) playerMesh->AddForce(forceDirection);
+	//if (actorInWind) InteractInterface->Execute_Wind(actorInWind, forceDirection);
+	for (int i = 0; i<actorsInWind.Num(); i++)
+	{
+		
+			if (actorsInWind[i])
+				InteractInterfaces[i]->Execute_Wind(actorsInWind[i], forceDirection);
+
+	}
 }
 
 void AWindCurrent::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (UGameplayStatics::GetPlayerPawn(GetWorld(), 0) == OtherActor)
+	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 	{
 		inTheCurrent = true;
+		//InteractInterface = Cast<IInteract>(OtherActor);
+		//playerMesh = Cast<UStaticMeshComponent>(OtherActor->GetRootComponent());
+		//actorInWind = OtherActor;
+		InteractInterfaces.Emplace(Cast<IInteract>(OtherActor));
+		actorsInWind.Emplace(OtherActor);
 	}
 }
 
 void AWindCurrent::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (UGameplayStatics::GetPlayerPawn(GetWorld(), 0) == OtherActor)
+	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass()))
 	{
-		inTheCurrent = false;
+		if (!Cast<ACharacterBaseIA>(OtherActor)) inTheCurrent = false;
+		InteractInterfaces.RemoveSingle(Cast<IInteract>(OtherActor));
+		actorsInWind.RemoveSingle(OtherActor);
 	}
 }
 

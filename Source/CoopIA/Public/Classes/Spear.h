@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "GameplayTagAssetInterface.h"
 #include "Data/Enum/SpearState.h"
+#include "Data/Interface/Interact.h"
 #include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Character.h"
 #include "Spear.generated.h"
@@ -18,7 +19,7 @@ struct FInputActionValue;
 struct FGameplayTagContainer;
 
 UCLASS(config=Game)
-class COOPIA_API ASpear : public ACharacter, public IPlayerInterface, public IGameplayTagAssetInterface
+class COOPIA_API ASpear : public ACharacter, public IPlayerInterface, public IInteract, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 

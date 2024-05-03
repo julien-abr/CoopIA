@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "WindCurrent.generated.h"
 
+class IInteract;
+
 UCLASS()
 class COOPIA_API AWindCurrent : public AActor
 {
@@ -33,13 +35,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float windForce;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool inTheCurrent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AActor* actorInWind;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 
 private:
-	UPROPERTY()
-	bool inTheCurrent;
+	/*UPROPERTY()
+	bool inTheCurrent;*/
+
+	TArray<IInteract*> InteractInterfaces;
+	//UStaticMeshComponent* playerMesh;
+	//AActor* actorInWind;
+	TArray<AActor*> actorsInWind;
+
 
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/Interface/Interact.h"
 #include "GameFramework/Character.h"
 #include "CharacterBoule.generated.h"
 
@@ -11,7 +12,7 @@ class UInputAction;
 struct FInputActionValue;
 
 UCLASS(config=Game)
-class COOPIA_API ACharacterBoule : public ACharacter
+class COOPIA_API ACharacterBoule : public ACharacter, public IInteract
 {
 	GENERATED_BODY()
 
