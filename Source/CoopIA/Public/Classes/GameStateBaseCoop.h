@@ -6,6 +6,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "Classes/Data/Enum/ZoneType.h"
 #include "Classes/Data/Enum/PlayerGlobalState.h"
+#include "Data/Enum/ELevelSide.h"
 #include "GameStateBaseCoop.generated.h"
 
 class ADeathManager;
@@ -23,7 +24,10 @@ public:
 	
 	void Init(TArray<AAIManager*>& ArrayAIManager);
 	
-	EZoneType GetZoneType() {return ZoneType;}
+	EZoneType GetZoneType() { return ZoneType; }
+	ELevelSide GetLevelSide() {return LevelSide;}
+
+	void SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side);
 
 	EPlayerGlobalState GetPlayer0GlobalState() {return Player0GlobalState;}
 	EPlayerGlobalState GetPlayer1GlobalState() {return Player1GlobalState;}
@@ -36,6 +40,8 @@ private:
 	TObjectPtr<AAIManager> AIManager1;
 	
 	EZoneType ZoneType;
+
+	ELevelSide LevelSide = ELevelSide::MIDDLE;
 
 	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
 	EPlayerGlobalState Player0GlobalState;
