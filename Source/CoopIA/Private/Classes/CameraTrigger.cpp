@@ -22,7 +22,7 @@ ACameraTrigger::ACameraTrigger()
 void ACameraTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACameraTrigger::OnBoxBeginOverlap);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ACameraTrigger::OnBoxEndOverlap);
 	MainCamera = Cast<AMainCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCamera::StaticClass()));
@@ -30,22 +30,22 @@ void ACameraTrigger::BeginPlay()
 
 void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if(UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()) && bCanOverlap)
-    {
-    	const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
-    	if(Index == 0)
-    	{
-    		Player0 = OtherActor;
-    	}
-    	else
-    	{
-    		Player1 = OtherActor;
-    	}
-    }
-
-	if(Player0 && Player1)
+	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()) && bCanOverlap)
 	{
-		switch(TriggerCamera)
+		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+		if (Index == 0)
+		{
+			Player0 = OtherActor;
+		}
+		else
+		{
+			Player1 = OtherActor;
+		}
+	}
+
+	if (Player0 && Player1)
+	{
+		switch (TriggerCamera)
 		{
 			case ECameraState::FIXED:
 				MainCamera->SetFixedPosition(ActorFixedPos->GetActorTransform());
@@ -54,7 +54,7 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 				MainCamera->SetSpline(FollowSpline);
 				break;
 		}
-		
+
 		AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
 		if(GameState)
 			GameState->SetZoneInfo(ZoneType, LevelSide);
