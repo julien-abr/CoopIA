@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Classes/DeathManager.h"
 #include "Classes/Shield.h"
 #include "Classes/GameStateBaseCoop.h"
 
@@ -62,6 +63,7 @@ ACharacterBase::ACharacterBase()
 void ACharacterBase::Init(AAIManager* Manager)
 {
 	AIManager = Manager;
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnBoxBeginOverlap);
 	GetMesh()->GetMaterial(0);
 	GetMesh()->GetMaterial(1);
 }
@@ -70,18 +72,12 @@ void ACharacterBase::ImpulseTowardActor()
 {
 	const UWorld* World = GetWorld();
 	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(World));
-	//int32 Index = IAsset
-	//const AActor* OtherPlayer = GameState->GetPlayer()
-	//const FVector End = OtherPlayer->GetActorLocation();
-	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelDead);
-	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
-	CharacterMovementComponent->GravityScale = 0.f;
-	CharacterMovementComponent->GroundFriction = 0.f;
-	CharacterMovementComponent->BrakingDecelerationWalking = 200;
-	CharacterMovementComponent->BrakingDecelerationFalling = 200;
+	const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(this);
+	const AActor* OtherPlayer = (Index == 0) ? GameState->GetPlayer(1) : GameState->GetPlayer(0);
+	const FVector End = OtherPlayer->GetActorLocation();
 	const FVector Start = GetActorLocation();
 	FVector LaunchVelocity;
-		//UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
+	UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
 	LaunchVelocity.Z = 0;
 	LaunchCharacter(LaunchVelocity, false, false);	
 }
@@ -234,6 +230,12 @@ void ACharacterBase::Died()
 	GetMesh()->SetMaterial(0, MaterialDead0);
 	GetMesh()->SetMaterial(1, MaterialDead1);
 	SetupDeadMapping();
+	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelDead);
+	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+	CharacterMovementComponent->GravityScale = 0.f;
+	CharacterMovementComponent->GroundFriction = 0.f;
+	CharacterMovementComponent->BrakingDecelerationWalking = 200;
+	CharacterMovementComponent->BrakingDecelerationFalling = 200;
 }
 
 void ACharacterBase::Revive()
@@ -241,6 +243,12 @@ void ACharacterBase::Revive()
 	GetMesh()->SetMaterial(0, MaterialAlive0);
 	GetMesh()->SetMaterial(1, MaterialAlive1);
 	SetupDefaultMapping();
+	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelAlive);
+	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
+	CharacterMovementComponent->GravityScale = 1.f;
+	CharacterMovementComponent->GroundFriction = 8.f;
+	CharacterMovementComponent->BrakingDecelerationWalking = 2000;
+	CharacterMovementComponent->BrakingDecelerationFalling = 1500;
 }
 
 
@@ -333,4 +341,22 @@ void ACharacterBase::ShieldRotateLeftCompleted()
 void ACharacterBase::ShieldRotateRightCompleted()
 {
 	ShieldActor->RotationRightCompleted();
+}
+
+void ACharacterBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(GetCapsuleComponent()->GetCollisionObjectType() != collisionChannelDead) {return;}
+		
+	if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
+	{
+		int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+		int32 OwnerIndex = IPlayerInterface::Execute_GetPlayerIndex(this);
+		if(Index != OwnerIndex)
+		{
+			//Play effect + revive
+			ADeathManager* DeathManager = Cast<ADeathManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ADeathManager::StaticClass()));
+			DeathManager->RevivePlayer(OwnerIndex);
+		}
+	}
 }
