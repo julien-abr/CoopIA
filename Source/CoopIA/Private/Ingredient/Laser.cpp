@@ -4,6 +4,7 @@
 #include "Ingredient/Laser.h"
 
 #include "Components/ArrowComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Data/Interface/RayHit.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -20,13 +21,33 @@ ALaser::ALaser()
 
 	_firePoint = CreateDefaultSubobject<UArrowComponent>("FirePoint");
 	_firePoint->SetupAttachment(_body);
+
+	//_body->SetStaticMesh(_laserCylinder);
+
+	//_laserCylinder = CreateDefaultSubobject<UStaticMeshComponent>("Laser");
+	//_laserCylinder->SetupAttachment(_firePoint);
 }
 
 // Called when the game starts or when spawned
 void ALaser::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	for(int i = 0; i < reflexionNbr; i++)
+	{
+		//UStaticMeshComponent* a = CreateDefaultSubobject<UStaticMeshComponent>(std::to_string(i).c_str());
+		UStaticMeshComponent* meshComp = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), std::to_string(i).c_str());
+		meshComp->RegisterComponent();
+		meshComp->AttachToComponent(_firePoint, FAttachmentTransformRules::KeepRelativeTransform);
+		meshComp->CreationMethod = EComponentCreationMethod::Instance;
+		meshComp->SetStaticMesh(_laserCylinder);
+		meshComp->SetRelativeLocation(FVector());
+		meshComp->SetRelativeRotation(FRotator(-90, 0, 0));
+		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		_laserCylinderArray.Add(meshComp);
+	}
+
+	HideAllLaser();
 }
 
 // Called every frame
@@ -39,35 +60,56 @@ void ALaser::Tick(float DeltaTime)
 
 	int count = 0;
 
-	ReflectLaser(start, end, count);
+	HideAllLaser();
+	ReflectLaser(start, end, count, this);
 }
 
-void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count)
+void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count, AActor* actor)
 {
-	if (count >= 5)
+	if (count >= reflexionNbr)
 		return;
 
+	FCollisionQueryParams param;
+	param.AddIgnoredActor(actor);
+
 	FHitResult hitResult;
-
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic))
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic, param))
 	{
-		DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Green, false, 0.1f, 0, 10.f);
 
-		if(UKismetSystemLibrary::DoesImplementInterface(hitResult.GetActor(), URayHit::StaticClass()))
+		if(hitResult.GetActor()->Implements<URayHit>())
 		{
 			IRayHit::Execute_RayHitAction(hitResult.GetActor());
-			return;
+		}
+		else if(hitResult.GetActor()->ActorHasTag("Reflect"))
+		{
+			//DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Green, false, 0.1f, 0, 10.f);
+			_laserCylinderArray[count]->SetVisibility(true);
+			_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (hitResult.Distance + 1) / 100));
+
+			FVector hitPos = hitResult.ImpactPoint;
+			FVector dir = (end - start).GetUnsafeNormal();
+			FVector reflectDir = dir - 2 * UKismetMathLibrary::Dot_VectorVector(dir, hitResult.ImpactNormal) * hitResult.ImpactNormal;
+			ReflectLaser(hitPos, hitPos + reflectDir * 10000, ++count, hitResult.GetActor());
 		}
 		else
 		{
-			FVector hitPos = hitResult.ImpactPoint;
-			FVector reflectDir = end - 2 * UKismetMathLibrary::Dot_VectorVector(end, hitResult.ImpactNormal) * hitResult.ImpactNormal;
-			ReflectLaser(hitPos, reflectDir, ++count);
+			_laserCylinderArray[count]->SetVisibility(true);
+			_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (hitResult.Distance + 1) / 100));
+			//DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Red, false, 0.1f, 0, 10.f);
 		}
+
+		return;
 	}
-	else
+	_laserCylinderArray[count]->SetVisibility(true);
+	_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (end.Length() + 1) / 100));
+}
+
+void ALaser::HideAllLaser()
+{
+	for(int i = 0; i < _laserCylinderArray.Num(); i++)
 	{
-		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.1f, 0, 10.f);
+		_laserCylinderArray[i]->SetVisibility(false);
 	}
 }
 
+//hitResult.GetActor()->IsA<>()

@@ -37,7 +37,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	int32 ManagerIndex;
-	
+
+	const AActor* GetCurrentActor() const
+	{
+		return CurrentActor;
+	}
+
 private:
 	UFUNCTION()
 	void IARandomMove();
@@ -55,6 +60,8 @@ private:
 	void HidePrevious(EIAState State);
 
 	void PlayerDied(EIAState State);
+	
+	void PlayerRevived(EIAState State);
 
 	FTransform GetTransfoPos(EIAState State);
 	FVector GetLastPos(EIAState State);

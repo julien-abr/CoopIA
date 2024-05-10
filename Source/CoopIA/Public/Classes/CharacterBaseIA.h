@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTagAssetInterface.h"
+#include "Data/Interface/Interact.h"
 #include "GameFramework/Character.h"
 #include "CharacterBaseIA.generated.h"
 
 struct FGameplayTagContainer;
 
 UCLASS()
-class COOPIA_API ACharacterBaseIA : public ACharacter, public IGameplayTagAssetInterface
+class COOPIA_API ACharacterBaseIA : public ACharacter, public IInteract, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 

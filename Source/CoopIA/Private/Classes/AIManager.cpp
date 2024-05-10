@@ -40,6 +40,34 @@ void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
 
 	PlayerLastHexPos = CurrentActor->GetActorLocation();
 	//UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
+
+	//SPEAR
+	FActorSpawnParameters SpawnInfoSpear;
+	SpawnInfoSpear.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, FVector(), FRotator(), SpawnInfoSpear);
+	if (SpearActor)
+	{
+		SpearActor->SetAIManager(this);
+	}
+	SpearActor->Hide();
+
+	//SHIELD
+	FActorSpawnParameters SpawnInfoShield;
+	SpawnInfoShield.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfoShield);
+	ShieldActor->SetOwner(Player);
+	ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
+	ShieldActor->Hide();
+
+	//BALL
+	FActorSpawnParameters SpawnInfoBall;
+	SpawnInfoBall.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	BallActor = GetWorld()->SpawnActor<ABall>(BallBP, FVector(), FRotator(), SpawnInfoBall);
+	if (BallActor)
+	{
+		BallActor->SetAIManager(this);
+	}
+	BallActor->Hide();
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
@@ -131,7 +159,21 @@ void AAIManager::UpdateState(const EIAState& State)
 	if(State == EIAState::DEAD)
 	{
 		PlayerDied(IAState);
+		return;
 	}
+	
+	if(State == EIAState::REVIVE)
+	{
+		PlayerRevived(IAState);
+		return;
+	}
+
+	if(ArrayIA.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trying to transfo but dont have AI"));
+		return;
+	}
+	
 	if(State == IAState || bIsInTransition)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trying to start same STATE"));
@@ -194,6 +236,23 @@ void AAIManager::PlayerDied(EIAState State)
 	MainCamera->SetPlayer(Player, ManagerIndex);
 }
 
+void AAIManager::PlayerRevived(EIAState State)
+{
+	IAState = EIAState::REVIVE;
+	//Wait time
+	UE_LOG(LogTemp, Warning, TEXT("Enter Revive"));
+	HidePrevious(State);
+	PlayerController->UnPossess();
+	PlayerController->SetControlRotation(FRotator());
+
+	Player->SetActorLocation(Player->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+	PlayerController->Possess(Player);
+	Player->Revive();
+	CurrentActor = Player;
+	MainCamera->SetPlayer(Player, ManagerIndex);
+}
+
 void AAIManager::Spear(EIAState State)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
@@ -202,22 +261,16 @@ void AAIManager::Spear(EIAState State)
 	PlayerController->SetControlRotation(FRotator());
 
 	FTransform const transform = GetTransfoPos(State);
+
 	if(!SpearActor)
 	{
-		FActorSpawnParameters SpawnInfo;
-		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, transform.GetLocation(), FRotator(), SpawnInfo);
-		if(SpearActor)
-		{
-			SpearActor->SetAIManager(this);
-		}
+		UE_LOGFMT(LogTemp, Log, "NO SPEAR");
+		return;
 	}
-	else
-	{
-		SpearActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
-		SpearActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
-		SpearActor->Show();
-	}
+
+	SpearActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+	SpearActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+	SpearActor->Show();
 	
 	CurrentActor = SpearActor;
 	MainCamera->SetPlayer(SpearActor, ManagerIndex);
@@ -229,16 +282,12 @@ void AAIManager::Shield(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Enter shield"));
 	if(!ShieldActor)
 	{
-		FActorSpawnParameters SpawnInfo;
-		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfo);
-		ShieldActor->SetOwner(Player);
-		ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
+		UE_LOGFMT(LogTemp, Log, "NO SHIELD");
+		return;
 	}
-	else
-	{
-		ShieldActor->Show();
-	}
+
+	ShieldActor->Show();
+
 	Player->SetupShield(ShieldActor);
 }
 
@@ -253,20 +302,13 @@ void AAIManager::Ball(EIAState State)
 	UE_LOG(LogTemp, Warning, TEXT("Previous State Loc %s"), *transform.ToString());
 	if(!BallActor)
 	{
-		FActorSpawnParameters SpawnInfo;
-		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		BallActor = GetWorld()->SpawnActor<ABall>(BallBP, transform.GetLocation(), FRotator(), SpawnInfo);
-		if(BallActor)
-		{
-			BallActor->SetAIManager(this);
-		}
+		UE_LOGFMT(LogTemp, Log, "NO BALL");
+		return;
 	}
-	else
-	{
-		BallActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
-		BallActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
-		BallActor->Show();
-	}
+
+	BallActor->SetActorLocation(transform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+	BallActor->SetActorRelativeRotation(transform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+	BallActor->Show();
 	
 	CurrentActor = BallActor;
 	MainCamera->SetPlayer(BallActor, ManagerIndex);

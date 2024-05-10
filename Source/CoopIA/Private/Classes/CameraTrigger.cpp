@@ -22,7 +22,7 @@ ACameraTrigger::ACameraTrigger()
 void ACameraTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACameraTrigger::OnBoxBeginOverlap);
 	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ACameraTrigger::OnBoxEndOverlap);
 	MainCamera = Cast<AMainCamera>(UGameplayStatics::GetActorOfClass(GetWorld(), AMainCamera::StaticClass()));
@@ -30,43 +30,51 @@ void ACameraTrigger::BeginPlay()
 
 void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if(UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()) && bCanOverlap)
-    {
-    	const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
-    	if(Index == 0)
-    	{
-    		Player0 = OtherActor;
-    	}
-    	else
-    	{
-    		Player1 = OtherActor;
-    	}
-    }
-
-	if(Player0 && Player1)
+	if(!bCanOverlap) {return;}
+	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()))
 	{
-		switch(TriggerCamera)
+		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+		if (Index == 0)
 		{
-		case ECameraState::FIXED:
-			MainCamera->SetFixedPosition(ActorFixedPos->GetActorTransform());
-			break;
-		case ECameraState::FOLLOW:
-			MainCamera->SetSpline(FollowSpline);
-			break;
+			Player0 = OtherActor;
 		}
-		
-		AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
-		GameState->SetZoneInfo(ZoneType, LevelSide);
+		else
+		{
+			Player1 = OtherActor;
+		}
+	}
 
-		WallActor->SetActorEnableCollision(true);
-		WallActor->SetActorHiddenInGame(false);
+	if (Player0 && Player1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trigger activated : %s"), *this->GetName());
+		switch (TriggerCamera)
+		{
+			case ECameraState::FIXED:
+				MainCamera->SetFixedPosition(ActorFixedPos->GetActorTransform());
+				break;
+			case ECameraState::FOLLOW:
+				MainCamera->SetSpline(FollowSpline);
+				break;
+		}
+
+		AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
+		if(GameState)
+			GameState->SetZoneInfo(ZoneType, LevelSide);
+
+		if(WallActor)
+		{
+			WallActor->SetActorEnableCollision(true);
+			WallActor->SetActorHiddenInGame(false);
+		}
 		bCanOverlap = false;
 	}
 }
 
 void ACameraTrigger::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()) && bCanOverlap)
+	if(!bCanOverlap) {return;}
+	
+	if(UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()))
 	{
 		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
 		if(Index == 0)
