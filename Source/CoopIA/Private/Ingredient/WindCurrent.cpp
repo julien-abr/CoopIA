@@ -19,8 +19,8 @@ AWindCurrent::AWindCurrent()
 	_cube = CreateDefaultSubobject<UStaticMeshComponent>("Cube");
 	_cube->SetupAttachment(RootComponent);
 
-	_cylinder = CreateDefaultSubobject<UStaticMeshComponent>("Cylinder");
-	_cylinder->SetupAttachment(_cube);
+	/*_cylinder = CreateDefaultSubobject<UStaticMeshComponent>("Cylinder");
+	_cylinder->SetupAttachment(_cube);*/
 
 	_box = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
 	_box->SetupAttachment(_cube);
