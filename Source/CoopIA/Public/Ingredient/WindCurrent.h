@@ -54,6 +54,10 @@ private:
 	//AActor* actorInWind;
 	TArray<AActor*> actorsInWind;
 
+	TArray<AActor*> shieldsInWind;
+
+
+
 
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
