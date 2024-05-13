@@ -3,6 +3,8 @@
 
 #include "Ingredient/WindCurrent.h"
 
+#include <Classes/Shield.h>
+
 #include "GameplayTagAssetInterface.h"
 #include "Classes/CharacterBaseIA.h"
 #include "Data/Interface/Interact.h"
@@ -41,15 +43,21 @@ void AWindCurrent::Tick(float DeltaTime)
 
 	if (!inTheCurrent) return;
 
+	for (int i = 0; i < shieldsInWind.Num(); i++)
+	{
+		if (shieldsInWind[i])
+			FVector shieldRotation = shieldsInWind[i]->GetActorRotation().Vector();
+	} 
+
 	FVector forceDirection = _cube->GetForwardVector() * windForce;
 
 	
 	
-	for (int i = 0; i<actorsInWind.Num(); i++)
+	for (int i = 0; i < actorsInWind.Num(); i++)
 	{
 		
-			if (actorsInWind[i])
-				InteractInterfaces[i]->Execute_Wind(actorsInWind[i], forceDirection);
+		if (actorsInWind[i])
+			InteractInterfaces[i]->Execute_Wind(actorsInWind[i], forceDirection);
 
 	}
 }
@@ -62,6 +70,8 @@ void AWindCurrent::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		inTheCurrent = true;
 		InteractInterfaces.Emplace(Cast<IInteract>(OtherActor));
 		actorsInWind.Emplace(OtherActor);
+
+		if (Cast<AShield>(OtherActor)) shieldsInWind.Emplace(OtherActor);
 	}
 }
 
@@ -73,6 +83,7 @@ void AWindCurrent::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		if (!Cast<ACharacterBaseIA>(OtherActor)) inTheCurrent = false;
 		InteractInterfaces.RemoveSingle(Cast<IInteract>(OtherActor));
 		actorsInWind.RemoveSingle(OtherActor);
+		if (Cast<AActor>(OtherActor)) shieldsInWind.RemoveSingle(OtherActor);
 	}
 }
 
