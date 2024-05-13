@@ -70,6 +70,6 @@ private:
 
 	ECameraState CameraState = ECameraState::FOLLOW;
 	
-	UPROPERTY() 
+	UPROPERTY(EditAnywhere) 
 	class ASpline* Spline;
 };
