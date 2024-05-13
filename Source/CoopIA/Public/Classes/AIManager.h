@@ -21,6 +21,8 @@ public:
 	
 	void AddPlayer(class ACharacterBaseIA* IA);
 
+	void ReviveTP();
+
 	void IASucceededTransition();
 
 	void UpdateState(const EIAState& State);

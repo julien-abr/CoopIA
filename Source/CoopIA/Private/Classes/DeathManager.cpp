@@ -3,8 +3,10 @@
 
 #include "Classes/DeathManager.h"
 #include "GameplayTagAssetInterface.h"
+#include "Classes/AIManager.h"
 #include "Components/BoxComponent.h"
 #include "Data/Interface/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ADeathManager::ADeathManager()
@@ -27,6 +29,21 @@ void ADeathManager::BeginPlay()
 	Super::BeginPlay();
 
 	DeathZone->OnComponentBeginOverlap.AddDynamic(this, &ADeathManager::OnBoxBeginOverlap);
+	
+	TArray<AActor*> FoundManagers;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIManager::StaticClass(), FoundManagers);
+	for (auto ManagerActor : FoundManagers)
+	{	AAIManager* IAManager = Cast<AAIManager>(ManagerActor);
+		if(!IAManager) {return;}
+		if(IAManager->ManagerIndex == 0)
+		{
+			Manager0 = IAManager;
+		}
+		else
+		{
+			Manager1 = IAManager;
+		}
+	}
 }
 
 void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -43,7 +60,15 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
 			{
 				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
-				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
+				if(Index == 0)
+				{
+					Manager0->ReviveTP();
+				}
+				else
+				{
+					Manager1->ReviveTP();
+				}
+				//OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
 			}
 
 		}
