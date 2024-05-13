@@ -18,11 +18,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	float InterpSpeed;
 
+	/** Spring Arm length, offsetFrom Camera*/
 	UPROPERTY(EditAnywhere)
 	float DistanceCamFollow;
 
+	/** Cam position Offset, X should be the distance X between the spline and the middle of the level */
 	UPROPERTY(EditAnywhere)
-	float Offset;
+	FVector Offset;
 
 	UPROPERTY(EditAnywhere)
 	FRotator FollowCamRotation = FRotator(320, 0, 0);
