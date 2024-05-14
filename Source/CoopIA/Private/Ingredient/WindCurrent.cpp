@@ -43,14 +43,14 @@ void AWindCurrent::Tick(float DeltaTime)
 
 	if (!inTheCurrent) return;
 
-	for (int i = 0; i < shieldsInWind.Num(); i++)
-	{
-		if (shieldsInWind[i])
-			FVector shieldRotation = shieldsInWind[i]->GetActorRotation().Vector();
-	} 
 
 	FVector forceDirection = _cube->GetForwardVector() * windForce;
 
+	for (int i = 0; i < shieldsInWind.Num(); i++)
+	{
+		if (shieldsInWind[i]) forceDirection = FVector(0);
+			//FVector shieldRotation = shieldsInWind[i]->GetActorRotation().Vector();
+	} 
 	
 	
 	for (int i = 0; i < actorsInWind.Num(); i++)
