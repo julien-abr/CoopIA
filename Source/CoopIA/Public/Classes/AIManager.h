@@ -82,6 +82,9 @@ private:
 
 	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
 	TSubclassOf<class ABall> BallBP;
+
+	UPROPERTY()
+	TObjectPtr<AAIManager> OtherManager;
 	
 	UPROPERTY()
 	TObjectPtr<ACharacterBase> Player;
