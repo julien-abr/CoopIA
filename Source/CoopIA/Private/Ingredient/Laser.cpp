@@ -62,7 +62,7 @@ void ALaser::Tick(float DeltaTime)
 	int count = 0;
 
 	HideAllLaser();
-	ReflectLaser(start, end, 0, count, this);
+	ReflectLaser(start, end, _body->GetComponentRotation().Yaw, count, this);
 }
 
 void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, int count, AActor* actor)
