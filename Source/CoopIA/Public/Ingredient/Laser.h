@@ -37,6 +37,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	int reflexionNbr = 5;
 
+	UPROPERTY(EditAnywhere)
+	float laserSize = 0.1f;
+
 private :
 	UFUNCTION()
 	void ReflectLaser(const FVector& start, const FVector& end, float rotZ, int count, AActor* actor);
