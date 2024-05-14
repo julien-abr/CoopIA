@@ -98,7 +98,7 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 		else
 		{
 			_laserCylinderArray[count]->SetVisibility(true);
-			_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (hitResult.Distance + 1) / 100));
+			_laserCylinderArray[count]->SetWorldScale3D(FVector(laserSize, laserSize, (hitResult.Distance + 1) / 100));
 		}
 
 		return;
