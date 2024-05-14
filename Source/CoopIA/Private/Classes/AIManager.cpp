@@ -75,6 +75,15 @@ void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
     ArrayIA.Add(IA);
 }
 
+void AAIManager::ReviveTP()
+{
+	if(CurrentActor)
+	{
+		CurrentActor->SetActorLocation(PlayerLastHexPos, false, nullptr, ETeleportType::TeleportPhysics);
+		CurrentActor->SetActorRelativeRotation(CurrentActor->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+	}
+}
+
 void AAIManager::IASucceededTransition()
 {
 	NumberIAToSucceed--;
