@@ -39,7 +39,7 @@ public:
 
 private :
 	UFUNCTION()
-	void ReflectLaser(const FVector& start, const FVector& end, int count, AActor* actor);
+	void ReflectLaser(const FVector& start, const FVector& end, float rotZ, int count, AActor* actor);
 
 	void HideAllLaser();
 

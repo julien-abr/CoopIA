@@ -19,6 +19,7 @@
 #include "Classes/Shield.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NavigationSystem.h"
+#include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
 #include "Tool/HexBehaviour.h"
 
@@ -68,11 +69,36 @@ void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
 		BallActor->SetAIManager(this);
 	}
 	BallActor->Hide();
+
+	TArray<AActor*> FoundManagers;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIManager::StaticClass(), FoundManagers);
+	
+	for (const auto manager : FoundManagers)
+	{
+		AAIManager* CurrentManager = Cast<AAIManager>(manager);
+		if(CurrentManager != this)
+		{
+			OtherManager = CurrentManager;
+		}
+	}
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
 {
     ArrayIA.Add(IA);
+}
+
+void AAIManager::ReviveTP()
+{
+	if(CurrentActor)
+	{
+		//Get Player2 Pos
+		if(OtherManager)
+		{
+			CurrentActor->SetActorLocation(OtherManager->GetCurrentActor()->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+			CurrentActor->SetActorRelativeRotation(CurrentActor->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+		}
+	}
 }
 
 void AAIManager::IASucceededTransition()

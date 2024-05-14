@@ -8,6 +8,7 @@
 #include "Data/Interface/RayHit.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 ALaser::ALaser()
@@ -61,10 +62,10 @@ void ALaser::Tick(float DeltaTime)
 	int count = 0;
 
 	HideAllLaser();
-	ReflectLaser(start, end, count, this);
+	ReflectLaser(start, end, _body->GetComponentRotation().Yaw, count, this);
 }
 
-void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count, AActor* actor)
+void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, int count, AActor* actor)
 {
 	if (count >= reflexionNbr)
 		return;
@@ -72,30 +73,32 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, int count, A
 	FCollisionQueryParams param;
 	param.AddIgnoredActor(actor);
 
+	_laserCylinderArray[count]->SetWorldLocation(start);
+	_laserCylinderArray[count]->SetWorldRotation(FRotator(-90, rotZ, 0));
+
 	FHitResult hitResult;
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic, param))
 	{
-
 		if(hitResult.GetActor()->Implements<URayHit>())
 		{
 			IRayHit::Execute_RayHitAction(hitResult.GetActor());
 		}
 		else if(hitResult.GetActor()->ActorHasTag("Reflect"))
 		{
-			//DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Green, false, 0.1f, 0, 10.f);
 			_laserCylinderArray[count]->SetVisibility(true);
 			_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (hitResult.Distance + 1) / 100));
 
 			FVector hitPos = hitResult.ImpactPoint;
 			FVector dir = (end - start).GetUnsafeNormal();
 			FVector reflectDir = dir - 2 * UKismetMathLibrary::Dot_VectorVector(dir, hitResult.ImpactNormal) * hitResult.ImpactNormal;
-			ReflectLaser(hitPos, hitPos + reflectDir * 10000, ++count, hitResult.GetActor());
+			float z = UKismetMathLibrary::FindLookAtRotation(hitPos, hitPos + reflectDir * 10000).Yaw;
+			
+			ReflectLaser(hitPos, hitPos + reflectDir * 10000, z, ++count, hitResult.GetActor());
 		}
 		else
 		{
 			_laserCylinderArray[count]->SetVisibility(true);
 			_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (hitResult.Distance + 1) / 100));
-			//DrawDebugLine(GetWorld(), start, hitResult.ImpactPoint, FColor::Red, false, 0.1f, 0, 10.f);
 		}
 
 		return;
