@@ -19,9 +19,6 @@ AWindCurrent::AWindCurrent()
 	_cube = CreateDefaultSubobject<UStaticMeshComponent>("Cube");
 	_cube->SetupAttachment(RootComponent);
 
-	/*_cylinder = CreateDefaultSubobject<UStaticMeshComponent>("Cylinder");
-	_cylinder->SetupAttachment(_cube);*/
-
 	_box = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
 	_box->SetupAttachment(_cube);
 }
@@ -43,14 +40,14 @@ void AWindCurrent::Tick(float DeltaTime)
 
 	if (!inTheCurrent) return;
 
-	for (int i = 0; i < shieldsInWind.Num(); i++)
-	{
-		if (shieldsInWind[i])
-			FVector shieldRotation = shieldsInWind[i]->GetActorRotation().Vector();
-	} 
 
 	FVector forceDirection = _cube->GetForwardVector() * windForce;
 
+	for (int i = 0; i < shieldsInWind.Num(); i++)
+	{
+		if (shieldsInWind[i]) forceDirection = FVector(0);
+			//FVector shieldRotation = shieldsInWind[i]->GetActorRotation().Vector();
+	} 
 	
 	
 	for (int i = 0; i < actorsInWind.Num(); i++)
@@ -83,7 +80,7 @@ void AWindCurrent::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		if (!Cast<ACharacterBaseIA>(OtherActor)) inTheCurrent = false;
 		InteractInterfaces.RemoveSingle(Cast<IInteract>(OtherActor));
 		actorsInWind.RemoveSingle(OtherActor);
-		if (Cast<AActor>(OtherActor)) shieldsInWind.RemoveSingle(OtherActor);
+		if (Cast<AShield>(OtherActor)) shieldsInWind.RemoveSingle(OtherActor);
 	}
 }
 
