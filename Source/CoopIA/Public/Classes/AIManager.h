@@ -21,6 +21,8 @@ public:
 	
 	void AddPlayer(class ACharacterBaseIA* IA);
 
+	void ReviveTP();
+
 	void IASucceededTransition();
 
 	void UpdateState(const EIAState& State);
@@ -37,7 +39,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	int32 ManagerIndex;
-	
+
+	const AActor* GetCurrentActor() const
+	{
+		return CurrentActor;
+	}
+
 private:
 	UFUNCTION()
 	void IARandomMove();
@@ -55,6 +62,8 @@ private:
 	void HidePrevious(EIAState State);
 
 	void PlayerDied(EIAState State);
+	
+	void PlayerRevived(EIAState State);
 
 	FTransform GetTransfoPos(EIAState State);
 	FVector GetLastPos(EIAState State);
@@ -73,6 +82,9 @@ private:
 
 	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
 	TSubclassOf<class ABall> BallBP;
+
+	UPROPERTY()
+	TObjectPtr<AAIManager> OtherManager;
 	
 	UPROPERTY()
 	TObjectPtr<ACharacterBase> Player;

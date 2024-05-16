@@ -7,6 +7,7 @@
 
 //Libraries
 #include "Classes/Data/EIAState.h"
+#include "Classes/AIManager.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameStateBaseCoop::AGameStateBaseCoop()
@@ -33,17 +34,50 @@ void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Si
 	LevelSide = Side;
 }
 
+const AActor* AGameStateBaseCoop::GetPlayer(int Index)
+{
+	if(Index == 0)
+	{	
+		return AIManager0->GetCurrentActor();
+	}
+	else if(Index == 1)
+	{
+		return AIManager1->GetCurrentActor();
+	}
+	return nullptr;
+}
+
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
 	if(PlayerIndex == 0)
 	{
-		Player0GlobalState = NewPlayerState;
-		AIManager0->UpdateState(EIAState::DEAD);
+		if(Player0GlobalState != NewPlayerState)
+		{		
+			Player0GlobalState = NewPlayerState;		
+			if(NewPlayerState == EPlayerGlobalState::Alive)
+			{
+				AIManager0->UpdateState(EIAState::REVIVE);
+			}
+			else
+			{			
+				AIManager0->UpdateState(EIAState::DEAD);
+			}
+		}
 	}
 	else if(PlayerIndex == 1)
-	{
-		Player1GlobalState = NewPlayerState;
-		AIManager1->UpdateState(EIAState::DEAD);
+	{	
+		if(Player1GlobalState != NewPlayerState)
+		{		
+			Player1GlobalState = NewPlayerState;
+			if(NewPlayerState == EPlayerGlobalState::Alive)
+			{
+				AIManager1->UpdateState(EIAState::REVIVE);
+			}
+			else
+			{			
+				AIManager1->UpdateState(EIAState::DEAD);
+			}
+		}
 	}
 
 	CheckGameOver();
