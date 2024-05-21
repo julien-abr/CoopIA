@@ -21,11 +21,11 @@ public:
 	
 	void AddPlayer(class ACharacterBaseIA* IA);
 
-	void ReviveTP();
-
 	void IASucceededTransition();
 
 	void UpdateState(const EIAState& State);
+
+	TArray<ACharacterBaseIA*> SplitAI();
 
 	FVector FindLastPos();
 
@@ -64,6 +64,8 @@ private:
 	void PlayerDied(EIAState State);
 	
 	void PlayerRevived(EIAState State);
+
+	void InitIA();
 
 	FTransform GetTransfoPos(EIAState State);
 	FVector GetLastPos(EIAState State);
@@ -104,7 +106,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<class APlayerControllerBase> PlayerController;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<ACharacterBaseIA>> ArrayIA;
 
 	UPROPERTY()
@@ -121,7 +123,7 @@ private:
 	FTimerHandle Handle;
 	FTimerHandle HandleHexRaycast;
 
-	int16 NumberIAToSucceed;
+	int8 NumberIAToSucceed;
 
 	bool bIsInTransition;
 };

@@ -60,15 +60,8 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
 			{
 				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
-				if(Index == 0)
-				{
-					Manager0->ReviveTP();
-				}
-				else
-				{
-					Manager1->ReviveTP();
-				}
-				//OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
+				UE_LOG(LogTemp, Warning, TEXT("Player hit DeathZone"));
+				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
 			}
 
 		}

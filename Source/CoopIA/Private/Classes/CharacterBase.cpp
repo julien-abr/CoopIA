@@ -17,6 +17,7 @@
 
 #include "Classes/Data/DataAsset/DAPlayer.h"
 #include "Classes/Data/DataAsset/DAShield.h"
+#include "Classes/Data/DataAsset/DA_UI.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacterBase);
@@ -64,8 +65,7 @@ void ACharacterBase::Init(AAIManager* Manager)
 {
 	AIManager = Manager;
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnBoxBeginOverlap);
-	GetMesh()->GetMaterial(0);
-	GetMesh()->GetMaterial(1);
+	SetMaterial(false);
 }
 
 void ACharacterBase::ImpulseTowardActor()
@@ -190,6 +190,36 @@ void ACharacterBase::Show()
 	SetActorHiddenInGame(false);
 }
 
+void ACharacterBase::SetMaterial(bool bIsDead)
+{
+	USkeletalMeshComponent* MeshPlayer = GetMesh();
+	if (bIsDead)
+	{
+		//TODO :: implement dead mat
+		MeshPlayer->SetMaterial(0, MaterialDead0);
+		MeshPlayer->SetMaterial(0, MaterialDead1);
+	}
+	else
+	{
+		//Player0 == Green
+		if (AIManager->ManagerIndex == 0)
+		{
+			MeshPlayer->SetMaterial(0, DA_UI->PlayerGreenIA_Mat0);
+			MeshPlayer->SetMaterial(1, DA_UI->PlayerGreenIA_Mat1);
+			MeshPlayer->SetMaterial(2, DA_UI->PlayerGreenIA_Mat2);
+			MeshPlayer->SetMaterial(3, DA_UI->PlayerGreenIA_Mat3);
+		}
+		//Player1 == Red
+		else
+		{
+			MeshPlayer->SetMaterial(0, DA_UI->PlayerRedIA_Mat0);
+			MeshPlayer->SetMaterial(1, DA_UI->PlayerRedIA_Mat1);
+			MeshPlayer->SetMaterial(2, DA_UI->PlayerRedIA_Mat2);
+			MeshPlayer->SetMaterial(3, DA_UI->PlayerRedIA_Mat3);
+		}
+	}
+}
+
 void ACharacterBase::SetupDefaultMapping()
 {
 	//Add Input Mapping Context
@@ -227,8 +257,7 @@ void ACharacterBase::Died()
 {
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
-	GetMesh()->SetMaterial(0, MaterialDead0);
-	GetMesh()->SetMaterial(1, MaterialDead1);
+	SetMaterial(true);
 	SetupDeadMapping();
 	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelDead);
 	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();
@@ -240,8 +269,7 @@ void ACharacterBase::Died()
 
 void ACharacterBase::Revive()
 {
-	GetMesh()->SetMaterial(0, MaterialAlive0);
-	GetMesh()->SetMaterial(1, MaterialAlive1);
+	SetMaterial(false);
 	SetupDefaultMapping();
 	GetCapsuleComponent()->SetCollisionObjectType(collisionChannelAlive);
 	UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement();

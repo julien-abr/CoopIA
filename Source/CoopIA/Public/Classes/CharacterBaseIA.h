@@ -31,6 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup")
 	int32 PlayerIndex;
 
+	void Init(const int32 Index);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -60,8 +62,21 @@ private:
 	void Failed(AActor* Target);
 	
 	UPROPERTY()
-	TObjectPtr<class AAIManager> Manager;
+		TObjectPtr<class AAIManager> Manager;
 
-	UPROPERTY(EditAnywhere, category = "c++", meta = (AllowPrivateAccess = true))
-	TObjectPtr<class UDA_IA> DataAssetIA;
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<class UDA_IA> DataAssetIA;
+
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<class UDA_UI> DA_UI;
+		
+	UPROPERTY()
+		TObjectPtr<class AAIManager> Manager0;
+
+	UPROPERTY()
+		TObjectPtr<class AAIManager> Manager1;
+
+	UPROPERTY()
+		TObjectPtr<class AAIManager> CurrentManager;
 };

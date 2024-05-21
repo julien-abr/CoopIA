@@ -4,6 +4,7 @@
 #include "Classes/CharacterBaseIA.h"
 #include "Classes/AIManager.h"
 #include "Classes/Data/DataAsset/DA_IA.h"
+#include "Classes/Data/DataAsset/DA_UI.h"
 #include "Classes/CharacterBase.h"
 #include "Components/CapsuleComponent.h"
 
@@ -16,6 +17,23 @@ ACharacterBaseIA::ACharacterBaseIA()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+}
+
+void ACharacterBaseIA::Init(const int32 Index)
+{
+	USkeletalMeshComponent* MeshIA = GetMesh();
+	if (Index == 0)
+	{
+		CurrentManager = Manager0;
+		MeshIA->SetMaterial(0, DA_UI->GreenIA_Mat0);
+		MeshIA->SetMaterial(1, DA_UI->GreenIA_Mat1);
+	}
+	else
+	{
+		CurrentManager = Manager1;
+		MeshIA->SetMaterial(0, DA_UI->RedIA_Mat0);
+		MeshIA->SetMaterial(1, DA_UI->RedIA_Mat1);	
+	}
 }
 
 // Called when the game starts or when spawned
@@ -31,12 +49,20 @@ void ACharacterBaseIA::BeginPlay()
 	for (auto ManagerActor : arrayManagers)
 	{
 		AAIManager* ManagerIA = Cast<AAIManager>(ManagerActor);
-		if(ManagerIA->ManagerIndex == PlayerIndex)
+		if(ManagerIA->ManagerIndex == 0)
 		{
-			Manager = ManagerIA;
+			Manager0 = ManagerIA;
+		}
+		else
+		{
+			Manager1 = ManagerIA;
 		}
 	}
-	Manager->AddPlayer(this);
+
+	Init(PlayerIndex);
+	if(CurrentManager)
+		CurrentManager->AddPlayer(this);
+	
 }
 
 void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -80,7 +106,8 @@ void ACharacterBaseIA::Show()
 
 void ACharacterBaseIA::Succeeded()
 {
-	Manager->IASucceededTransition();
+	if(CurrentManager)
+		CurrentManager->IASucceededTransition();
 	Hide();
 }
 
