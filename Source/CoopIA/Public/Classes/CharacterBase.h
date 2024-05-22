@@ -87,6 +87,9 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	virtual EIAState GetAIState_Implementation() override;
+	virtual int32 GetPlayerIndex_Implementation() override;
+
 	void Init(class AAIManager* Manager);
 
 	void SetupShield(class AShield* Shield);
@@ -121,11 +124,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//Interface IPlayerInterface
-	virtual EIAState GetAIState_Implementation() override;
-
-	virtual int32 GetPlayerIndex_Implementation() override;
-
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDAPlayer> DAPlayer;
@@ -137,6 +135,9 @@ private:
 	FGameplayTagContainer ActorTags;
 
 	UPROPERTY(EditAnywhere)
+		TObjectPtr<class UDA_UI> DA_UI;
+
+	UPROPERTY(EditAnywhere)
 	TEnumAsByte<ECollisionChannel> collisionChannelDead;
 
 	UPROPERTY(EditAnywhere)
@@ -146,6 +147,8 @@ private:
 	TObjectPtr<class AShield> ShieldActor;
 
 	bool bIsShieldActivate;
+
+	void SetMaterial(bool bIsDead);
 
 	void SetupDefaultMapping();
 

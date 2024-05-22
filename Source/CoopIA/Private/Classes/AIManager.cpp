@@ -8,6 +8,7 @@
 #include "Classes/CharacterBase.h"
 #include "Classes/Data/DataAsset/DA_IA.h"
 #include "Classes/CharacterBaseIA.h"
+#include "Classes/GameStateBaseCoop.h"
 #include "Classes/Spear.h"
 
 #include "Components/SceneComponent.h"
@@ -88,19 +89,6 @@ void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
     ArrayIA.Add(IA);
 }
 
-void AAIManager::ReviveTP()
-{
-	if(CurrentActor)
-	{
-		//Get Player2 Pos
-		if(OtherManager)
-		{
-			CurrentActor->SetActorLocation(OtherManager->GetCurrentActor()->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
-			CurrentActor->SetActorRelativeRotation(CurrentActor->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
-		}
-	}
-}
-
 void AAIManager::IASucceededTransition()
 {
 	NumberIAToSucceed--;
@@ -164,7 +152,7 @@ void AAIManager::FindLastHex()
 	{
 		FHitResult HitResult;
 		FVector Start = CurrentActor->GetActorLocation();
-		FVector End = Start - (FVector::UpVector * 200);
+		FVector End = Start - (FVector::UpVector * 200);	
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(CurrentActor);
 		
@@ -173,7 +161,7 @@ void AAIManager::FindLastHex()
 			AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor());
 			if(Hex)
 			{
-				PlayerLastHexPos = Hex->GetActorLocation();
+				PlayerLastHexPos = Hex->GetRespawnLoc();
 			}
 		}
 	}
@@ -223,13 +211,31 @@ void AAIManager::UpdateState(const EIAState& State)
 		bIsInTransition = false;
 		return;
 	}
-	
+
 	NumberIAToSucceed = ArrayIA.Num();
-	
     for(auto IA : ArrayIA)
-    {
+    {	
         IA->MoveToActor(CurrentActor, DataAssetIA->BaseAcceptanceRadius);
     }
+}
+
+TArray<ACharacterBaseIA*> AAIManager::SplitAI()
+{
+	TArray<ACharacterBaseIA*> CharacterIASplited;
+	
+	int numberIASplited = 0;
+	while (numberIASplited < ArrayIA.Num() / 2)
+	{
+		CharacterIASplited.Add(ArrayIA[numberIASplited]);
+		numberIASplited++;
+	}
+
+	for (auto IA_Splited : CharacterIASplited)
+	{
+		ArrayIA.Remove(IA_Splited);
+	}
+
+	return CharacterIASplited;
 }
 
 FVector AAIManager::FindLastPos()
@@ -245,7 +251,6 @@ void AAIManager::PlayerDied(EIAState State)
 		IA->Destroy();
 	}
 	ArrayIA.Empty();
-	NumberIAToSucceed = 0;
 	MainCamera->SetPlayer(nullptr, ManagerIndex);
 
 	//Wait time
@@ -271,12 +276,32 @@ void AAIManager::PlayerRevived(EIAState State)
 	PlayerController->UnPossess();
 	PlayerController->SetControlRotation(FRotator());
 
-	Player->SetActorLocation(Player->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+	//TODO::Puzzle or Other Map
+	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
+	if (GameState && GameState->GetZoneType() == EZoneType::Puzzle)
+	{
+		Player->SetActorLocation(GameState->GetRespawnLoc(), false, nullptr, ETeleportType::TeleportPhysics);
+	}	
 	Player->SetActorRelativeRotation(Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 	PlayerController->Possess(Player);
 	Player->Revive();
+
+	//Get AI
+	ArrayIA = OtherManager->SplitAI();
+	InitIA();
 	CurrentActor = Player;
 	MainCamera->SetPlayer(Player, ManagerIndex);
+
+	//Go to random move
+	UpdateState(EIAState::RANDOM_MOVE);
+}
+
+void AAIManager::InitIA()
+{
+	for (auto IA : ArrayIA)
+	{
+		IA->Init(ManagerIndex);
+	}
 }
 
 void AAIManager::Spear(EIAState State)
@@ -471,6 +496,8 @@ FVector AAIManager::GetLastPos(EIAState State)
             return SpearActor->GetActorLocation();
         case EIAState::RANDOM_MOVE:
             return Player->GetActorLocation();
+		case EIAState::REVIVE:
+			return Player->GetActorLocation();
 	}
 	return FVector();
 }
