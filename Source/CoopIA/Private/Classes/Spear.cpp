@@ -200,19 +200,22 @@ void ASpear::Move(const FInputActionValue& Value)
 void ASpear::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
-	AIManager->UpdateState(EIAState::BALL);
+	if (!GetCharacterMovement()->IsFalling())
+		AIManager->UpdateState(EIAState::BALL);
 }
 
 void ASpear::StartNeutral()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
-	AIManager->UpdateState(EIAState::RANDOM_MOVE);
+	if(!GetCharacterMovement()->IsFalling())
+		AIManager->UpdateState(EIAState::RANDOM_MOVE);
 }
 
 void ASpear::StartShield()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
-	AIManager->UpdateState(EIAState::SHIELD);
+	if (!GetCharacterMovement()->IsFalling())
+		AIManager->UpdateState(EIAState::SHIELD);
 }
 
 void ASpear::Hide()

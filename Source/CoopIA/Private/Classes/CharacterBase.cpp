@@ -293,7 +293,8 @@ void ACharacterBase::StartShield()
 void ACharacterBase::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
-	AIManager->UpdateState(EIAState::BALL);
+	if (!GetCharacterMovement()->IsFalling())
+		AIManager->UpdateState(EIAState::BALL);
 }
 
 void ACharacterBase::StartNeutral()
