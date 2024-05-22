@@ -26,8 +26,9 @@ public:
 	
 	EZoneType GetZoneType() { return ZoneType; }
 	ELevelSide GetLevelSide() {return LevelSide;}
+	const FVector GetRespawnLoc() { return RespawnLoc; }
 
-	void SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side);
+	void SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side, const FVector Location);
 
 	const AActor* GetPlayer(int Index);
 
@@ -41,14 +42,18 @@ private:
 	UPROPERTY()
 	TObjectPtr<AAIManager> AIManager1;
 	
-	EZoneType ZoneType;
+	UPROPERTY(VisibleAnywhere)
+	EZoneType ZoneType = EZoneType::Running;
+
+	UPROPERTY(VisibleAnywhere)
+	FVector RespawnLoc;
 
 	ELevelSide LevelSide = ELevelSide::MIDDLE;
 
-	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere)
 	EPlayerGlobalState Player0GlobalState;
 	
-	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere)
 	EPlayerGlobalState Player1GlobalState;
 
 	UPROPERTY(EditAnywhere)
