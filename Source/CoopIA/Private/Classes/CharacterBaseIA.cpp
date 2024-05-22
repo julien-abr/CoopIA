@@ -7,6 +7,7 @@
 #include "Classes/Data/DataAsset/DA_UI.h"
 #include "Classes/CharacterBase.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 
 //lib
 #include "GameFramework/CharacterMovementComponent.h"
@@ -17,6 +18,9 @@ ACharacterBaseIA::ACharacterBaseIA()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->SetupAttachment(RootComponent);
 }
 
 void ACharacterBaseIA::Init(const int32 Index)
@@ -41,6 +45,9 @@ void ACharacterBaseIA::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if(bIAtoReceive)
+		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBaseIA::OnBoxBeginOverlap);
+
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACharacterBaseIA::OnHit);
 
 	TArray<AActor*> arrayManagers;
@@ -59,9 +66,13 @@ void ACharacterBaseIA::BeginPlay()
 		}
 	}
 
-	Init(PlayerIndex);
-	if(CurrentManager)
-		CurrentManager->AddPlayer(this);
+	if (!bIAtoReceive)
+	{
+		Init(PlayerIndex);
+		if (CurrentManager)
+			CurrentManager->AddPlayer(this);
+	}
+
 	
 }
 
@@ -114,4 +125,18 @@ void ACharacterBaseIA::Succeeded()
 void ACharacterBaseIA::Failed(AActor* Target)
 {
 	MoveToActor(Target, DataAssetIA->RetryAcceptanceRadius);
+}
+
+void ACharacterBaseIA::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bIAtoReceive) { return; }
+
+	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()))
+	{
+		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+		Init(Index);
+		if (CurrentManager)
+			CurrentManager->AddPlayer(this);
+		bIAtoReceive = false;
+	}
 }

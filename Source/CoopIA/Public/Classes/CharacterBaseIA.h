@@ -16,6 +16,12 @@ class COOPIA_API ACharacterBaseIA : public ACharacter, public IInteract, public 
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* BoxComponent;
+
+	UPROPERTY(EditAnywhere)
+		bool bIAtoReceive;
+
 public:
 	// Sets default values for this character's properties
 	ACharacterBaseIA();
@@ -61,6 +67,9 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void Failed(AActor* Target);
 	
+	UFUNCTION()
+		void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	UPROPERTY()
 		TObjectPtr<class AAIManager> Manager;
 

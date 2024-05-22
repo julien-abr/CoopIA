@@ -3,6 +3,7 @@
 
 #include "Classes/DeathManager.h"
 #include "GameplayTagAssetInterface.h"
+#include "Classes/CharacterBaseIA.h"
 #include "Classes/AIManager.h"
 #include "Components/BoxComponent.h"
 #include "Data/Interface/PlayerInterface.h"
@@ -68,6 +69,16 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		else if(OtherActorTag.HasTag(AITag))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("AI falled in DeathZone"));
+			ACharacterBaseIA* AI = Cast<ACharacterBaseIA>(OtherActor);
+			if (!AI) { return; }
+			if (AI->PlayerIndex == 0)
+			{
+				Manager0->RemoveAI(AI);
+			}
+			else
+			{
+				Manager1->RemoveAI(AI);
+			}
 		}
 	}
 }

@@ -91,4 +91,9 @@ void AGameStateBaseCoop::CheckGameOver()
 		//Play game over menu
 		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
 	}
+	else if (Player0GlobalState == EPlayerGlobalState::Dead && AIManager1->GetIAcount() <= 1 || Player1GlobalState == EPlayerGlobalState::Dead && AIManager0->GetIAcount() <= 1)
+	{
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
+	}
 }
+
