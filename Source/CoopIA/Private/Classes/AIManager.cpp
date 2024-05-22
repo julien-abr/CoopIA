@@ -152,7 +152,7 @@ void AAIManager::FindLastHex()
 	{
 		FHitResult HitResult;
 		FVector Start = CurrentActor->GetActorLocation();
-		FVector End = Start - (FVector::UpVector * 200);
+		FVector End = Start - (FVector::UpVector * 200);	
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(CurrentActor);
 		
@@ -161,7 +161,7 @@ void AAIManager::FindLastHex()
 			AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor());
 			if(Hex)
 			{
-				PlayerLastHexPos = Hex->GetActorLocation();
+				PlayerLastHexPos = Hex->GetRespawnLoc();
 			}
 		}
 	}
@@ -278,7 +278,7 @@ void AAIManager::PlayerRevived(EIAState State)
 
 	//TODO::Puzzle or Other Map
 	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
-	if (GameState)
+	if (GameState && GameState->GetZoneType() == EZoneType::Puzzle)
 	{
 		Player->SetActorLocation(GameState->GetRespawnLoc(), false, nullptr, ETeleportType::TeleportPhysics);
 	}	
