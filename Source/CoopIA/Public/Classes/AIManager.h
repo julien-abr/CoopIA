@@ -45,6 +45,13 @@ public:
 		return CurrentActor;
 	}
 
+	const int GetIAcount() const
+	{
+		return ArrayIA.Num();
+	}
+
+	void RemoveAI(ACharacterBaseIA* IA);
+
 private:
 	UFUNCTION()
 	void IARandomMove();

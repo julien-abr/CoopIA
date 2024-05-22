@@ -131,6 +131,11 @@ void AAIManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AAIManager::RemoveAI(ACharacterBaseIA* IA)
+{
+	ArrayIA.Remove(IA);
+}
+
 void AAIManager::IARandomMove()
 {
 	if(IAState != EIAState::RANDOM_MOVE) {return;}

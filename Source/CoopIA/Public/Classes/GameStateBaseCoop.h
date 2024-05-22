@@ -42,16 +42,18 @@ private:
 	UPROPERTY()
 	TObjectPtr<AAIManager> AIManager1;
 	
+	UPROPERTY(VisibleAnywhere)
 	EZoneType ZoneType = EZoneType::Running;
 
+	UPROPERTY(VisibleAnywhere)
 	FVector RespawnLoc;
 
 	ELevelSide LevelSide = ELevelSide::MIDDLE;
 
-	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere)
 	EPlayerGlobalState Player0GlobalState;
 	
-	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere)
 	EPlayerGlobalState Player1GlobalState;
 
 	UPROPERTY(EditAnywhere)
