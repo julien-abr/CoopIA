@@ -18,8 +18,11 @@ void APressurePlate::BeginPlay()
 	OnActorBeginOverlap.AddDynamic(this, &APressurePlate::OnOverlapBegin);
 	OnActorEndOverlap.AddDynamic(this, &APressurePlate::OnOverlapEnd);
 
-	object->SetActorHiddenInGame(!makeObjectAppear);
-	object->SetActorEnableCollision(makeObjectAppear);
+	if(object)
+	{
+		object->SetActorHiddenInGame(!makeObjectAppear);
+		object->SetActorEnableCollision(makeObjectAppear);
+	}
 }
 
 void APressurePlate::OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor)
@@ -29,8 +32,17 @@ void APressurePlate::OnOverlapBegin(class AActor* OverlappedActor, class AActor*
 		if(!actorList.Contains(OtherActor))
 			actorList.Add(OtherActor);
 
-		object->SetActorHiddenInGame(makeObjectAppear);
-		object->SetActorEnableCollision(!makeObjectAppear);
+		if (object)
+		{
+			object->SetActorHiddenInGame(makeObjectAppear);
+			object->SetActorEnableCollision(!makeObjectAppear);
+
+			if (isUnique)
+			{
+				OnActorBeginOverlap.RemoveDynamic(this, &APressurePlate::OnOverlapBegin);
+				OnActorEndOverlap.RemoveDynamic(this, &APressurePlate::OnOverlapEnd);
+			}
+		}
 	}
 }
 
@@ -43,8 +55,11 @@ void APressurePlate::OnOverlapEnd(class AActor* OverlappedActor, class AActor* O
 
 		if(actorList.Num() == 0)
 		{
-			object->SetActorHiddenInGame(!makeObjectAppear);
-			object->SetActorEnableCollision(makeObjectAppear);
+			if (object)
+			{
+				object->SetActorHiddenInGame(!makeObjectAppear);
+				object->SetActorEnableCollision(makeObjectAppear);
+			}
 		}
 	}
 }

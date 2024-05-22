@@ -35,6 +35,9 @@ public:
 	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
 
 	UPROPERTY(EditAnywhere)
+	bool isUnique;
+
+	UPROPERTY(EditAnywhere)
 	bool makeObjectAppear;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
