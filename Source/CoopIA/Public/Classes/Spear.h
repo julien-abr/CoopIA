@@ -74,6 +74,8 @@ public:
 
 	virtual int32 GetPlayerIndex_Implementation() override;
 
+	ESpearState GetSpearState() { return SpearState; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

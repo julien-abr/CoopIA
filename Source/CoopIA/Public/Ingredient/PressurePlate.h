@@ -15,7 +15,7 @@ class COOPIA_API APressurePlate : public ATriggerBox
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* _body;
+	UStaticMeshComponent* body;
 
 protected:
 
@@ -33,6 +33,9 @@ public:
 	// declare overlap end function
 	UFUNCTION()
 	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
+
+	UPROPERTY(EditAnywhere)
+	bool isUnique;
 
 	UPROPERTY(EditAnywhere)
 	bool makeObjectAppear;
