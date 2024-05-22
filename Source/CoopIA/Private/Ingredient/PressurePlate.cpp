@@ -7,8 +7,8 @@
 
 APressurePlate::APressurePlate()
 {
-	_body = CreateDefaultSubobject<UStaticMeshComponent>("Body");
-	_body->SetupAttachment(RootComponent);
+	body = CreateDefaultSubobject<UStaticMeshComponent>("Body");
+	body->SetupAttachment(RootComponent);
 }
 
 void APressurePlate::BeginPlay()

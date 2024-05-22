@@ -15,7 +15,7 @@ class COOPIA_API APressurePlate : public ATriggerBox
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* _body;
+	UStaticMeshComponent* body;
 
 protected:
 
