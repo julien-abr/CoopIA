@@ -12,7 +12,7 @@ class COOPIA_API AWallBreaking : public AActor
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* wall;
+	TObjectPtr<UStaticMeshComponent> wall;
 	
 public:	
 	// Sets default values for this actor's properties
