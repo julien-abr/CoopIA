@@ -115,8 +115,12 @@ private:
 	ESpearState SpearState = ESpearState::STATIC;
 
 	TObjectPtr<class AAIManager> AIManager;
+
+	UFUNCTION(BlueprintCallable)
+		bool CheckIsFalling();
 	
 	void StartBall();
 	void StartNeutral();
 	void StartShield();
+
 };
