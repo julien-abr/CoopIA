@@ -79,14 +79,16 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 	FHitResult hitResult;
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic, param))
 	{
+		_laserCylinderArray[count]->SetVisibility(true);
+		_laserCylinderArray[count]->SetWorldScale3D(FVector(laserSize, laserSize, (hitResult.Distance + 1) / 100));
+
 		if(hitResult.GetActor()->Implements<URayHit>())
 		{
 			IRayHit::Execute_RayHitAction(hitResult.GetActor());
 		}
-		else if(hitResult.GetActor()->ActorHasTag("Reflect"))
+
+		if(hitResult.GetActor()->ActorHasTag("Reflect"))
 		{
-			_laserCylinderArray[count]->SetVisibility(true);
-			_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (hitResult.Distance + 1) / 100));
 
 			FVector hitPos = hitResult.ImpactPoint;
 			FVector dir = (end - start).GetUnsafeNormal();
@@ -95,16 +97,11 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 			
 			ReflectLaser(hitPos, hitPos + reflectDir * 10000, z, ++count, hitResult.GetActor());
 		}
-		else
-		{
-			_laserCylinderArray[count]->SetVisibility(true);
-			_laserCylinderArray[count]->SetWorldScale3D(FVector(laserSize, laserSize, (hitResult.Distance + 1) / 100));
-		}
 
 		return;
 	}
 	_laserCylinderArray[count]->SetVisibility(true);
-	_laserCylinderArray[count]->SetWorldScale3D(FVector(0.05f, 0.05f, (end.Length() + 1) / 100));
+	_laserCylinderArray[count]->SetWorldScale3D(FVector(laserSize, laserSize, (end.Length() + 1) / 100));
 }
 
 void ALaser::HideAllLaser()
