@@ -13,6 +13,7 @@
 #include "Classes/AIManager.h"
 #include "Classes/Data/EIAState.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 ASpear::ASpear()
@@ -93,15 +94,16 @@ void ASpear::Tick(float DeltaSeconds)
 
 	float Velocity = GetCharacterMovement()->Velocity.Length();
 
-	if(Velocity > 50 && SpearState != ESpearState::DASHING)
+	if(Velocity > 250 && SpearState != ESpearState::DASHING)
 	{
 		SpearState = ESpearState::DASHING;
 	}
 	
-	if(Velocity < 50  && SpearState != ESpearState::STATIC)
+	if(Velocity <= 250  && SpearState != ESpearState::STATIC)
 	{
 		SpearState = ESpearState::STATIC;
 	}
+
 }
 
 void ASpear::StartHold()
@@ -174,7 +176,7 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ASpear::Move(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Move"));
+	//UE_LOG(LogTemp, Warning, TEXT("Move"));
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	
