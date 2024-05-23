@@ -28,10 +28,11 @@ void AGameStateBaseCoop::Init(TArray<AAIManager*>& ArrayAIManager)
 	AIManager1 = ArrayAIManager[1];
 }
 
-void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side)
+void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side, const FVector Location)
 {
 	ZoneType = Zone;
 	LevelSide = Side;
+	RespawnLoc = Location;
 }
 
 const AActor* AGameStateBaseCoop::GetPlayer(int Index)
@@ -90,4 +91,9 @@ void AGameStateBaseCoop::CheckGameOver()
 		//Play game over menu
 		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
 	}
+	else if (Player0GlobalState == EPlayerGlobalState::Dead && AIManager1->GetIAcount() <= 1 || Player1GlobalState == EPlayerGlobalState::Dead && AIManager0->GetIAcount() <= 1)
+	{
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
+	}
 }
+

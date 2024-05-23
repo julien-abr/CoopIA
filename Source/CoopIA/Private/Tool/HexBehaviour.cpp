@@ -10,7 +10,7 @@
 AHexBehaviour::AHexBehaviour()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	_arrowRoot = CreateDefaultSubobject<UArrowComponent>("Root");
 	RootComponent = _arrowRoot;
@@ -32,10 +32,10 @@ void AHexBehaviour::BeginPlay()
 {
 	Super::BeginPlay();
 }
-void AHexBehaviour::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
+const FVector AHexBehaviour::GetRespawnLoc() const
+{
+	return _arrowMesh->GetComponentLocation() + (FVector::UpVector * 100);
 }
 
 UStaticMeshComponent* AHexBehaviour::GetMesh()

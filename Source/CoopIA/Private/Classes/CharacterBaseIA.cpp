@@ -4,8 +4,10 @@
 #include "Classes/CharacterBaseIA.h"
 #include "Classes/AIManager.h"
 #include "Classes/Data/DataAsset/DA_IA.h"
+#include "Classes/Data/DataAsset/DA_UI.h"
 #include "Classes/CharacterBase.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 
 //lib
 #include "GameFramework/CharacterMovementComponent.h"
@@ -16,12 +18,35 @@ ACharacterBaseIA::ACharacterBaseIA()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->SetupAttachment(RootComponent);
+}
+
+void ACharacterBaseIA::Init(const int32 Index)
+{
+	USkeletalMeshComponent* MeshIA = GetMesh();
+	if (Index == 0)
+	{
+		CurrentManager = Manager0;
+		MeshIA->SetMaterial(0, DA_UI->GreenIA_Mat0);
+		MeshIA->SetMaterial(1, DA_UI->GreenIA_Mat1);
+	}
+	else
+	{
+		CurrentManager = Manager1;
+		MeshIA->SetMaterial(0, DA_UI->RedIA_Mat0);
+		MeshIA->SetMaterial(1, DA_UI->RedIA_Mat1);	
+	}
 }
 
 // Called when the game starts or when spawned
 void ACharacterBaseIA::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(bIAtoReceive)
+		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBaseIA::OnBoxBeginOverlap);
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACharacterBaseIA::OnHit);
 
@@ -31,12 +56,24 @@ void ACharacterBaseIA::BeginPlay()
 	for (auto ManagerActor : arrayManagers)
 	{
 		AAIManager* ManagerIA = Cast<AAIManager>(ManagerActor);
-		if(ManagerIA->ManagerIndex == PlayerIndex)
+		if(ManagerIA->ManagerIndex == 0)
 		{
-			Manager = ManagerIA;
+			Manager0 = ManagerIA;
+		}
+		else
+		{
+			Manager1 = ManagerIA;
 		}
 	}
-	Manager->AddPlayer(this);
+
+	if (!bIAtoReceive)
+	{
+		Init(PlayerIndex);
+		if (CurrentManager)
+			CurrentManager->AddPlayer(this);
+	}
+
+	
 }
 
 void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -80,11 +117,26 @@ void ACharacterBaseIA::Show()
 
 void ACharacterBaseIA::Succeeded()
 {
-	Manager->IASucceededTransition();
+	if(CurrentManager)
+		CurrentManager->IASucceededTransition();
 	Hide();
 }
 
 void ACharacterBaseIA::Failed(AActor* Target)
 {
 	MoveToActor(Target, DataAssetIA->RetryAcceptanceRadius);
+}
+
+void ACharacterBaseIA::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!bIAtoReceive) { return; }
+
+	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()))
+	{
+		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+		Init(Index);
+		if (CurrentManager)
+			CurrentManager->AddPlayer(this);
+		bIAtoReceive = false;
+	}
 }

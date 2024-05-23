@@ -82,17 +82,20 @@ int32 ABall::GetPlayerIndex_Implementation()
 
 void ABall::StartSpear()
 {
-	AIManager->UpdateState(EIAState::SPEAR);
+	if (abs(GetVelocity().Z) <= 50.f)
+		AIManager->UpdateState(EIAState::SPEAR);
 }
 
 void ABall::StartNeutral()
 {
-	AIManager->UpdateState(EIAState::RANDOM_MOVE);
+	if (abs(GetVelocity().Z) <= 50.f)
+		AIManager->UpdateState(EIAState::RANDOM_MOVE);
 }
 
 void ABall::StartShield()
 {
-	AIManager->UpdateState(EIAState::SHIELD);
+	if (abs(GetVelocity().Z) <= 50.f)
+		AIManager->UpdateState(EIAState::SHIELD);
 }
 
 void ABall::Hide()
