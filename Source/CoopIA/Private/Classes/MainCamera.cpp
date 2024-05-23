@@ -92,6 +92,8 @@ void AMainCamera::SetFixedPosition(FTransform Transform)
 	SpringArm->TargetArmLength = 0.f;
 	Camera->SetRelativeRotation(FRotator());
 	SetActorTransform(Transform);
+
+	//TODO::Lerp
 }
 
 void AMainCamera::SetSpline(class ASpline* NewSpline)

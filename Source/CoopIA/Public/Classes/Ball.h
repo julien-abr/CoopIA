@@ -79,6 +79,9 @@ private:
 	
 	TObjectPtr<class AAIManager> AIManager;
 	
+	UFUNCTION(BlueprintCallable)
+		bool CheckIsFalling();
+
 	void StartSpear();
 	void StartNeutral();
 	void StartShield();
