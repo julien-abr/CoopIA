@@ -8,29 +8,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e89a2e9-8907-41ad-979d-24d35127dc88" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Camera/Trigger/BP_CameraTrigger.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Camera/Trigger/BP_CameraTrigger.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_IA.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_IA.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_Spear.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_Spear.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/8/HX/0RPXBGV5Y64BLUEXYU5RCF.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/8/HX/0RPXBGV5Y64BLUEXYU5RCF.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CameraTrigger.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CameraTrigger.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBaseIA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBaseIA.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/DeathManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/DeathManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/GameStateBaseCoop.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/GameStateBaseCoop.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/MainCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/MainCamera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/AIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/AIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CameraTrigger.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CameraTrigger.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBaseIA.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBaseIA.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/7/TH/YI94G7F6BISA578L0K9VRT.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/ThirdPerson/Maps/ThirdPersonMap/7/TH/YI94G7F6BISA578L0K9VRT.uasset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,6 +183,7 @@
       <workItem from="1714632893844" duration="7976000" />
       <workItem from="1716280950107" duration="84000" />
       <workItem from="1716283796154" duration="449000" />
+      <workItem from="1716536593957" duration="123000" />
     </task>
     <servers />
   </component>
