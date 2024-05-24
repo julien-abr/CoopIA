@@ -224,10 +224,12 @@ void ASpear::Hide()
 {
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
+	GetCapsuleComponent()->SetCollisionObjectType(ChannelTransition);
 }
 
 void ASpear::Show()
 {
+	GetCapsuleComponent()->SetCollisionObjectType(ChannelPlayer);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
 }
@@ -239,7 +241,10 @@ EIAState ASpear::GetAIState_Implementation()
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	return AIManager->ManagerIndex;
+	if (AIManager)
+		return AIManager->ManagerIndex;
+	else
+		return 0;
 }
 
 bool ASpear::CheckIsFalling()
