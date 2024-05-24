@@ -402,7 +402,7 @@ void AAIManager::TeleportIA()
 		if(bFindDestination)
 		{
 			FVector TargetLoc = NavLoc.Location;
-			IA->SetActorLocationAndRotation(TargetLoc, Rotation);
+			IA->SetActorLocationAndRotation(TargetLoc + (FVector::UpVector * DestinationZ), Rotation);
 			//IA->TeleportTo(FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + DestinationZ), Rotation);
 			IA->Show();
 		}
@@ -421,7 +421,8 @@ void AAIManager::TeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float
 	if(bFindDestination)
 	{
 		FVector TargetLoc = NavLoc.Location;
-		IA->TeleportTo(FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + DestinationZ), Rotation);
+		IA->SetActorLocationAndRotation(TargetLoc + (FVector::UpVector * DestinationZ), Rotation);
+		//IA->TeleportTo(FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + DestinationZ), Rotation);
 		IA->Show();
 	}
 	else
