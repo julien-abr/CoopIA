@@ -44,7 +44,7 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		}
 	}
 
-	if (Player0 && Player1)
+	if (Player0 || Player1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trigger activated : %s"), *this->GetName());
 		switch (TriggerCamera)
@@ -60,6 +60,14 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
 		if (GameState && ActorRespawn)
 			GameState->SetZoneInfo(ZoneType, LevelSide, ActorRespawn->GetActorLocation());
+		else if (GameState)
+		{
+			GameState->SetZoneInfo(ZoneType, LevelSide, FVector());
+			if (ZoneType == EZoneType::Puzzle)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No ActorRespawn in puzzle zone"));
+			}
+		}
 
 		if(WallActor)
 		{

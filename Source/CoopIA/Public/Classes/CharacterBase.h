@@ -90,6 +90,8 @@ public:
 	virtual EIAState GetAIState_Implementation() override;
 	virtual int32 GetPlayerIndex_Implementation() override;
 
+	const bool HasShieldActivate() const { return bIsShieldActivate;}
+
 	void Init(class AAIManager* Manager);
 
 	void SetupShield(class AShield* Shield);
