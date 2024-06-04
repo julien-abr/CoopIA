@@ -28,4 +28,13 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Wind(FVector windDirection);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ActivateRail(FVector railDirection);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void DeactivateRail();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void LockPropulseBoule();
 };

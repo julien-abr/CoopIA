@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Canon.generated.h"
@@ -17,6 +18,9 @@ class COOPIA_API ACanon : public AActor
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* _box;
+
+	UPROPERTY(VisibleAnywhere)
+	UArrowComponent* _arrow;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -29,5 +33,13 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	IInteract* InteractInterface;
+
+	UFUNCTION()
+	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };
