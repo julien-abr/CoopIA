@@ -87,6 +87,11 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	virtual EIAState GetAIState_Implementation() override;
+	virtual int32 GetPlayerIndex_Implementation() override;
+
+	const bool HasShieldActivate() const { return bIsShieldActivate;}
+
 	void Init(class AAIManager* Manager);
 
 	void SetupShield(class AShield* Shield);
@@ -99,9 +104,6 @@ public:
 	void Died();
 	
 	void Revive();
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void Impulse();
 
 	UFUNCTION()
 	void ImpulseTowardActor();
@@ -124,11 +126,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//Interface IPlayerInterface
-	virtual EIAState GetAIState_Implementation() override;
-
-	virtual int32 GetPlayerIndex_Implementation() override;
-
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDAPlayer> DAPlayer;
@@ -140,12 +137,20 @@ private:
 	FGameplayTagContainer ActorTags;
 
 	UPROPERTY(EditAnywhere)
+		TObjectPtr<class UDA_UI> DA_UI;
+
+	UPROPERTY(EditAnywhere)
 	TEnumAsByte<ECollisionChannel> collisionChannelDead;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<ECollisionChannel> collisionChannelAlive;
 	
 	TObjectPtr<class AAIManager> AIManager;
 	TObjectPtr<class AShield> ShieldActor;
 
 	bool bIsShieldActivate;
+
+	void SetMaterial(bool bIsDead);
 
 	void SetupDefaultMapping();
 
@@ -162,6 +167,9 @@ private:
 	void ShieldRotateLeftCompleted();
 	void ShieldRotateRightCompleted();
 	bool isBind;
+
+	UFUNCTION()
+		void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> MaterialAlive0;

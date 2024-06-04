@@ -3,6 +3,8 @@
 
 #include "Ingredient/WindCurrent.h"
 
+#include <Classes/Shield.h>
+
 #include "GameplayTagAssetInterface.h"
 #include "Classes/CharacterBaseIA.h"
 #include "Data/Interface/Interact.h"
@@ -16,9 +18,6 @@ AWindCurrent::AWindCurrent()
 
 	_cube = CreateDefaultSubobject<UStaticMeshComponent>("Cube");
 	_cube->SetupAttachment(RootComponent);
-
-	_cylinder = CreateDefaultSubobject<UStaticMeshComponent>("Cylinder");
-	_cylinder->SetupAttachment(_cube);
 
 	_box = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
 	_box->SetupAttachment(_cube);
@@ -41,15 +40,21 @@ void AWindCurrent::Tick(float DeltaTime)
 
 	if (!inTheCurrent) return;
 
+
 	FVector forceDirection = _cube->GetForwardVector() * windForce;
 
+	for (int i = 0; i < shieldsInWind.Num(); i++)
+	{
+		if (shieldsInWind[i]) forceDirection = FVector(0);
+			//FVector shieldRotation = shieldsInWind[i]->GetActorRotation().Vector();
+	} 
 	
 	
-	for (int i = 0; i<actorsInWind.Num(); i++)
+	for (int i = 0; i < actorsInWind.Num(); i++)
 	{
 		
-			if (actorsInWind[i])
-				InteractInterfaces[i]->Execute_Wind(actorsInWind[i], forceDirection);
+		if (actorsInWind[i])
+			InteractInterfaces[i]->Execute_Wind(actorsInWind[i], forceDirection);
 
 	}
 }
@@ -62,6 +67,8 @@ void AWindCurrent::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		inTheCurrent = true;
 		InteractInterfaces.Emplace(Cast<IInteract>(OtherActor));
 		actorsInWind.Emplace(OtherActor);
+
+		if (Cast<AShield>(OtherActor)) shieldsInWind.Emplace(OtherActor);
 	}
 }
 
@@ -73,6 +80,7 @@ void AWindCurrent::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		if (!Cast<ACharacterBaseIA>(OtherActor)) inTheCurrent = false;
 		InteractInterfaces.RemoveSingle(Cast<IInteract>(OtherActor));
 		actorsInWind.RemoveSingle(OtherActor);
+		if (Cast<AShield>(OtherActor)) shieldsInWind.RemoveSingle(OtherActor);
 	}
 }
 

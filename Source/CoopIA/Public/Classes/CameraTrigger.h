@@ -53,8 +53,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
 	EZoneType ZoneType;
 
-	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition="ZoneType == EZoneType::Puzzle"))
 	ELevelSide LevelSide;
+
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition = "ZoneType == EZoneType::Puzzle"))
+	AActor* ActorRespawn;
 
 	UPROPERTY()
 	TObjectPtr<AActor> Player0;

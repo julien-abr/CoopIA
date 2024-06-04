@@ -13,6 +13,7 @@
 #include "Classes/AIManager.h"
 #include "Classes/Data/EIAState.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 ASpear::ASpear()
@@ -93,15 +94,16 @@ void ASpear::Tick(float DeltaSeconds)
 
 	float Velocity = GetCharacterMovement()->Velocity.Length();
 
-	if(Velocity > 50 && SpearState != ESpearState::DASHING)
+	if(Velocity > 250 && SpearState != ESpearState::DASHING)
 	{
 		SpearState = ESpearState::DASHING;
 	}
 	
-	if(Velocity < 50  && SpearState != ESpearState::STATIC)
+	if(Velocity <= 250  && SpearState != ESpearState::STATIC)
 	{
 		SpearState = ESpearState::STATIC;
 	}
+
 }
 
 void ASpear::StartHold()
@@ -174,7 +176,7 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ASpear::Move(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Move"));
+	//UE_LOG(LogTemp, Warning, TEXT("Move"));
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	
@@ -200,29 +202,34 @@ void ASpear::Move(const FInputActionValue& Value)
 void ASpear::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
-	AIManager->UpdateState(EIAState::BALL);
+	if (!CheckIsFalling())
+		AIManager->UpdateState(EIAState::BALL);
 }
 
 void ASpear::StartNeutral()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
-	AIManager->UpdateState(EIAState::RANDOM_MOVE);
+	if (!CheckIsFalling())
+		AIManager->UpdateState(EIAState::RANDOM_MOVE);
 }
 
 void ASpear::StartShield()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
-	AIManager->UpdateState(EIAState::SHIELD);
+	if (!CheckIsFalling())
+		AIManager->UpdateState(EIAState::SHIELD);
 }
 
 void ASpear::Hide()
 {
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
+	GetCapsuleComponent()->SetCollisionObjectType(ChannelTransition);
 }
 
 void ASpear::Show()
 {
+	GetCapsuleComponent()->SetCollisionObjectType(ChannelPlayer);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
 }
@@ -234,5 +241,24 @@ EIAState ASpear::GetAIState_Implementation()
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	return AIManager->ManagerIndex;
+	if (AIManager)
+		return AIManager->ManagerIndex;
+	else
+		return 0;
+}
+
+bool ASpear::CheckIsFalling()
+{
+	FHitResult HitResult;
+	FVector Start = GetActorLocation();
+	FVector End = Start - (FVector::UpVector * 100);
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams());
+
+	if (HitResult.GetActor())
+		return false;
+
+	return true;
 }

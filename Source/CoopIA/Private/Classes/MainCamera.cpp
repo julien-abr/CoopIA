@@ -69,18 +69,20 @@ void AMainCamera::FollowPlayers()
 
 	if(m_ActorPlayer0)
 		m_arrayActors.Add(m_ActorPlayer0);
-	if (m_ActorPlayer1)
-		m_arrayActors.Add(m_ActorPlayer1);
+	//if (m_ActorPlayer1)
+		//m_arrayActors.Add(m_ActorPlayer1);
 
 	SpringArm->TargetArmLength = DACamera->DistanceCamFollow;
 	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
+	//UE_LOG(LogTemp, Warning, TEXT("AverragePlayersLoc : %s"),  *AverragePlayersLoc.ToString());
 	const FVector Current = SpringArm->GetComponentLocation();
-	const FVector Target = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World) - FVector(DACamera->Offset, 0.f, 0.f);
+	const FVector SplinePoint = Spline->SplineComponent->FindLocationClosestToWorldLocation(AverragePlayersLoc, ESplineCoordinateSpace::World);
+	const FVector Target = SplinePoint - DACamera->Offset;
+	//UE_LOG(LogTemp, Warning, TEXT("Main Cam SplinePoint : %s & Target : %s & current : %s"), *SplinePoint.ToString(),  *Target.ToString(), *Current.ToString());
 	const FVector SpringArmPos = UKismetMathLibrary::VInterpTo(Current, Target, UGameplayStatics::GetWorldDeltaSeconds(GetWorld()),DACamera->InterpSpeed);
 	
 	SetActorLocation(SpringArmPos);
 	SetActorRotation(DACamera->FollowCamRotation);
-
 }
 
 void AMainCamera::SetFixedPosition(FTransform Transform)
@@ -88,7 +90,10 @@ void AMainCamera::SetFixedPosition(FTransform Transform)
 	CameraState = ECameraState::FIXED;
 
 	SpringArm->TargetArmLength = 0.f;
+	Camera->SetRelativeRotation(FRotator());
 	SetActorTransform(Transform);
+
+	//TODO::Lerp
 }
 
 void AMainCamera::SetSpline(class ASpline* NewSpline)

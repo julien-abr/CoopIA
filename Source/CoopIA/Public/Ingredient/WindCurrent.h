@@ -18,9 +18,6 @@ class COOPIA_API AWindCurrent : public AActor
 	UStaticMeshComponent* _cube;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* _cylinder;
-
-	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* _box;
 	
 public:	
@@ -53,6 +50,10 @@ private:
 	//UStaticMeshComponent* playerMesh;
 	//AActor* actorInWind;
 	TArray<AActor*> actorsInWind;
+
+	TArray<AActor*> shieldsInWind;
+
+
 
 
 	UFUNCTION()

@@ -3,8 +3,11 @@
 
 #include "Classes/DeathManager.h"
 #include "GameplayTagAssetInterface.h"
+#include "Classes/CharacterBaseIA.h"
+#include "Classes/AIManager.h"
 #include "Components/BoxComponent.h"
 #include "Data/Interface/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ADeathManager::ADeathManager()
@@ -16,12 +19,32 @@ ADeathManager::ADeathManager()
 	DeathZone->SetupAttachment(RootComponent);
 }
 
+void ADeathManager::RevivePlayer(int32 Index)
+{
+	OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Alive);
+}
+
 // Called when the game starts or when spawned
 void ADeathManager::BeginPlay()
 {
 	Super::BeginPlay();
 
 	DeathZone->OnComponentBeginOverlap.AddDynamic(this, &ADeathManager::OnBoxBeginOverlap);
+	
+	TArray<AActor*> FoundManagers;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIManager::StaticClass(), FoundManagers);
+	for (auto ManagerActor : FoundManagers)
+	{	AAIManager* IAManager = Cast<AAIManager>(ManagerActor);
+		if(!IAManager) {return;}
+		if(IAManager->ManagerIndex == 0)
+		{
+			Manager0 = IAManager;
+		}
+		else
+		{
+			Manager1 = IAManager;
+		}
+	}
 }
 
 void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -29,6 +52,7 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 {		
 	if(OtherActor->GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass()))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Hit Zone : %s"), *OtherActor->GetName());
 		const IGameplayTagAssetInterface* Interface = Cast<IGameplayTagAssetInterface>(OtherActor);
 		FGameplayTagContainer OtherActorTag;
 		Interface->GetOwnedGameplayTags(OtherActorTag);
@@ -38,6 +62,7 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
 			{
 				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+				UE_LOG(LogTemp, Warning, TEXT("Player hit DeathZone"));
 				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
 			}
 
@@ -45,6 +70,16 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		else if(OtherActorTag.HasTag(AITag))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("AI falled in DeathZone"));
+			ACharacterBaseIA* AI = Cast<ACharacterBaseIA>(OtherActor);
+			if (!AI) { return; }
+			if (AI->PlayerIndex == 0)
+			{
+				Manager0->RemoveAI(AI);
+			}
+			else
+			{
+				Manager1->RemoveAI(AI);
+			}
 		}
 	}
 }

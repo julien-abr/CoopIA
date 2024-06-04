@@ -16,6 +16,12 @@ class COOPIA_API ACharacterBaseIA : public ACharacter, public IInteract, public 
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* BoxComponent;
+
+	UPROPERTY(EditAnywhere)
+		bool bIAtoReceive;
+
 public:
 	// Sets default values for this character's properties
 	ACharacterBaseIA();
@@ -30,6 +36,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup")
 	int32 PlayerIndex;
+
+	void Init(const int32 Index);
 
 protected:
 	// Called when the game starts or when spawned
@@ -59,9 +67,25 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void Failed(AActor* Target);
 	
-	UPROPERTY()
-	TObjectPtr<class AAIManager> Manager;
+	UFUNCTION()
+		void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UPROPERTY(EditAnywhere, category = "c++", meta = (AllowPrivateAccess = true))
-	TObjectPtr<class UDA_IA> DataAssetIA;
+	UPROPERTY()
+		TObjectPtr<class AAIManager> Manager;
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<class UDA_IA> DataAssetIA;
+
+
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<class UDA_UI> DA_UI;
+		
+	UPROPERTY()
+		TObjectPtr<class AAIManager> Manager0;
+
+	UPROPERTY()
+		TObjectPtr<class AAIManager> Manager1;
+
+	UPROPERTY()
+		TObjectPtr<class AAIManager> CurrentManager;
 };

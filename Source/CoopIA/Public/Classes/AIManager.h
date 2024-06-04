@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Classes/Data/EIAState.h"
 #include "AIManager.generated.h"
 
-enum class EIAState;
 
 UCLASS()
 class COOPIA_API AAIManager : public AActor
@@ -24,6 +24,8 @@ public:
 	void IASucceededTransition();
 
 	void UpdateState(const EIAState& State);
+
+	TArray<ACharacterBaseIA*> SplitAI();
 
 	FVector FindLastPos();
 
@@ -43,6 +45,13 @@ public:
 		return CurrentActor;
 	}
 
+	const int GetIAcount() const
+	{
+		return ArrayIA.Num();
+	}
+
+	void RemoveAI(ACharacterBaseIA* IA);
+
 private:
 	UFUNCTION()
 	void IARandomMove();
@@ -60,6 +69,10 @@ private:
 	void HidePrevious(EIAState State);
 
 	void PlayerDied(EIAState State);
+	
+	void PlayerRevived(EIAState State);
+
+	void InitIA();
 
 	FTransform GetTransfoPos(EIAState State);
 	FVector GetLastPos(EIAState State);
@@ -78,6 +91,9 @@ private:
 
 	UPROPERTY(EditAnywhere, category = "Formation", meta = (AllowPrivateAccess = true))
 	TSubclassOf<class ABall> BallBP;
+
+	UPROPERTY()
+	TObjectPtr<AAIManager> OtherManager;
 	
 	UPROPERTY()
 	TObjectPtr<ACharacterBase> Player;
@@ -97,7 +113,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<class APlayerControllerBase> PlayerController;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<ACharacterBaseIA>> ArrayIA;
 
 	UPROPERTY()
@@ -108,13 +124,13 @@ private:
 	UPROPERTY()
 	TObjectPtr<class UNavigationSystemV1> NavSystem;
 
-	EIAState IAState;
+	EIAState IAState = EIAState::RANDOM_MOVE;
 	EIAState PreviousState;
 
 	FTimerHandle Handle;
 	FTimerHandle HandleHexRaycast;
 
-	int16 NumberIAToSucceed;
+	int8 NumberIAToSucceed;
 
 	bool bIsInTransition;
 };

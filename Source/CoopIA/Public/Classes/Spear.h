@@ -57,8 +57,14 @@ class COOPIA_API ASpear : public ACharacter, public IPlayerInterface, public IIn
 	UInputAction* BallAction;
 
 	/** DataAsset Spear */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	UDASpear* DASpear;
+
+	UPROPERTY(EditAnywhere)
+		TEnumAsByte<ECollisionChannel> ChannelPlayer;
+
+	UPROPERTY(EditAnywhere)
+		TEnumAsByte<ECollisionChannel> ChannelTransition;
 
 public:
 	// Sets default values for this character's properties
@@ -73,6 +79,8 @@ public:
 	virtual EIAState GetAIState_Implementation() override;
 
 	virtual int32 GetPlayerIndex_Implementation() override;
+
+	ESpearState GetSpearState() { return SpearState; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -113,8 +121,12 @@ private:
 	ESpearState SpearState = ESpearState::STATIC;
 
 	TObjectPtr<class AAIManager> AIManager;
+
+	UFUNCTION(BlueprintCallable)
+		bool CheckIsFalling();
 	
 	void StartBall();
 	void StartNeutral();
 	void StartShield();
+
 };
