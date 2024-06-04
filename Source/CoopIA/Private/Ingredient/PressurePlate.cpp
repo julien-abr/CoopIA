@@ -37,6 +37,8 @@ void APressurePlate::OnOverlapBegin(class AActor* OverlappedActor, class AActor*
 			object->SetActorHiddenInGame(makeObjectAppear);
 			object->SetActorEnableCollision(!makeObjectAppear);
 
+			OnPressure();
+
 			if (isUnique)
 			{
 				OnActorBeginOverlap.RemoveDynamic(this, &APressurePlate::OnOverlapBegin);

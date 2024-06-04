@@ -22,11 +22,6 @@ ALaser::ALaser()
 
 	_firePoint = CreateDefaultSubobject<UArrowComponent>("FirePoint");
 	_firePoint->SetupAttachment(_body);
-
-	//_body->SetStaticMesh(_laserCylinder);
-
-	//_laserCylinder = CreateDefaultSubobject<UStaticMeshComponent>("Laser");
-	//_laserCylinder->SetupAttachment(_firePoint);
 }
 
 // Called when the game starts or when spawned
