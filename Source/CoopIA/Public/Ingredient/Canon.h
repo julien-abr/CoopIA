@@ -8,6 +8,9 @@
 #include "GameFramework/Actor.h"
 #include "Canon.generated.h"
 
+class UDABall;
+class IInteract;
+
 UCLASS()
 class COOPIA_API ACanon : public AActor
 {
@@ -20,7 +23,13 @@ class COOPIA_API ACanon : public AActor
 	UBoxComponent* _box;
 
 	UPROPERTY(VisibleAnywhere)
-	UArrowComponent* _arrow;
+	TObjectPtr<UArrowComponent> _arrowL;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UArrowComponent> _arrowR;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDABall> DABall;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -35,7 +44,20 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	IInteract* InteractInterface;
+	IInteract* InteractInterfaceP1;
+	IInteract* InteractInterfaceP2;
+
+	AActor* BouleToLaunchP1;
+	AActor* BouleToLaunchP2;
+	TArray<AActor*> BoulesToLaunch;
+	TArray<IInteract*> InteractInterfaces;
+
+	TArray<UArrowComponent*> Arrows;
+
+	FTimerHandle TriggerLaunchTimerHandle;
+
+	UFUNCTION()
+	void TriggerLaunch();
 
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
