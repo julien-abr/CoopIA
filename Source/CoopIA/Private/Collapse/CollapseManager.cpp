@@ -42,11 +42,9 @@ void ACollapseManager::BeginPlay()
 void ACollapseManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ACollapseManager::GetAllHex()
-
 {
 	_hexLineMap.Empty();
 
@@ -84,7 +82,7 @@ void ACollapseManager::NextKey()
 
 	bool inPuzzle = false;
 	//For Each puzzle zone
-	for(auto it = _puzzleZoneArray.CreateIterator(); it; ++it)
+	for(auto it = puzzleZoneArray.CreateIterator(); it; ++it)
 	{
 		//Zone exceed
 		if (it->startZone < _key)
@@ -121,7 +119,7 @@ void ACollapseManager::NextKey()
 			}
 
 			inPuzzle = true;
-			GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, it->duration - startOfCollaspeTime, false);
+			GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::FirstPreventCollapseLine, it->duration - startOfCollaspeTime, false);
 			it.RemoveCurrent();
 			return;
 		}
@@ -131,10 +129,10 @@ void ACollapseManager::NextKey()
 		return;
 
 	//If no puzzle zone, take next line
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::PreventCollapseLine, hexTotalLifeTime - startOfCollaspeTime, false);
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::FirstPreventCollapseLine, hexTotalLifeTime - startOfCollaspeTime, false);
 }
 
-void ACollapseManager::PreventCollapseLine()
+void ACollapseManager::FirstPreventCollapseLine()
 
 {
 	if (_hexLineMap.IsEmpty())
@@ -144,7 +142,10 @@ void ACollapseManager::PreventCollapseLine()
 	if(!_puzzleHexArray.IsEmpty())
 	{
 		for (int i = 0; i < _puzzleHexArray.Num(); i++)
-			_puzzleHexArray[i]->PreventAnim();
+		{
+			if(_puzzleHexArray[i])
+				_puzzleHexArray[i]->FirstPreventAnim();
+		}
 	}
 	//Else, juste take the next hex line
 	else
@@ -154,12 +155,42 @@ void ACollapseManager::PreventCollapseLine()
 		for (int i = 0; i < it->Value.hexArray.Num(); i++)
 		{
 			if (it->Value.hexArray[i])
-				it->Value.hexArray[i]->PreventAnim();
+				it->Value.hexArray[i]->FirstPreventAnim();
 		}
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, startOfCollaspeTime, false);
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::SecondPreventCollapseLine, startOfCollaspeTime / 2, false);
 }
+
+void ACollapseManager::SecondPreventCollapseLine()
+{
+	if (_hexLineMap.IsEmpty())
+		return;
+
+	//If puzzle zone exist
+	if (!_puzzleHexArray.IsEmpty())
+	{
+		for (int i = 0; i < _puzzleHexArray.Num(); i++)
+		{
+			if(_puzzleHexArray[i])
+				_puzzleHexArray[i]->SecondPreventAnim();
+		}
+	}
+	//Else, juste take the next hex line
+	else
+	{
+		auto it = _hexLineMap.CreateIterator();
+
+		for (int i = 0; i < it->Value.hexArray.Num(); i++)
+		{
+			if (it->Value.hexArray[i])
+				it->Value.hexArray[i]->SecondPreventAnim();
+		}
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::CollapseLine, startOfCollaspeTime / 2, false);
+}
+
 void ACollapseManager::CollapseLine()
 {
 	if(_hexLineMap.IsEmpty())
@@ -169,7 +200,10 @@ void ACollapseManager::CollapseLine()
 	if (!_puzzleHexArray.IsEmpty())
 	{
 		for (int i = 0; i < _puzzleHexArray.Num(); i++)
-			_puzzleHexArray[i]->FallAnim();
+		{
+			if(_puzzleHexArray[i])
+				_puzzleHexArray[i]->FallAnim();
+		}
 
 		_puzzleHexArray.Empty();
 	}
@@ -243,11 +277,11 @@ void ACollapseManager::UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList)
 {
 	ClearPuzzleZone();
 
-	_puzzleZoneArray = puzzleZoneList;
+	puzzleZoneArray = puzzleZoneList;
 
-	for(int i = 0; i < _puzzleZoneArray.Num(); i++)
+	for(int i = 0; i < puzzleZoneArray.Num(); i++)
 	{
-		if(!_puzzleZoneArray[i].watchOnMap)
+		if(!puzzleZoneArray[i].watchOnMap)
 			continue;
 
 		TArray<int> mapKey;
@@ -255,7 +289,7 @@ void ACollapseManager::UpdatePuzzleZone(TArray<FPuzzleZoneData> puzzleZoneList)
 
 		for (int j = 0; j < mapKey.Num(); j++)
 		{
-			if (mapKey[j] >= _puzzleZoneArray[i].startZone && mapKey[j] <= _puzzleZoneArray[i].endZone)
+			if (mapKey[j] >= puzzleZoneArray[i].startZone && mapKey[j] <= puzzleZoneArray[i].endZone)
 			{
 				_toolPuzzleHexLineMap.Add(mapKey[j], _hexLineMap[mapKey[j]]);
 
@@ -287,12 +321,12 @@ void ACollapseManager::ClearPuzzleZone()
 }
 void ACollapseManager::SortPuzzleZone()
 {
-	if(!_puzzleZoneArray.IsEmpty())
-		_puzzleZoneArray.Sort([](FPuzzleZoneData a, FPuzzleZoneData b) { return a.startZone < b.startZone; });
+	if(!puzzleZoneArray.IsEmpty())
+		puzzleZoneArray.Sort([](FPuzzleZoneData a, FPuzzleZoneData b) { return a.startZone < b.startZone; });
 }
 TArray<FPuzzleZoneData> ACollapseManager::GetPuzzleZone()
 {
-	return _puzzleZoneArray;
+	return puzzleZoneArray;
 }
 
 FIntVector2 ACollapseManager::GenerateHexKey(FVector hexPos)
