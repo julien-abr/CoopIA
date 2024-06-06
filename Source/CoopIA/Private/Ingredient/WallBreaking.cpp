@@ -41,7 +41,6 @@ void AWallBreaking::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 			if(spear->GetSpearState() == ESpearState::DASHING)
 			{
 				Destroy();
-				OnWallBreak();
 			}
 		}
 	}
