@@ -34,4 +34,10 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void DeactivateRail();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void LockPropulseBoule(bool locking);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void LaunchPropulseBoule(FVector launchDirection, float canonForce, float maxVelocity);
 };
