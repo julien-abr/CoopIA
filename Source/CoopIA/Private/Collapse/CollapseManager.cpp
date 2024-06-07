@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Logging/StructuredLog.h"
 #include "Tool/HexBehaviour.h"
 
 // Sets default values
@@ -27,6 +28,11 @@ void ACollapseManager::BeginPlay()
 		return;
 
 	ClearDeletedHex();
+
+	SortPuzzleZone();
+
+	if (!collaspeActorArray.IsEmpty())
+		collaspeActorArray.Sort([](const AActor& a, const AActor& b) { return a.GetActorLocation().X < b.GetActorLocation().X; });
 
 	AGameStateBase* gameState = UGameplayStatics::GetGameState(GetWorld());
 	_gameStateCoop = Cast<AGameStateBaseCoop>(gameState);
@@ -106,7 +112,7 @@ void ACollapseManager::NextKey()
 			}
 
 			//Take all line
-			while(it->endZone > _key)
+			while(it->endZone + 450 > _key)
 			{
 				if(_hexLineMap.Contains(_key))
 				{
@@ -117,6 +123,9 @@ void ACollapseManager::NextKey()
 
 				_key += 450;
 			}
+
+			//Because we have exceed the key by one line
+			_key -= 450;
 
 			inPuzzle = true;
 			GetWorld()->GetTimerManager().SetTimer(_collapseTimer, this, &ACollapseManager::FirstPreventCollapseLine, it->duration - startOfCollaspeTime, false);
@@ -219,6 +228,30 @@ void ACollapseManager::CollapseLine()
 		}
 
 		it.RemoveCurrent();
+	}
+
+	if(!collaspeActorArray.IsEmpty())
+	{
+		for (auto it = collaspeActorArray.CreateIterator(); it; ++it)
+		{
+			//Zone exceed
+			if (collaspeActorArray[it.GetIndex()]->GetActorLocation().X < _key)
+			{
+				FVector pos = collaspeActorArray[it.GetIndex()]->GetActorLocation() + FVector(0, 0, -5000.f);
+
+				collaspeActorArray[it.GetIndex()]->GetRootComponent()->SetMobility(EComponentMobility::Movable);
+				FLatentActionInfo latentInfoMesh;
+				latentInfoMesh.CallbackTarget = collaspeActorArray[it.GetIndex()];
+				UKismetSystemLibrary::MoveComponentTo(collaspeActorArray[it.GetIndex()]->GetRootComponent(), pos, GetActorRotation(), false, true, 0.5f, true, EMoveComponentAction::Move, latentInfoMesh);
+
+				it.RemoveCurrent();
+				continue;
+			}
+
+			//Zone far away
+			if (collaspeActorArray[it.GetIndex()]->GetActorLocation().X > _key)
+				break;
+		}
 	}
 
 	NextKey();

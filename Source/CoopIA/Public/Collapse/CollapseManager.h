@@ -51,6 +51,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FPuzzleZoneData> puzzleZoneArray;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<AActor*> collaspeActorArray;
+
 	UFUNCTION(BlueprintCallable)
 	void GetAllHex();
 private:
