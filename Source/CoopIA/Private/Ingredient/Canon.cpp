@@ -45,6 +45,7 @@ void ACanon::Tick(float DeltaTime)
 
 void ACanon::TriggerLaunch()
 {
+	//IInteract::Execute_LaunchPropulseBoule(BouleToLaunchP1, _arrowL->GetForwardVector(), launchForce, maxVelocityBoule);
 	InteractInterfaceP1->Execute_LockPropulseBoule(BouleToLaunchP1, false);
 	InteractInterfaceP1->Execute_LaunchPropulseBoule(BouleToLaunchP1, _arrowL->GetForwardVector(), launchForce, maxVelocityBoule);
 	InteractInterfaceP2->Execute_LockPropulseBoule(BouleToLaunchP2, false);
@@ -60,8 +61,8 @@ void ACanon::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		//InteractInterface = Cast<IInteract>(OtherActor);
 		//InteractInterfaces.Emplace(Cast<IInteract>(OtherActor));
 
-		if (InteractInterfaceP1 == nullptr) InteractInterfaceP1 = Cast<IInteract>(OtherActor);
-		else InteractInterfaceP2 = Cast<IInteract>(OtherActor);
+		if (InteractInterfaceP1 == nullptr) InteractInterfaceP1.SetInterface(Cast<IInteract>(OtherActor));
+		else InteractInterfaceP2.SetInterface(Cast<IInteract>(OtherActor));
 		Cast<IInteract>(OtherActor)->Execute_LockPropulseBoule(OtherActor, true);
 
 		if (BouleToLaunchP1 == nullptr)
