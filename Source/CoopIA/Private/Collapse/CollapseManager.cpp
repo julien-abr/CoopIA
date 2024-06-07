@@ -242,7 +242,7 @@ void ACollapseManager::CollapseLine()
 				collaspeActorArray[it.GetIndex()]->GetRootComponent()->SetMobility(EComponentMobility::Movable);
 				FLatentActionInfo latentInfoMesh;
 				latentInfoMesh.CallbackTarget = collaspeActorArray[it.GetIndex()];
-				UKismetSystemLibrary::MoveComponentTo(collaspeActorArray[it.GetIndex()]->GetRootComponent(), pos, GetActorRotation(), false, true, 0.5f, true, EMoveComponentAction::Move, latentInfoMesh);
+				UKismetSystemLibrary::MoveComponentTo(collaspeActorArray[it.GetIndex()]->GetRootComponent(), pos, collaspeActorArray[it.GetIndex()]->GetActorRotation(), false, true, 5.f, true, EMoveComponentAction::Move, latentInfoMesh);
 
 				it.RemoveCurrent();
 				continue;
