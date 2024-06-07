@@ -58,6 +58,10 @@ private:
 	IInteract* InteractInterface;
 
 	bool inMainBox;
+	bool inEnterExitBox;
+
+	UFUNCTION()
+	void MoveWalls(float height);
 
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

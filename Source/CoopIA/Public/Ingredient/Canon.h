@@ -44,17 +44,22 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	IInteract* InteractInterfaceP1;
-	IInteract* InteractInterfaceP2;
+	TObjectPtr<IInteract> InteractInterfaceP1;
+	TObjectPtr<IInteract> InteractInterfaceP2;
 
-	AActor* BouleToLaunchP1;
-	AActor* BouleToLaunchP2;
-	TArray<AActor*> BoulesToLaunch;
-	TArray<IInteract*> InteractInterfaces;
+	TObjectPtr<AActor> BouleToLaunchP1;
+	TObjectPtr<AActor> BouleToLaunchP2;
+	TArray<TObjectPtr<AActor>> BoulesToLaunch;
+	TArray<TObjectPtr<IInteract>> InteractInterfaces;
 
 	TArray<UArrowComponent*> Arrows;
 
 	FTimerHandle TriggerLaunchTimerHandle;
+
+	UPROPERTY(EditAnywhere)
+	float launchForce;
+	UPROPERTY(EditAnywhere)
+	float maxVelocityBoule;
 
 	UFUNCTION()
 	void TriggerLaunch();

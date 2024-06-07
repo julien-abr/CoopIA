@@ -24,7 +24,7 @@ class COOPIA_API IInteract
 public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void Interact();
+	void BulletHit(FVector bulletDirection);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Wind(FVector windDirection);
