@@ -45,11 +45,14 @@ void ACanon::Tick(float DeltaTime)
 
 void ACanon::TriggerLaunch()
 {
-	//IInteract::Execute_LaunchPropulseBoule(BouleToLaunchP1, _arrowL->GetForwardVector(), launchForce, maxVelocityBoule);
-	InteractInterfaceP1->Execute_LockPropulseBoule(BouleToLaunchP1, false);
+	IInteract::Execute_LockPropulseBoule(BouleToLaunchP1, false);
+	IInteract::Execute_LaunchPropulseBoule(BouleToLaunchP1, _arrowL->GetForwardVector(), launchForce, maxVelocityBoule);
+	IInteract::Execute_LockPropulseBoule(BouleToLaunchP2, false);
+	IInteract::Execute_LaunchPropulseBoule(BouleToLaunchP2, _arrowL->GetForwardVector(), launchForce, maxVelocityBoule);
+	/*InteractInterfaceP1->Execute_LockPropulseBoule(BouleToLaunchP1, false);
 	InteractInterfaceP1->Execute_LaunchPropulseBoule(BouleToLaunchP1, _arrowL->GetForwardVector(), launchForce, maxVelocityBoule);
 	InteractInterfaceP2->Execute_LockPropulseBoule(BouleToLaunchP2, false);
-	InteractInterfaceP2->Execute_LaunchPropulseBoule(BouleToLaunchP2, _arrowR->GetForwardVector(), launchForce, maxVelocityBoule);
+	InteractInterfaceP2->Execute_LaunchPropulseBoule(BouleToLaunchP2, _arrowR->GetForwardVector(), launchForce, maxVelocityBoule);*/
 	
 }
 
@@ -61,8 +64,8 @@ void ACanon::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		//InteractInterface = Cast<IInteract>(OtherActor);
 		//InteractInterfaces.Emplace(Cast<IInteract>(OtherActor));
 
-		if (InteractInterfaceP1 == nullptr) InteractInterfaceP1.SetInterface(Cast<IInteract>(OtherActor));
-		else InteractInterfaceP2.SetInterface(Cast<IInteract>(OtherActor));
+		/*if (InteractInterfaceP1 == nullptr) InteractInterfaceP1.SetInterface(Cast<IInteract>(OtherActor));
+		else InteractInterfaceP2.SetInterface(Cast<IInteract>(OtherActor));*/
 		Cast<IInteract>(OtherActor)->Execute_LockPropulseBoule(OtherActor, true);
 
 		if (BouleToLaunchP1 == nullptr)
@@ -97,8 +100,8 @@ void ACanon::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		if (OtherActor == BouleToLaunchP1) BouleToLaunchP1 = nullptr;
 		else if (OtherActor == BouleToLaunchP2) BouleToLaunchP2 = nullptr;
 
-		if (OtherActor == BouleToLaunchP1) InteractInterfaceP1->Execute_LockPropulseBoule(BouleToLaunchP1, false);
-		else if (OtherActor == BouleToLaunchP2) InteractInterfaceP2->Execute_LockPropulseBoule(BouleToLaunchP2, false);
+		if (OtherActor == BouleToLaunchP1) IInteract::Execute_LockPropulseBoule(BouleToLaunchP1, false);
+		else if (OtherActor == BouleToLaunchP2) IInteract::Execute_LockPropulseBoule(BouleToLaunchP2, false);
 	}
 
 	/*if (InteractInterface && BouleToLaunch)

@@ -44,10 +44,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	UPROPERTY()
+	/*UPROPERTY()
 	TScriptInterface<IInteract> InteractInterfaceP1;
 	UPROPERTY()
-	TScriptInterface<IInteract> InteractInterfaceP2;
+	TScriptInterface<IInteract> InteractInterfaceP2;*/
 
 	UPROPERTY()
 	TObjectPtr<AActor> BouleToLaunchP1;
