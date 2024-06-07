@@ -44,14 +44,20 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	TObjectPtr<IInteract> InteractInterfaceP1;
-	TObjectPtr<IInteract> InteractInterfaceP2;
+	UPROPERTY()
+	TScriptInterface<IInteract> InteractInterfaceP1;
+	UPROPERTY()
+	TScriptInterface<IInteract> InteractInterfaceP2;
 
+	UPROPERTY()
 	TObjectPtr<AActor> BouleToLaunchP1;
+	UPROPERTY()
 	TObjectPtr<AActor> BouleToLaunchP2;
+	UPROPERTY()
 	TArray<TObjectPtr<AActor>> BoulesToLaunch;
-	TArray<TObjectPtr<IInteract>> InteractInterfaces;
+	
 
+	UPROPERTY()
 	TArray<UArrowComponent*> Arrows;
 
 	FTimerHandle TriggerLaunchTimerHandle;
