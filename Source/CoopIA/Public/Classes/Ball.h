@@ -56,6 +56,9 @@ public:
 
 	virtual int32 GetPlayerIndex_Implementation() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEnterBall();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

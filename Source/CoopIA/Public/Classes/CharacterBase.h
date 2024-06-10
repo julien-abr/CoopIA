@@ -111,6 +111,19 @@ public:
 
 	UFUNCTION()
 	void ImpulseTowardActor();
+
+	//Sound Event
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEnterNeutral();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMoveNeutral();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMoveShield();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDie();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRevive();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
