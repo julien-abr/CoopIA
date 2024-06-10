@@ -64,16 +64,16 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
 			{
 				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
-				UE_LOG(LogTemp, Warning, TEXT("Player hit DeathZone"));
+				UE_LOGFMT(LogTemp, Warning, "Player hit DeathZone - #{0}", Index);
 				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
 			}
 
 		}
 		else if(OtherActorTag.HasTag(AITag))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AI falled in DeathZone"));
 			ACharacterBaseIA* AI = Cast<ACharacterBaseIA>(OtherActor);
 			if (!AI) { return; }
+			UE_LOGFMT(LogTemp, Warning, "AI falled in DeathZone - #{0}", AI->PlayerIndex);
 			if (AI->PlayerIndex == 0)
 			{
 				ST_Player0->RemoveAI(AI);

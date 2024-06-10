@@ -12,7 +12,7 @@ void UStateDead::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 {
 	Super::OnStateEnter(StateMachineComponentRef);
 	
-	UE_LOG(LogTemp, Warning, TEXT("Enter Dead"));
+	UE_LOGFMT(LogTemp, Warning, "Enter Dead - #{0}", ST->PlayerIndex);
 	ST->DestroyIA();
 	ST->MainCamera->SetPlayer(nullptr, ST->PlayerIndex);
 	

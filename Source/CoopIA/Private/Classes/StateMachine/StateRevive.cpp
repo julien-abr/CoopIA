@@ -16,7 +16,7 @@ void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRe
 {
 	Super::OnStateEnter(StateMachineComponentRef);
 	
-	UE_LOG(LogTemp, Warning, TEXT("Enter Revive"));
+	UE_LOGFMT(LogTemp, Warning, "Enter Revive - #{0}", ST->PlayerIndex);
 	ST->HidePrevious();
 	ST->PlayerController->UnPossess();
 	ST->PlayerController->SetControlRotation(FRotator());

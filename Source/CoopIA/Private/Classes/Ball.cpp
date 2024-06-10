@@ -82,7 +82,8 @@ EIAState ABall::GetAIState_Implementation()
 
 int32 ABall::GetPlayerIndex_Implementation()
 {
-	//return AIManager->ManagerIndex;
+	if (ST)
+		return ST->GetPlayerIndex();
 	return 0;
 }
 

@@ -152,7 +152,7 @@ void UStateMachineComponent::HidePrevious() const
 		if(Player)
 			Player->Hide();
 	}
-	if(PreviousTag == DA_StateMachine->BallState)
+	else if(PreviousTag == DA_StateMachine->BallState)
 	{
 		//BALL
 		if(Player)
@@ -189,7 +189,7 @@ const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 {
 	if(!StateHistoric.Num() - 2 >= 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EXIT IN GET LAST TAG"));
+		UE_LOGFMT(LogTemp, Warning, "EXIT IN GET LAST TAG - #{0}", PlayerIndex);
 		return FGameplayTag::EmptyTag;
 	}
 	
@@ -208,7 +208,7 @@ const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 const FVector UStateMachineComponent::GetPositionForState() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
-	UE_LOG(LogTemp,Warning,TEXT("Previous Tag : %s"), *PreviousTag.ToString());
+	UE_LOGFMT(LogTemp,Warning, "Previous Tag : {0} - #{1}", *PreviousTag.ToString(), PlayerIndex);
 	
 	if(PreviousTag == DA_StateMachine->InitState)
 	{
@@ -219,6 +219,11 @@ const FVector UStateMachineComponent::GetPositionForState() const
 	{
 		//NEUTRAl
 		return Player->GetActorLocation();
+	}
+	if (PreviousTag == DA_StateMachine->BallState)
+	{
+		//BALL
+		return BallActor->GetActorLocation();
 	}
 	if(PreviousTag == DA_StateMachine->SpearState)
 	{
@@ -261,6 +266,9 @@ void UStateMachineComponent::FindLastHex()
 
 void UStateMachineComponent::IARandomMove()
 {
+	if(ArrayIA.IsEmpty())
+		return;
+
 	for(auto IA : ArrayIA)
 	{
 		if(CurrentActor)

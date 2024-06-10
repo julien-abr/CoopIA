@@ -253,7 +253,7 @@ void ACharacterBase::SetupDeadMapping()
 
 void ACharacterBase::StartSpear()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Spear"));
+	UE_LOGFMT(LogTemp, Warning, "Input Spear - #{0}", GetPlayerIndex_Implementation());
 	ST->UpdateState(SpearTag);
 }
 
@@ -286,7 +286,7 @@ void ACharacterBase::Revive()
 
 void ACharacterBase::StartShield()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
+	UE_LOGFMT(LogTemp, Warning, "Input Shield - #{0}", GetPlayerIndex_Implementation());
 	ST->UpdateState(ShieldTag);
 	if(DAShield)
 	{
@@ -296,7 +296,7 @@ void ACharacterBase::StartShield()
 
 void ACharacterBase::StartBall()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
+	UE_LOGFMT(LogTemp, Warning, "Input Ball - #{0}", GetPlayerIndex_Implementation());
 	if (!GetCharacterMovement()->IsFalling())
 		ST->UpdateState(BallTag);
 }
@@ -305,7 +305,7 @@ void ACharacterBase::StartNeutral()
 {
 	if(bIsShieldActivate)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
+		UE_LOGFMT(LogTemp, Warning, "Input Neutral - #{0}", GetPlayerIndex_Implementation());
 		ST->UpdateState(NeutralTag);
 	}
 }
