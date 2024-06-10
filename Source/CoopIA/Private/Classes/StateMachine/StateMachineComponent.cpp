@@ -97,7 +97,8 @@ void UStateMachineComponent::AddToHistoric(const FGameplayTag& Tag)
 
 void UStateMachineComponent::AddPlayer(ACharacterBaseIA* IACharacter)
 {
-	ArrayIA.Add(IACharacter);
+	if(IACharacter)
+		ArrayIA.Add(IACharacter);
 }
 
 const FGameplayTag& UStateMachineComponent::GetCurrentState() const
@@ -122,13 +123,14 @@ const int UStateMachineComponent::GetIACount() const
 
 void UStateMachineComponent::RemoveAI(ACharacterBaseIA* CharacterAI)
 {
-	ArrayIA.Remove(CharacterAI);
+	if(CharacterAI)
+		ArrayIA.Remove(CharacterAI);
 }
 
 TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
 {
 	TArray<ACharacterBaseIA*> CharacterIASplited;
-	
+
 	int numberIASplited = 0;
 	while (numberIASplited < ArrayIA.Num() / 2)
 	{
@@ -266,8 +268,7 @@ void UStateMachineComponent::FindLastHex()
 
 void UStateMachineComponent::IARandomMove()
 {
-	if(ArrayIA.IsEmpty())
-		return;
+	//TEMP ArrayIA chelou ici quand il reste une seule IA a chacun
 
 	for(auto IA : ArrayIA)
 	{
@@ -298,15 +299,26 @@ void UStateMachineComponent::ShowAndTeleportIA()
 		}
 		else
 		{
-			ShowAndTeleportIAFailed(IA, PlayerLoc, DestinationZ);
+			int count = 0;
+			ShowAndTeleportIAFailed(IA, PlayerLoc, DestinationZ, count);
 		}
 	}
 }
 
-void UStateMachineComponent::ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ)
+void UStateMachineComponent::ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ, int& count)
 {
-	FNavLocation NavLoc;
+	count++;
+
 	FRotator Rotation = IA->GetActorRotation();
+
+	if(count == 10)
+	{
+		UE_LOGFMT(LogTemp, Log, "show and teleport ia fail to find location");
+		IA->SetActorLocationAndRotation(PlayerLoc, Rotation);
+		IA->Show();
+	}
+
+	FNavLocation NavLoc;
 	bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 200.f, NavLoc);
 	if(bFindDestination)
 	{
@@ -317,7 +329,7 @@ void UStateMachineComponent::ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVect
 	}
 	else
 	{
-		ShowAndTeleportIAFailed(IA, PlayerLoc, DestinationZ);
+		ShowAndTeleportIAFailed(IA, PlayerLoc, DestinationZ, count);
 	}
 }
 

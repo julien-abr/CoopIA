@@ -82,7 +82,7 @@ private:
 	void IARandomMove();
 
 	void ShowAndTeleportIA();
-	void ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ);
+	void ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ, int& count);
 
 	void HideIA();
 
