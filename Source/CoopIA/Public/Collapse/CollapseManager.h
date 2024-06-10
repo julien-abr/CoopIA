@@ -48,13 +48,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float hexTotalLifeTime = 5.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FPuzzleZoneData> puzzleZoneArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<AActor*> collaspeActorArray;
+
 	UFUNCTION(BlueprintCallable)
 	void GetAllHex();
 private:
 	UPROPERTY()
 	TMap<int, FHexArray> _hexLineMap;
-	UPROPERTY()
-	TArray<FPuzzleZoneData> _puzzleZoneArray;
 
 	UPROPERTY()
 	TArray<AHexBehaviour*> _puzzleHexArray;
@@ -65,7 +69,8 @@ private:
 	AGameStateBaseCoop* _gameStateCoop;
 
 	void NextKey();
-	void PreventCollapseLine();
+	void FirstPreventCollapseLine();
+	void SecondPreventCollapseLine();
 	void CollapseLine();
 
 	//TOOL ONLY
