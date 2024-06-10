@@ -147,6 +147,8 @@ void ACollapseManager::FirstPreventCollapseLine()
 	if (_hexLineMap.IsEmpty())
 		return;
 
+	OnCorruptionStart();
+
 	//If puzzle zone exist
 	if(!_puzzleHexArray.IsEmpty())
 	{

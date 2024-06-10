@@ -32,6 +32,8 @@ void APressurePlate::OnOverlapBegin(class AActor* OverlappedActor, class AActor*
 		if(!actorList.Contains(OtherActor))
 			actorList.Add(OtherActor);
 
+		OnPressure();
+
 		if (object)
 		{
 			object->SetActorHiddenInGame(makeObjectAppear);
