@@ -12,6 +12,7 @@
 #include "GameFramework/Character.h"
 #include "Spear.generated.h"
 
+class UStateMachineComponent;
 class UInputMappingContext;
 class UInputAction;
 class UDASpear;
@@ -69,8 +70,6 @@ class COOPIA_API ASpear : public ACharacter, public IPlayerInterface, public IIn
 public:
 	// Sets default values for this character's properties
 	ASpear();
-	
-	void SetAIManager(class AAIManager* Manager);
 
 	void Hide();
 	void Show();
@@ -106,8 +105,17 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 private:
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere)
 	FGameplayTagContainer ActorTags;
+	
+	UPROPERTY(EditAnywhere)
+	FGameplayTag BallTag;
+	UPROPERTY(EditAnywhere)
+	
+	FGameplayTag NeutralTag;
+	
+	UPROPERTY(EditAnywhere)
+	FGameplayTag ShieldTag;
 	
 	bool bCanUpdateTimer;
 	bool bCanDash = true;
@@ -120,7 +128,8 @@ private:
 
 	ESpearState SpearState = ESpearState::STATIC;
 
-	TObjectPtr<class AAIManager> AIManager;
+	UPROPERTY()
+	TObjectPtr<UStateMachineComponent> ST;
 
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsFalling();

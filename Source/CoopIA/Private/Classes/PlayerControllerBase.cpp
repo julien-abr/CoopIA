@@ -2,16 +2,56 @@
 
 
 #include "Classes/PlayerControllerBase.h"
-#include "Classes/MainCamera.h"
 
-void APlayerControllerBase::Init(AMainCamera* Camera)
+#include "Classes/CharacterBase.h"
+#include "Classes/MainCamera.h"
+#include "Classes/StateMachine/StateMachineComponent.h"
+
+APlayerControllerBase::APlayerControllerBase()
+{
+	StateMachineComponent = CreateDefaultSubobject<UStateMachineComponent>(TEXT("StateMachineComponent"));
+	AddOwnedComponent(StateMachineComponent);
+}
+
+void APlayerControllerBase::Init(AMainCamera* Camera, const int Index)
 {
 	MainCamera = Camera;
-	SetViewTargetWithBlend(MainCamera);
+	PlayerIndex = Index;
+}
+
+void APlayerControllerBase::LateInit() const
+{
+	if(StateMachineComponent)
+	{
+		StateMachineComponent->GetOtherST();
+	}
+}
+
+UStateMachineComponent* APlayerControllerBase::GetStateMachineComponent() const
+{
+	return StateMachineComponent;
+}
+
+const int APlayerControllerBase::GetPlayerIndex() const
+{
+	return PlayerIndex;
 }
 
 void APlayerControllerBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+	
 	SetViewTargetWithBlend(MainCamera);
+
+	if(StateMachineComponent && !bDoOncePosses)
+	{
+		bDoOncePosses = true;
+		UE_LOG(LogTemp, Warning, TEXT("Call Init from PC"));
+		StateMachineComponent->Init(this, DA_StateMachine);
+		ACharacterBase* CharacterBase = Cast<ACharacterBase>(GetPawn());
+		if(CharacterBase)
+		{
+			CharacterBase->Init(StateMachineComponent);
+		}
+	}
 }

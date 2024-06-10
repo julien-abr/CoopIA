@@ -23,7 +23,7 @@ void ACoopIAGameMode::BeginPlay()
 
 	AGameStateBaseCoop* GameStateActor = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
 
-	TArray<AActor*> FoundManagers;
+	/*TArray<AActor*> FoundManagers;
 	UGameplayStatics::GetAllActorsOfClass(World, AAIManager::StaticClass(), FoundManagers);
 
 	AAIManager* ManagerPlayer0;
@@ -39,7 +39,10 @@ void ACoopIAGameMode::BeginPlay()
 		{
 			ManagerPlayer1 = CurrentManager;
 		}
-	}
+	}*/
+
+	APlayerControllerBase* PlayerControllerBase0 = nullptr;
+	APlayerControllerBase* PlayerControllerBase1 = nullptr;
 	
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(World, APlayerStart::StaticClass(), FoundActors);
@@ -56,23 +59,40 @@ void ACoopIAGameMode::BeginPlay()
 		ACharacterBase* spawnedActor = GetWorld()->SpawnActor<ACharacterBase>(PlayerToSpawn, Location, Rotation);
 		APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), arrayIndex);
 		APlayerControllerBase* ControllerBase = Cast<APlayerControllerBase>(playerController);
-		ControllerBase->Init(MainCamera);
+		if(ControllerBase && arrayIndex == 0)
+		{
+			PlayerControllerBase0 = ControllerBase;
+		}
+		else
+		{
+			PlayerControllerBase1 = ControllerBase;
+		}
+		ControllerBase->Init(MainCamera, arrayIndex);
 		playerController->Possess(Cast<APawn>(spawnedActor));
 
 		MainCamera->SetPlayer(spawnedActor, arrayIndex);
-		AAIManager*& Manager = (arrayIndex == 0) ? ManagerPlayer0 : ManagerPlayer1;
-		spawnedActor->Init(Manager);
-		Manager->Init(spawnedActor, MainCamera);
+		//AAIManager*& Manager = (arrayIndex == 0) ? ManagerPlayer0 : ManagerPlayer1;
+		//spawnedActor->Init(Manager);
+		//Manager->Init(ControllerBase);
 		
 		arrayIndex++;
 	}
 	
-	TArray<AAIManager*> ArrayAIManager;
+	/*TArray<AAIManager*> ArrayAIManager;
 	ArrayAIManager.Add(ManagerPlayer0);
-	ArrayAIManager.Add(ManagerPlayer1);
+	ArrayAIManager.Add(ManagerPlayer1);*/
+	
+	TArray<APlayerControllerBase*> ArrayPlayerControllerBase;
+	ArrayPlayerControllerBase.Add(PlayerControllerBase0);
+	ArrayPlayerControllerBase.Add(PlayerControllerBase1);
+
+	for (const auto PlayerController : ArrayPlayerControllerBase)
+	{
+		PlayerController->LateInit();
+	}
 	
 	if(GameStateActor)
 	{
-		GameStateActor->Init(ArrayAIManager);
+		GameStateActor->Init(ArrayPlayerControllerBase);
 	}
 }

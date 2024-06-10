@@ -12,6 +12,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FGameplayTagContainer;
+class UStateMachineComponent;
 
 UCLASS()
 class COOPIA_API ABall : public APawn, public IGameplayTagAssetInterface, public IPlayerInterface
@@ -46,8 +47,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetSimulatePhysics(const bool enable);
-
-	void SetAIManager(class AAIManager* Manager);
 	
 	void Hide();
 	void Show();
@@ -76,8 +75,20 @@ public:
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
+
+	UPROPERTY()
+	TObjectPtr<UStateMachineComponent> ST;
 	
-	TObjectPtr<class AAIManager> AIManager;
+	TObjectPtr<class ST> AIManager;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag SpearTag;
+	
+	UPROPERTY(EditAnywhere)
+	FGameplayTag NeutralTag;
+	
+	UPROPERTY(EditAnywhere)
+	FGameplayTag ShieldTag;
 	
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsFalling();

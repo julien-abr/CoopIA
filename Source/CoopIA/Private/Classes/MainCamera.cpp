@@ -40,7 +40,7 @@ void AMainCamera::SetPlayer(AActor* Actor, int16 Index)
 {
 	if(Actor)
 	{
-		TObjectPtr<class AActor>& ActorPlayer = (Index == 0) ? m_ActorPlayer0 : m_ActorPlayer1;
+		TObjectPtr<AActor>& ActorPlayer = (Index == 0) ? m_ActorPlayer0 : m_ActorPlayer1;
 		ActorPlayer = Actor;
 	}
 }

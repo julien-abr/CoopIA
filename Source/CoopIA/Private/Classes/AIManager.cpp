@@ -30,57 +30,9 @@ AAIManager::AAIManager()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
+void AAIManager::Init(APlayerControllerBase* PlayerControllerRef)
 {
-	Player = Character;
-	CurrentActor = Player;
-	PlayerController = Cast<APlayerControllerBase>(Player->GetController());
-	MainCamera = Camera;
-	NavSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
-
-	PlayerLastHexPos = CurrentActor->GetActorLocation();
-	//UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
-
-	//SPEAR
-	FActorSpawnParameters SpawnInfoSpear;
-	SpawnInfoSpear.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, CurrentActor->GetActorLocation(), FRotator(), SpawnInfoSpear);
-	if (SpearActor)
-	{
-		SpearActor->SetAIManager(this);
-	}
-	SpearActor->Hide();
-
-	//SHIELD
-	FActorSpawnParameters SpawnInfoShield;
-	SpawnInfoShield.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfoShield);
-	ShieldActor->SetOwner(Player);
-	ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
-	ShieldActor->Hide();
-
-	//BALL
-	FActorSpawnParameters SpawnInfoBall;
-	SpawnInfoBall.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	BallActor = GetWorld()->SpawnActor<ABall>(BallBP, CurrentActor->GetActorLocation(), FRotator(), SpawnInfoBall);
-	if (BallActor)
-	{
-		BallActor->SetAIManager(this);
-	}
-	BallActor->Hide();
-
-	TArray<AActor*> FoundManagers;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIManager::StaticClass(), FoundManagers);
-	
-	for (const auto manager : FoundManagers)
-	{
-		AAIManager* CurrentManager = Cast<AAIManager>(manager);
-		if(CurrentManager != this)
-		{
-			OtherManager = CurrentManager;
-		}
-	}
-	UE_LOG(LogTemp, Warning, TEXT("Player INIT"));
+	StateMachineComponent = PlayerControllerRef->GetStateMachineComponent();
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
@@ -96,7 +48,7 @@ void AAIManager::IASucceededTransition()
 	//All IA Moved to the destination
 	if(NumberIAToSucceed == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Succeeded"));
+		UE_LOGFMT(LogTemp, Warning, "Succeeded - #{0}", Player->GetPlayerIndex());
 		switch(IAState)
 		{
 			case EIAState::BALL:
@@ -120,19 +72,13 @@ void AAIManager::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetTimerManager().SetTimer(Handle, this, &AAIManager::IARandomMove, DataAssetIA->RandomMoveTime, true);
-
 	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &AAIManager::FindLastHex, 1, true);
-}
-
-// Called every frame
-void AAIManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AAIManager::RemoveAI(ACharacterBaseIA* IA)
 {
-	ArrayIA.Remove(IA);
+	if(IA)
+		ArrayIA.Remove(IA);
 }
 
 void AAIManager::IARandomMove()
@@ -188,13 +134,13 @@ void AAIManager::UpdateState(const EIAState& State)
 
 	if(ArrayIA.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Trying to transfo but dont have AI"));
+		UE_LOGFMT(LogTemp, Warning, "Trying to transfo but dont have AI - #{0}", Player->GetPlayerIndex());
 		return;
 	}
 	
 	if(State == IAState || bIsInTransition)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Trying to start same STATE"));
+		UE_LOGFMT(LogTemp, Warning, "Trying to start same STATE - #{0}", Player->GetPlayerIndex());
 		return;
 	}
 	bool bShouldGoNeutral = IAState != EIAState::RANDOM_MOVE;
@@ -258,7 +204,7 @@ void AAIManager::PlayerDied(EIAState State)
 	MainCamera->SetPlayer(nullptr, ManagerIndex);
 
 	//Wait time
-	UE_LOG(LogTemp, Warning, TEXT("Enter Dead"));
+	UE_LOGFMT(LogTemp, Warning, "Enter Dead - #{0}", Player->GetPlayerIndex());
 	HidePrevious(State);
 	PlayerController->UnPossess();
 	PlayerController->SetControlRotation(FRotator());
@@ -275,7 +221,7 @@ void AAIManager::PlayerRevived(EIAState State)
 {
 	IAState = EIAState::REVIVE;
 	//Wait time
-	UE_LOG(LogTemp, Warning, TEXT("Enter Revive"));
+	UE_LOGFMT(LogTemp, Warning, "Enter Revive - #{0}", Player->GetPlayerIndex());
 	HidePrevious(State);
 	PlayerController->UnPossess();
 	PlayerController->SetControlRotation(FRotator());
@@ -310,7 +256,7 @@ void AAIManager::InitIA()
 
 void AAIManager::Spear(EIAState State)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Enter spear"));
+	UE_LOGFMT(LogTemp, Warning, "Enter spear - #{0}", Player->GetPlayerIndex());
 	HidePrevious(State);
 	PlayerController->UnPossess();
 	PlayerController->SetControlRotation(FRotator());
@@ -334,7 +280,7 @@ void AAIManager::Spear(EIAState State)
 
 void AAIManager::Shield(EIAState State)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Enter shield"));
+	UE_LOGFMT(LogTemp, Warning, "Enter shield - #{0}", Player->GetPlayerIndex());
 	if(!ShieldActor)
 	{
 		UE_LOGFMT(LogTemp, Log, "NO SHIELD");
@@ -348,7 +294,7 @@ void AAIManager::Shield(EIAState State)
 
 void AAIManager::Ball(EIAState State)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Enter Ball"));
+	UE_LOGFMT(LogTemp, Warning, "Enter Ball - #{0}", Player->GetPlayerIndex());
 	HidePrevious(State);
 	PlayerController->UnPossess();
 	PlayerController->SetControlRotation(FRotator());
@@ -372,7 +318,7 @@ void AAIManager::Ball(EIAState State)
 
 void AAIManager::Neutral(EIAState State)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Enter neutral"));
+	UE_LOGFMT(LogTemp, Warning, "Enter neutral - #{0}", Player->GetPlayerIndex());
 	HidePrevious(State);
 	PlayerController->UnPossess();
 	PlayerController->SetControlRotation(FRotator());
@@ -440,14 +386,14 @@ void AAIManager::HidePrevious(EIAState State)
 				Player->Hide();
 			if(BallActor)
 				BallActor->Hide();
-			UE_LOG(LogTemp, Warning, TEXT("Hide Ball"));
+			UE_LOGFMT(LogTemp, Warning, "Hide Ball - #{0}", Player->GetPlayerIndex());
 			break;
 		case EIAState::SPEAR:
 			if(Player)
 				Player->Hide();
 			if(SpearActor)
 				SpearActor->Hide();
-			UE_LOG(LogTemp, Warning, TEXT("Hide Spear"));
+			UE_LOGFMT(LogTemp, Warning, "Hide Spear - #{0}", Player->GetPlayerIndex());
 			break;
 		case EIAState::SHIELD:
 			if(Player)
@@ -455,12 +401,12 @@ void AAIManager::HidePrevious(EIAState State)
 				Player->Hide();
 				Player->DeactivateShield();
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Hide Player + Shield"));
+			UE_LOGFMT(LogTemp, Warning, "Hide Player + Shield - #{0}", Player->GetPlayerIndex());
 			break;
 		case EIAState::RANDOM_MOVE:
 			if(Player)
 				Player->Hide();
-			UE_LOG(LogTemp, Warning, TEXT("Hide Player"));
+			UE_LOGFMT(LogTemp, Warning, "Hide Player - #{0}", Player->GetPlayerIndex());
 			break;
 	}
 }
@@ -471,18 +417,18 @@ FTransform AAIManager::GetTransfoPos(EIAState State)
 	switch(State)
 	{
 		case EIAState::BALL:
-			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Ball"));
+			UE_LOGFMT(LogTemp, Warning, "Get Transfo Ball - #{0}", Player->GetPlayerIndex());
 			break;
 		case EIAState::SHIELD:
-			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Player"));
+			UE_LOGFMT(LogTemp, Warning, "Get Transfo Player - #{0}", Player->GetPlayerIndex());
 			transform.SetLocation(Player->GetActorLocation());
 			break;
 		case EIAState::SPEAR:
-			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Spear"));
+			UE_LOGFMT(LogTemp, Warning, "Get Transfo Spear - #{0}", Player->GetPlayerIndex());
 			transform.SetLocation(SpearActor->GetActorLocation());
 			break;
 		case EIAState::RANDOM_MOVE:
-			UE_LOG(LogTemp, Warning, TEXT("Get Transfo Player"));
+			UE_LOGFMT(LogTemp, Warning, "Get Transfo Player - #{0}", Player->GetPlayerIndex());
 			transform.SetLocation(Player->GetActorLocation());
 			break;
 	}

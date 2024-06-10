@@ -60,13 +60,13 @@ private:
 	void FollowPlayers();
 	
 	UPROPERTY() 
-	TObjectPtr<class AActor> m_ActorPlayer0;
+	TObjectPtr<AActor> m_ActorPlayer0;
 
 	UPROPERTY() 
-	TObjectPtr<class AActor> m_ActorPlayer1;
+	TObjectPtr<AActor> m_ActorPlayer1;
 
 	UPROPERTY(EditAnywhere, Category = "DefaultSpline", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class AActor> DefaultSpline;
+	TSubclassOf<AActor> DefaultSpline;
 
 	ECameraState CameraState = ECameraState::FOLLOW;
 	
