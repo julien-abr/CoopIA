@@ -152,7 +152,7 @@ void UStateMachineComponent::HidePrevious() const
 		if(Player)
 			Player->Hide();
 	}
-	else if(PreviousTag == DA_StateMachine->BallState)
+	if(PreviousTag == DA_StateMachine->BallState)
 	{
 		//BALL
 		if(Player)
@@ -189,7 +189,7 @@ const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 {
 	if(!StateHistoric.Num() - 2 >= 0)
 	{
-		UE_LOGFMT(LogTemp, Warning, "EXIT IN GET LAST TAG - #{0}", PlayerIndex);
+		UE_LOG(LogTemp, Warning, TEXT("EXIT IN GET LAST TAG"));
 		return FGameplayTag::EmptyTag;
 	}
 	
@@ -208,7 +208,7 @@ const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 const FVector UStateMachineComponent::GetPositionForState() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
-	UE_LOGFMT(LogTemp,Warning, "Previous Tag : {0} - #{1}", *PreviousTag.ToString(), PlayerIndex);
+	UE_LOG(LogTemp,Warning,TEXT("Previous Tag : %s"), *PreviousTag.ToString());
 	
 	if(PreviousTag == DA_StateMachine->InitState)
 	{
@@ -222,7 +222,7 @@ const FVector UStateMachineComponent::GetPositionForState() const
 	}
 	if (PreviousTag == DA_StateMachine->BallState)
 	{
-		//BALL
+		//SPEAR
 		return BallActor->GetActorLocation();
 	}
 	if(PreviousTag == DA_StateMachine->SpearState)
@@ -241,6 +241,44 @@ const FVector UStateMachineComponent::GetPositionForState() const
 		return Player->GetActorLocation();
 	}
 	return FVector();
+}
+
+const FRotator UStateMachineComponent::GetRotationForState() const
+{
+	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
+	UE_LOG(LogTemp, Warning, TEXT("Previous Tag : %s"), *PreviousTag.ToString());
+
+	if (PreviousTag == DA_StateMachine->InitState)
+	{
+		//NEUTRAl
+		return Player->GetActorRotation();
+	}
+	if (PreviousTag == DA_StateMachine->NeutralState)
+	{
+		//NEUTRAl
+		return Player->GetActorRotation();
+	}
+	if (PreviousTag == DA_StateMachine->BallState)
+	{
+		//SPEAR
+		return BallActor->GetActorRotation();
+	}
+	if (PreviousTag == DA_StateMachine->SpearState)
+	{
+		//SPEAR
+		return SpearActor->GetActorRotation();
+	}
+	if (PreviousTag == DA_StateMachine->ShieldState)
+	{
+		//SHIELD
+		return Player->GetActorRotation();
+	}
+	if (PreviousTag == DA_StateMachine->ReviveState)
+	{
+		//REVIVE
+		return Player->GetActorRotation();
+	}
+	return FRotator();
 }
 
 void UStateMachineComponent::FindLastHex()
@@ -266,9 +304,6 @@ void UStateMachineComponent::FindLastHex()
 
 void UStateMachineComponent::IARandomMove()
 {
-	if(ArrayIA.IsEmpty())
-		return;
-
 	for(auto IA : ArrayIA)
 	{
 		if(CurrentActor)

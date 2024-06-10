@@ -77,6 +77,8 @@ private:
 
 	const FVector GetPositionForState() const;
 
+	const FRotator GetRotationForState() const;
+
 	void FindLastHex();
 
 	void IARandomMove();
