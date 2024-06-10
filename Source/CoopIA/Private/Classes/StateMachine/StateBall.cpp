@@ -18,9 +18,10 @@ void UStateBall::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	ST->HideIA();
 	ST->HidePrevious();
 	ST->PlayerController->UnPossess();
-	ST->PlayerController->SetControlRotation(FRotator());
+	//ST->PlayerController->SetControlRotation(FRotator());
 	
 	const FVector Destination = ST->GetPositionForState();
+	const FRotator Rotation = ST->GetRotationForState();
 	
 	ST->BallActor->SetActorLocation(Destination, false, nullptr, ETeleportType::TeleportPhysics);
 	ST->BallActor->SetActorRelativeRotation(FRotator(), false, nullptr, ETeleportType::TeleportPhysics);
@@ -35,6 +36,8 @@ void UStateBall::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 void UStateBall::OnStateTick()
 {
 	Super::OnStateTick();
+
+	//UE_LOGFMT(LogTemp, Warning, ST->BallActor->GetActorRotation().ToString());
 }
 
 void UStateBall::OnStateLeave()
