@@ -4,7 +4,8 @@
 #include "Classes/DeathManager.h"
 #include "GameplayTagAssetInterface.h"
 #include "Classes/CharacterBaseIA.h"
-#include "Classes/AIManager.h"
+#include "Classes/PlayerControllerBase.h"
+#include "Classes/StateMachine/StateMachineComponent.h"
 #include "Components/BoxComponent.h"
 #include "Data/Interface/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -31,18 +32,19 @@ void ADeathManager::BeginPlay()
 
 	DeathZone->OnComponentBeginOverlap.AddDynamic(this, &ADeathManager::OnBoxBeginOverlap);
 	
-	TArray<AActor*> FoundManagers;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIManager::StaticClass(), FoundManagers);
-	for (auto ManagerActor : FoundManagers)
-	{	AAIManager* IAManager = Cast<AAIManager>(ManagerActor);
-		if(!IAManager) {return;}
-		if(IAManager->ManagerIndex == 0)
+	TArray<AActor*> ArrayPlayerControllerBase;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerControllerBase::StaticClass(), ArrayPlayerControllerBase);
+
+	for (auto ActorController : ArrayPlayerControllerBase)
+	{
+		APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(ActorController);
+		if(PlayerControllerBase->GetPlayerIndex() == 0)
 		{
-			Manager0 = IAManager;
+			ST_Player0 = PlayerControllerBase->GetStateMachineComponent();
 		}
 		else
 		{
-			Manager1 = IAManager;
+			ST_Player1 =  PlayerControllerBase->GetStateMachineComponent();
 		}
 	}
 }
@@ -74,11 +76,11 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			if (!AI) { return; }
 			if (AI->PlayerIndex == 0)
 			{
-				Manager0->RemoveAI(AI);
+				ST_Player0->RemoveAI(AI);
 			}
 			else
 			{
-				Manager1->RemoveAI(AI);
+				ST_Player1->RemoveAI(AI);
 			}
 		}
 	}

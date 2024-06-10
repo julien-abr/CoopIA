@@ -30,57 +30,9 @@ AAIManager::AAIManager()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AAIManager::Init(ACharacterBase* Character, AMainCamera* Camera)
+void AAIManager::Init(APlayerControllerBase* PlayerControllerRef)
 {
-	Player = Character;
-	CurrentActor = Player;
-	PlayerController = Cast<APlayerControllerBase>(Player->GetController());
-	MainCamera = Camera;
-	NavSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
-
-	PlayerLastHexPos = CurrentActor->GetActorLocation();
-	//UE_LOGFMT(LogTemp, Log, "{0}", PlayerController->GetControlRotation().ToString());
-
-	//SPEAR
-	FActorSpawnParameters SpawnInfoSpear;
-	SpawnInfoSpear.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	SpearActor = GetWorld()->SpawnActor<ASpear>(SpearBP, CurrentActor->GetActorLocation(), FRotator(), SpawnInfoSpear);
-	if (SpearActor)
-	{
-		SpearActor->SetAIManager(this);
-	}
-	SpearActor->Hide();
-
-	//SHIELD
-	FActorSpawnParameters SpawnInfoShield;
-	SpawnInfoShield.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	ShieldActor = GetWorld()->SpawnActor<AShield>(ShieldBP, CurrentActor->GetActorLocation(), CurrentActor->GetActorRotation(), SpawnInfoShield);
-	ShieldActor->SetOwner(Player);
-	ShieldActor->SetActorRelativeRotation(FRotator(0, 0, 0));
-	ShieldActor->Hide();
-
-	//BALL
-	FActorSpawnParameters SpawnInfoBall;
-	SpawnInfoBall.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	BallActor = GetWorld()->SpawnActor<ABall>(BallBP, CurrentActor->GetActorLocation(), FRotator(), SpawnInfoBall);
-	if (BallActor)
-	{
-		BallActor->SetAIManager(this);
-	}
-	BallActor->Hide();
-
-	TArray<AActor*> FoundManagers;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIManager::StaticClass(), FoundManagers);
-	
-	for (const auto manager : FoundManagers)
-	{
-		AAIManager* CurrentManager = Cast<AAIManager>(manager);
-		if(CurrentManager != this)
-		{
-			OtherManager = CurrentManager;
-		}
-	}
-	UE_LOG(LogTemp, Warning, TEXT("Player INIT"));
+	StateMachineComponent = PlayerControllerRef->GetStateMachineComponent();
 }
 
 void AAIManager::AddPlayer(class ACharacterBaseIA* IA)
@@ -120,19 +72,13 @@ void AAIManager::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorld()->GetTimerManager().SetTimer(Handle, this, &AAIManager::IARandomMove, DataAssetIA->RandomMoveTime, true);
-
 	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &AAIManager::FindLastHex, 1, true);
-}
-
-// Called every frame
-void AAIManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AAIManager::RemoveAI(ACharacterBaseIA* IA)
 {
-	ArrayIA.Remove(IA);
+	if(IA)
+		ArrayIA.Remove(IA);
 }
 
 void AAIManager::IARandomMove()

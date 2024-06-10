@@ -4,8 +4,10 @@
 #include "Classes/Ball.h"
 
 #include "EnhancedInputComponent.h"
+#include "Classes/StateMachine/StateMachineComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Classes/AIManager.h"
+#include "Classes/PlayerControllerBase.h"
 #include "Classes/Data/EIAState.h"
 
 // Sets default values
@@ -13,11 +15,6 @@ ABall::ABall()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-}
-
-void ABall::SetAIManager(class AAIManager* Manager)
-{
-	AIManager = Manager;
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +32,14 @@ void ABall::Tick(float DeltaTime)
 void ABall::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	if(!ST)
+	{
+		if(APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(NewController))
+		{
+			ST = PlayerControllerBase->GetStateMachineComponent();
+		}
+	}
 	
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -77,7 +82,8 @@ EIAState ABall::GetAIState_Implementation()
 
 int32 ABall::GetPlayerIndex_Implementation()
 {
-	return AIManager->ManagerIndex;
+	//return AIManager->ManagerIndex;
+	return 0;
 }
 
 bool ABall::CheckIsFalling()
@@ -99,19 +105,19 @@ bool ABall::CheckIsFalling()
 void ABall::StartSpear()
 {
 	if (!CheckIsFalling())
-		AIManager->UpdateState(EIAState::SPEAR);
+		ST->UpdateState(SpearTag);
 }
 
 void ABall::StartNeutral()
 {
 	if (!CheckIsFalling())
-		AIManager->UpdateState(EIAState::RANDOM_MOVE);
+		ST->UpdateState(NeutralTag);
 }
 
 void ABall::StartShield()
 {
 	if (!CheckIsFalling())
-		AIManager->UpdateState(EIAState::SHIELD);
+		ST->UpdateState(ShieldTag);
 }
 
 void ABall::Hide()

@@ -3,14 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/GameStateBase.h"
 #include "Classes/Data/Enum/ZoneType.h"
 #include "Classes/Data/Enum/PlayerGlobalState.h"
 #include "Data/Enum/ELevelSide.h"
 #include "GameStateBaseCoop.generated.h"
 
+class UStateMachineComponent;
 class ADeathManager;
 class AAIManager;
+class APlayerControllerBase;
 /**
  * 
  */
@@ -22,7 +25,7 @@ class COOPIA_API AGameStateBaseCoop : public AGameStateBase
 public:
 	AGameStateBaseCoop();
 	
-	void Init(TArray<AAIManager*>& ArrayAIManager);
+	void Init(TArray<APlayerControllerBase*>& ArrayPlayerController);
 	
 	EZoneType GetZoneType() { return ZoneType; }
 	ELevelSide GetLevelSide() {return LevelSide;}
@@ -37,16 +40,22 @@ public:
 	
 private:
 	UPROPERTY()
-	TObjectPtr<AAIManager> AIManager0;
+	TObjectPtr<UStateMachineComponent> ST_Player0;
 
 	UPROPERTY()
-	TObjectPtr<AAIManager> AIManager1;
+	TObjectPtr<UStateMachineComponent> ST_Player1;
 	
 	UPROPERTY(VisibleAnywhere)
 	EZoneType ZoneType = EZoneType::Running;
 
 	UPROPERTY(VisibleAnywhere)
 	FVector RespawnLoc;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag DeadTag;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag ReviveTag;
 
 	ELevelSide LevelSide = ELevelSide::MIDDLE;
 
