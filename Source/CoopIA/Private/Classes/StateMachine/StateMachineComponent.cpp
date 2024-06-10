@@ -230,6 +230,11 @@ const FVector UStateMachineComponent::GetPositionForState() const
 		//SHIELD
 		return Player->GetActorLocation();
 	}
+	if(PreviousTag == DA_StateMachine->ReviveState)
+	{
+		//REVIVE
+		return Player->GetActorLocation();
+	}
 	return FVector();
 }
 

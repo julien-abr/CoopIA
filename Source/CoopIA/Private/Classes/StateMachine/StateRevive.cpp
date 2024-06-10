@@ -32,7 +32,13 @@ void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRe
 	ST->Player->Revive();
 	
 	if(ST->OtherST)
-		ST->ArrayIA = ST->OtherST->SplitAI();
+	{
+		const TArray<ACharacterBaseIA*> ArrayIASplit = ST->OtherST->SplitAI();
+		for (auto IA : ArrayIASplit)
+		{
+			ST->AddPlayer(IA);
+		}
+	}
 
 	//InitIA();
 	ST->CurrentActor = ST->Player;
