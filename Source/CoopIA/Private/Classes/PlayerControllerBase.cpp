@@ -19,6 +19,14 @@ void APlayerControllerBase::Init(AMainCamera* Camera, const int Index)
 	PlayerIndex = Index;
 }
 
+void APlayerControllerBase::LateInit() const
+{
+	if(StateMachineComponent)
+	{
+		StateMachineComponent->GetOtherST();
+	}
+}
+
 UStateMachineComponent* APlayerControllerBase::GetStateMachineComponent() const
 {
 	return StateMachineComponent;

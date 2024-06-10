@@ -31,7 +31,9 @@ void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRe
 	ST->PlayerController->Possess(ST->Player);
 	ST->Player->Revive();
 	
-	ST->ArrayIA = ST->OtherST->SplitAI();
+	if(ST->OtherST)
+		ST->ArrayIA = ST->OtherST->SplitAI();
+
 	//InitIA();
 	ST->CurrentActor = ST->Player;
 	ST->MainCamera->SetPlayer(ST->Player, ST->PlayerIndex);

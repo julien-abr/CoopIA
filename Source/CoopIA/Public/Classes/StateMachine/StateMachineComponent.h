@@ -47,6 +47,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	void Init(APlayerControllerBase* ControllerRef, UDA_StateMachine* DA_StateMachineRef);
+
+	void GetOtherST();
 	
 	void UpdateState(const FGameplayTag& Tag);
 
@@ -69,7 +71,7 @@ private:
 
 	void AddToHistoric(const FGameplayTag& Tag);
 
-	void HidePrevious();
+	void HidePrevious() const;
 
 	const FGameplayTag& GetLastTagTransitionExcluded() const;
 

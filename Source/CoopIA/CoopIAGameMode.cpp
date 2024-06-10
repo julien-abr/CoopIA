@@ -85,6 +85,11 @@ void ACoopIAGameMode::BeginPlay()
 	TArray<APlayerControllerBase*> ArrayPlayerControllerBase;
 	ArrayPlayerControllerBase.Add(PlayerControllerBase0);
 	ArrayPlayerControllerBase.Add(PlayerControllerBase1);
+
+	for (const auto PlayerController : ArrayPlayerControllerBase)
+	{
+		PlayerController->LateInit();
+	}
 	
 	if(GameStateActor)
 	{

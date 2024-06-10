@@ -48,7 +48,10 @@ void UStateMachineComponent::Init(APlayerControllerBase* ControllerRef, UDA_Stat
 	InitializeState(DA_StateMachine->DefaultState);
 	
 	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &UStateMachineComponent::FindLastHex, 1, true);
+}
 
+void UStateMachineComponent::GetOtherST()
+{
 	TArray<AActor*> PlayerControllerBaseFounded;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerControllerBase::StaticClass(), PlayerControllerBaseFounded);
 
@@ -141,7 +144,7 @@ TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
 	return CharacterIASplited;
 }
 
-void UStateMachineComponent::HidePrevious()
+void UStateMachineComponent::HidePrevious() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
 	if(PreviousTag == DA_StateMachine->NeutralState)

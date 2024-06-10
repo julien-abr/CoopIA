@@ -22,6 +22,8 @@ public:
 	APlayerControllerBase();
 	void Init(AMainCamera* Camera, const int Index);
 
+	void LateInit() const;
+
 	UStateMachineComponent* GetStateMachineComponent() const;
 	const int GetPlayerIndex() const;
 
