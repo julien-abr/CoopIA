@@ -133,6 +133,9 @@ void ACharacterBaseIA::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UPlayerInterface::StaticClass()))
 	{
+		ACharacterBase* Character = Cast<ACharacterBase>(OtherActor);
+		if (!Character || Character->HasShieldActivate()) { return; }
+
 		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
 		Init(Index);
 		if (CurrentManager)

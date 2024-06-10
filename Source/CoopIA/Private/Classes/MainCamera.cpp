@@ -69,8 +69,8 @@ void AMainCamera::FollowPlayers()
 
 	if(m_ActorPlayer0)
 		m_arrayActors.Add(m_ActorPlayer0);
-	if (m_ActorPlayer1)
-		m_arrayActors.Add(m_ActorPlayer1);
+	//if (m_ActorPlayer1)
+		//m_arrayActors.Add(m_ActorPlayer1);
 
 	SpringArm->TargetArmLength = DACamera->DistanceCamFollow;
 	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
@@ -92,6 +92,8 @@ void AMainCamera::SetFixedPosition(FTransform Transform)
 	SpringArm->TargetArmLength = 0.f;
 	Camera->SetRelativeRotation(FRotator());
 	SetActorTransform(Transform);
+
+	//TODO::Lerp
 }
 
 void AMainCamera::SetSpline(class ASpline* NewSpline)

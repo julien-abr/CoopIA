@@ -202,21 +202,21 @@ void ASpear::Move(const FInputActionValue& Value)
 void ASpear::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
-	if (!GetCharacterMovement()->IsFalling())
+	if (!CheckIsFalling())
 		AIManager->UpdateState(EIAState::BALL);
 }
 
 void ASpear::StartNeutral()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
-	if(!GetCharacterMovement()->IsFalling())
+	if (!CheckIsFalling())
 		AIManager->UpdateState(EIAState::RANDOM_MOVE);
 }
 
 void ASpear::StartShield()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
-	if (!GetCharacterMovement()->IsFalling())
+	if (!CheckIsFalling())
 		AIManager->UpdateState(EIAState::SHIELD);
 }
 
@@ -224,10 +224,12 @@ void ASpear::Hide()
 {
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
+	GetCapsuleComponent()->SetCollisionObjectType(ChannelTransition);
 }
 
 void ASpear::Show()
 {
+	GetCapsuleComponent()->SetCollisionObjectType(ChannelPlayer);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
 }
@@ -239,5 +241,24 @@ EIAState ASpear::GetAIState_Implementation()
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	return AIManager->ManagerIndex;
+	if (AIManager)
+		return AIManager->ManagerIndex;
+	else
+		return 0;
+}
+
+bool ASpear::CheckIsFalling()
+{
+	FHitResult HitResult;
+	FVector Start = GetActorLocation();
+	FVector End = Start - (FVector::UpVector * 100);
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams());
+
+	if (HitResult.GetActor())
+		return false;
+
+	return true;
 }

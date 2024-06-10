@@ -1,5 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Classes/Ball.h"
 
@@ -80,21 +80,37 @@ int32 ABall::GetPlayerIndex_Implementation()
 	return AIManager->ManagerIndex;
 }
 
+bool ABall::CheckIsFalling()
+{
+	FHitResult HitResult;
+	FVector Start = GetActorLocation();
+	FVector End = Start - (FVector::UpVector * 150);
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams());
+
+	if (HitResult.GetActor())
+		return false;
+
+	return true;
+}
+
 void ABall::StartSpear()
 {
-	if (abs(GetVelocity().Z) <= 50.f)
+	if (!CheckIsFalling())
 		AIManager->UpdateState(EIAState::SPEAR);
 }
 
 void ABall::StartNeutral()
 {
-	if (abs(GetVelocity().Z) <= 50.f)
+	if (!CheckIsFalling())
 		AIManager->UpdateState(EIAState::RANDOM_MOVE);
 }
 
 void ABall::StartShield()
 {
-	if (abs(GetVelocity().Z) <= 50.f)
+	if (!CheckIsFalling())
 		AIManager->UpdateState(EIAState::SHIELD);
 }
 

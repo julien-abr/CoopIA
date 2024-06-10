@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Classes/Data/EIAState.h"
 #include "AIManager.generated.h"
 
-enum class EIAState;
 
 UCLASS()
 class COOPIA_API AAIManager : public AActor
@@ -124,7 +124,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<class UNavigationSystemV1> NavSystem;
 
-	EIAState IAState;
+	EIAState IAState = EIAState::RANDOM_MOVE;
 	EIAState PreviousState;
 
 	FTimerHandle Handle;
