@@ -61,12 +61,22 @@ void ARails::Tick(float DeltaTime)
 
 }
 
+void ARails::MoveWalls(float height)
+{
+	_top->AddRelativeLocation(FVector(0, 0, height));
+	_bottom->AddRelativeLocation(FVector(0, 0, height));
+	_left->AddRelativeLocation(FVector(0, 0, height));
+	_right->AddRelativeLocation(FVector(0, 0, height));
+}
+
 void ARails::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
 	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass())&& Cast<ABall>(OtherActor))
 	{
+		if (OverlappedComp == _exit) _arrow->SetRelativeLocation(_exitPos->GetRelativeLocation());
+		if (OverlappedComp == _enter) _arrow->SetRelativeLocation(_enterPos->GetRelativeLocation());
 		if (OverlappedComp == _enter || OverlappedComp == _exit)
 		{
 			if (inMainBox)
@@ -76,11 +86,9 @@ void ARails::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 			}
 			else
 			{
-				_top->AddRelativeLocation(FVector(0, 0, -1000));
-				_bottom->AddRelativeLocation(FVector(0, 0, -1000));
-				_left->AddRelativeLocation(FVector(0, 0, -1000));
-				_right->AddRelativeLocation(FVector(0, 0, -1000));
+				MoveWalls(-1000.f);
 			}
+			inEnterExitBox = true;
 			return;
 		}
 
@@ -97,15 +105,20 @@ void ARails::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 {
 	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass()) && Cast<ABall>(OtherActor))
 	{
+		if (OverlappedComp == _box)
+		{
+			if (!inEnterExitBox) MoveWalls(1000.f);
+			inMainBox = false;
+			return;
+		}
+
 		if (OverlappedComp == _enter || OverlappedComp == _exit)
 		{
 			if (!inMainBox)
 			{
-				_top->AddRelativeLocation(FVector(0, 0, 1000));
-				_bottom->AddRelativeLocation(FVector(0, 0, 1000));
-				_left->AddRelativeLocation(FVector(0, 0, 1000));
-				_right->AddRelativeLocation(FVector(0, 0, 1000));
+				MoveWalls(1000.f);
 			}
+			inEnterExitBox = false;
 			return;
 		}
 		inMainBox = false;
