@@ -63,6 +63,8 @@ public:
 
 	TArray<ACharacterBaseIA*> SplitAI();
 
+	bool CanUpdateState() const;
+
 	//============== Getter ===================
 	const AActor* GetCurrentActor() const;
 	const int GetIACount() const;

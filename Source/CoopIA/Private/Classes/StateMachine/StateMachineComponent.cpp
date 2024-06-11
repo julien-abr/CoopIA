@@ -149,6 +149,11 @@ TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
 	return CharacterIASplited;
 }
 
+bool UStateMachineComponent::CanUpdateState() const
+{
+	return CurrentStateTag != DA_StateMachine->TransitionState;
+}
+
 void UStateMachineComponent::HidePrevious() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
@@ -314,7 +319,13 @@ void UStateMachineComponent::FindLastHex()
 
 void UStateMachineComponent::IARandomMove()
 {
-	UE_LOG(LogTemp, Warning, TEXT("IA RANDOM MOVE for player: %d"), PlayerIndex);
+	//UE_LOG(LogTemp, Warning, TEXT("IA RANDOM MOVE for player: %d"), PlayerIndex);
+	if(!CurrentStateTag.MatchesTag(DA_StateMachine->NeutralState))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IA RANDOM MOVE FALSE : %s, DA : %s"), *CurrentStateTag.ToString(), *DA_StateMachine->NeutralState.ToString());
+		return;
+	}
+	
 	for(auto const IA : ArrayIA)
 	{
 		if(CurrentActor)
