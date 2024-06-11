@@ -5,12 +5,14 @@
 #include "Engine/LocalPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Classes/StateMachine/StateMachineComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Classes/Data/DataAsset/DASpear.h"
 #include "Classes/AIManager.h"
+#include "Classes/PlayerControllerBase.h"
 #include "Classes/Data/EIAState.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Logging/StructuredLog.h"
@@ -59,14 +61,18 @@ void ASpear::BeginPlay()
 	GetCapsuleComponent()->SetSimulatePhysics(false);
 }
 
-void ASpear::SetAIManager(class AAIManager* Manager)
-{
-	AIManager = Manager;
-}
-
 void ASpear::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	if(!ST)
+	{
+		if(APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(NewController))
+		{
+			ST = PlayerControllerBase->GetStateMachineComponent();
+		}
+	}
+
 	
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -202,22 +208,22 @@ void ASpear::Move(const FInputActionValue& Value)
 void ASpear::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
-	if (!CheckIsFalling())
-		AIManager->UpdateState(EIAState::BALL);
+	if (!CheckIsFalling()) {}
+		ST->UpdateState(BallTag);
 }
 
 void ASpear::StartNeutral()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
-	if (!CheckIsFalling())
-		AIManager->UpdateState(EIAState::RANDOM_MOVE);
+	if (!CheckIsFalling()){}
+		ST->UpdateState(NeutralTag);
 }
 
 void ASpear::StartShield()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
-	if (!CheckIsFalling())
-		AIManager->UpdateState(EIAState::SHIELD);
+	if (!CheckIsFalling()){}
+		ST->UpdateState(ShieldTag);
 }
 
 void ASpear::Hide()
@@ -241,10 +247,9 @@ EIAState ASpear::GetAIState_Implementation()
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	if (AIManager)
-		return AIManager->ManagerIndex;
-	else
-		return 0;
+	if (ST)
+		return ST->GetPlayerIndex();
+	return 0;
 }
 
 bool ASpear::CheckIsFalling()

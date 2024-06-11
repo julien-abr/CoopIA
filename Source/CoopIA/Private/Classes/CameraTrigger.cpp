@@ -44,7 +44,7 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		}
 	}
 
-	if (Player0 || Player1)
+	if (((Player0 || Player1) && !isTwoPlayer) || (Player0 && Player1 && isTwoPlayer))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Trigger activated : %s"), *this->GetName());
 		switch (TriggerCamera)
