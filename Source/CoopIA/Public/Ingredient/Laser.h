@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Laser.generated.h"
@@ -19,9 +22,6 @@ class COOPIA_API ALaser : public AActor
 	UPROPERTY(VisibleAnywhere)
 	UArrowComponent* _firePoint;
 
-	UPROPERTY(EditAnywhere)
-	UStaticMesh* _laserCylinder;
-
 public:	
 	// Sets default values for this actor's properties
 	ALaser();
@@ -38,13 +38,13 @@ public:
 	int reflexionNbr = 5;
 
 	UPROPERTY(EditAnywhere)
-	float laserSize = 0.1f;
+	TObjectPtr<UNiagaraSystem> laserEffect;
 
 private :
 	UFUNCTION()
-	void ReflectLaser(const FVector& start, const FVector& end, float rotZ, int count, AActor* actor);
+	void ReflectLaser(const FVector& start, const FVector& end, float rotZ, int& count, AActor* actor);
 
-	void HideAllLaser();
+	void HideAllLaser(int count);
 
-	TArray<UStaticMeshComponent*> _laserCylinderArray;
+	TArray<TObjectPtr<UNiagaraComponent>> _laserEffectArray;
 };
