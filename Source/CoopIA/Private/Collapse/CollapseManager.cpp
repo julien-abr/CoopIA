@@ -31,6 +31,7 @@ void ACollapseManager::BeginPlay()
 
 	SortPuzzleZone();
 
+	collaspeActorArray.RemoveAll([](AActor* actor){ return actor == nullptr; });
 	if (!collaspeActorArray.IsEmpty())
 		collaspeActorArray.Sort([](const AActor& a, const AActor& b) { return a.GetActorLocation().X < b.GetActorLocation().X; });
 
