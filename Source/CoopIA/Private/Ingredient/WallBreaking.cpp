@@ -23,6 +23,8 @@ void AWallBreaking::BeginPlay()
 	Super::BeginPlay();
 	
 	wall->OnComponentHit.AddDynamic(this, &AWallBreaking::OnHit);
+
+	//GetWorld()->SpawnActor(destroyActorPrefab, GetActorLocation(), GetActorRotation());
 }
 
 // Called every frame
@@ -46,4 +48,3 @@ void AWallBreaking::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		}
 	}
 }
-
