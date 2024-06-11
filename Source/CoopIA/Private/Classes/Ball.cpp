@@ -105,19 +105,19 @@ bool ABall::CheckIsFalling()
 
 void ABall::StartSpear()
 {
-	if (!CheckIsFalling())
+	if (!CheckIsFalling() && ST->CanUpdateState())
 		ST->UpdateState(SpearTag);
 }
 
 void ABall::StartNeutral()
 {
-	if (!CheckIsFalling())
+	if (!CheckIsFalling() && ST->CanUpdateState())
 		ST->UpdateState(NeutralTag);
 }
 
 void ABall::StartShield()
 {
-	if (!CheckIsFalling())
+	if (!CheckIsFalling() && ST->CanUpdateState())
 		ST->UpdateState(ShieldTag);
 }
 
