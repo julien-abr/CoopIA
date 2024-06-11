@@ -208,21 +208,21 @@ void ASpear::Move(const FInputActionValue& Value)
 void ASpear::StartBall()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
-	if (!CheckIsFalling()) {}
+	if (!CheckIsFalling() && ST->CanUpdateState())
 		ST->UpdateState(BallTag);
 }
 
 void ASpear::StartNeutral()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
-	if (!CheckIsFalling()){}
+	if (!CheckIsFalling() && ST->CanUpdateState())
 		ST->UpdateState(NeutralTag);
 }
 
 void ASpear::StartShield()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
-	if (!CheckIsFalling()){}
+	if (!CheckIsFalling() && ST->CanUpdateState())
 		ST->UpdateState(ShieldTag);
 }
 
