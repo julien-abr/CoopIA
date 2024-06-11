@@ -13,6 +13,15 @@
   <component name="ChangeListManager">
     <list default="true" id="f81690e7-72c4-44ee-b68e-30d40399b254" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.patch_0.exp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/Particles/Materials/m_flare_01.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Particles/Materials/m_flare_01.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor-ImGui.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor-ImGui.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateMachineComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateMachineComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateRevive.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateRevive.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +29,17 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../../Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/include/atomic" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/CoopIACharacter.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Private/Classes/AIManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Private/Classes/CharacterBase.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -47,29 +67,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;C++ Project.CoopIA.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;UnrealLinkOptionsId&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "C++ Project.CoopIA.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "UnrealLinkOptionsId",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\jujua\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\jujua\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\jujua\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\jujua\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\jujua\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\jujua\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C++ Project.CoopIA">
     <configuration name="CoopIA" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -295,6 +315,14 @@
       <workItem from="1715676238095" duration="2154000" />
       <workItem from="1715800137136" duration="642000" />
       <workItem from="1716275734527" duration="337000" />
+      <workItem from="1717484538516" duration="992000" />
+      <workItem from="1717490547535" duration="27000" />
+      <workItem from="1717490614215" duration="18000" />
+      <workItem from="1717490675607" duration="6179000" />
+      <workItem from="1717657039939" duration="4697000" />
+      <workItem from="1717743572334" duration="10110000" />
+      <workItem from="1718006031001" duration="1855000" />
+      <workItem from="1718008002224" duration="1135000" />
     </task>
     <servers />
   </component>
@@ -316,6 +344,17 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateMachineComponent.cpp</url>
+          <line>127</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

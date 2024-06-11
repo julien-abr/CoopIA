@@ -9,7 +9,10 @@
 #include "GameFramework/Character.h"
 #include "CharacterBaseIA.generated.h"
 
+class UDA_IA;
+class UDA_UI;
 struct FGameplayTagContainer;
+class UStateMachineComponent;
 
 UCLASS()
 class COOPIA_API ACharacterBaseIA : public ACharacter, public IInteract, public IGameplayTagAssetInterface
@@ -50,14 +53,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void Hide();
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;
 	
-	void Hide();
-
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
@@ -70,22 +73,19 @@ private:
 	UFUNCTION()
 		void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UPROPERTY()
-		TObjectPtr<class AAIManager> Manager;
-
 	UPROPERTY(EditAnywhere)
-		TObjectPtr<class UDA_IA> DataAssetIA;
+		TObjectPtr<UDA_IA> DataAssetIA;
 
 
 	UPROPERTY(EditAnywhere)
-		TObjectPtr<class UDA_UI> DA_UI;
+		TObjectPtr<UDA_UI> DA_UI;
 		
 	UPROPERTY()
-		TObjectPtr<class AAIManager> Manager0;
+		TObjectPtr<UStateMachineComponent> ST_Player0;
 
 	UPROPERTY()
-		TObjectPtr<class AAIManager> Manager1;
+		TObjectPtr<UStateMachineComponent> ST_Player1;
 
 	UPROPERTY()
-		TObjectPtr<class AAIManager> CurrentManager;
+		TObjectPtr<UStateMachineComponent> CurrentST;
 };

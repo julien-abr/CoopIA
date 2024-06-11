@@ -8,8 +8,10 @@
 #include "Classes/CharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
+#include "Classes/StateMachine/StateMachineComponent.h"
 
 //lib
+#include "Classes/PlayerControllerBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -28,13 +30,13 @@ void ACharacterBaseIA::Init(const int32 Index)
 	USkeletalMeshComponent* MeshIA = GetMesh();
 	if (Index == 0)
 	{
-		CurrentManager = Manager0;
+		CurrentST = ST_Player0;
 		MeshIA->SetMaterial(0, DA_UI->GreenIA_Mat0);
 		MeshIA->SetMaterial(1, DA_UI->GreenIA_Mat1);
 	}
 	else
 	{
-		CurrentManager = Manager1;
+		CurrentST = ST_Player1;
 		MeshIA->SetMaterial(0, DA_UI->RedIA_Mat0);
 		MeshIA->SetMaterial(1, DA_UI->RedIA_Mat1);	
 	}
@@ -50,30 +52,28 @@ void ACharacterBaseIA::BeginPlay()
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACharacterBaseIA::OnHit);
 
-	TArray<AActor*> arrayManagers;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIManager::StaticClass(), arrayManagers);
+	TArray<AActor*> ArrayPlayerControllerBase;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerControllerBase::StaticClass(), ArrayPlayerControllerBase);
 
-	for (auto ManagerActor : arrayManagers)
+	for (auto ActorController : ArrayPlayerControllerBase)
 	{
-		AAIManager* ManagerIA = Cast<AAIManager>(ManagerActor);
-		if(ManagerIA->ManagerIndex == 0)
+		APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(ActorController);
+		if(PlayerControllerBase->GetPlayerIndex() == 0)
 		{
-			Manager0 = ManagerIA;
+			ST_Player0 = PlayerControllerBase->GetStateMachineComponent();
 		}
 		else
 		{
-			Manager1 = ManagerIA;
+			ST_Player1 =  PlayerControllerBase->GetStateMachineComponent();
 		}
 	}
 
 	if (!bIAtoReceive)
 	{
 		Init(PlayerIndex);
-		if (CurrentManager)
-			CurrentManager->AddPlayer(this);
+		if (CurrentST)
+			CurrentST->AddPlayer(this);
 	}
-
-	
 }
 
 void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -117,8 +117,8 @@ void ACharacterBaseIA::Show()
 
 void ACharacterBaseIA::Succeeded()
 {
-	if(CurrentManager)
-		CurrentManager->IASucceededTransition();
+	//if(CurrentST)
+		//CurrentST->IASucceededTransition();
 	Hide();
 }
 
@@ -138,8 +138,8 @@ void ACharacterBaseIA::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 
 		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
 		Init(Index);
-		if (CurrentManager)
-			CurrentManager->AddPlayer(this);
+		if (CurrentST)
+			CurrentST->AddPlayer(this);
 		bIAtoReceive = false;
 	}
 }

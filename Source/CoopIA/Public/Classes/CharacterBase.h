@@ -9,6 +9,7 @@
 #include "Data/Interface/Interact.h"
 #include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Character.h"
+#include "StateMachine/StateMachineComponent.h"
 #include "CharacterBase.generated.h"
 
 class UInputMappingContext;
@@ -17,6 +18,9 @@ class UDAPlayer;
 class UDAShield;
 struct FInputActionValue;
 struct FGameplayTagContainer;
+class UDA_UI;
+class AShield;
+class UStateMachineComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacterBase, Log, All);
 
@@ -87,12 +91,12 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	void Init(UStateMachineComponent* StateMachineComponent);
+
 	virtual EIAState GetAIState_Implementation() override;
 	virtual int32 GetPlayerIndex_Implementation() override;
 
 	const bool HasShieldActivate() const { return bIsShieldActivate;}
-
-	void Init(class AAIManager* Manager);
 
 	void SetupShield(class AShield* Shield);
 	void DeactivateShield();
@@ -107,6 +111,19 @@ public:
 
 	UFUNCTION()
 	void ImpulseTowardActor();
+
+	//Sound Event
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEnterNeutral();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMoveNeutral();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnMoveShield();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDie();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRevive();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -137,16 +154,33 @@ private:
 	FGameplayTagContainer ActorTags;
 
 	UPROPERTY(EditAnywhere)
-		TObjectPtr<class UDA_UI> DA_UI;
+		TObjectPtr<UDA_UI> DA_UI;
 
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<ECollisionChannel> collisionChannelDead;
 
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<ECollisionChannel> collisionChannelAlive;
-	
-	TObjectPtr<class AAIManager> AIManager;
-	TObjectPtr<class AShield> ShieldActor;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag SpearTag;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag BallTag;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag ShieldTag;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag NeutralTag;
+
+	UPROPERTY()
+	TObjectPtr<UStateMachineComponent> ST;
+
+	UPROPERTY()
+	TObjectPtr<AShield> ShieldActor;
+
+
 
 	bool bIsShieldActivate;
 

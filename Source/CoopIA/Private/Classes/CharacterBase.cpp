@@ -14,6 +14,8 @@
 #include "Classes/DeathManager.h"
 #include "Classes/Shield.h"
 #include "Classes/GameStateBaseCoop.h"
+#include "Classes/PlayerControllerBase.h"
+#include "Classes/StateMachine/StateMachineComponent.h"
 
 #include "Classes/Data/DataAsset/DAPlayer.h"
 #include "Classes/Data/DataAsset/DAShield.h"
@@ -61,11 +63,14 @@ ACharacterBase::ACharacterBase()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
-void ACharacterBase::Init(AAIManager* Manager)
+void ACharacterBase::Init(UStateMachineComponent* StateMachineComponent)
 {
-	AIManager = Manager;
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnBoxBeginOverlap);
-	SetMaterial(false);
+	if(!ST)
+	{
+		ST = StateMachineComponent;
+		GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharacterBase::OnBoxBeginOverlap);
+		SetMaterial(false);
+	}
 }
 
 void ACharacterBase::ImpulseTowardActor()
@@ -91,7 +96,6 @@ void ACharacterBase::BeginPlay()
 void ACharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	
 	SetupDefaultMapping();
 }
 
@@ -144,7 +148,7 @@ EIAState ACharacterBase::GetAIState_Implementation()
 
 int32 ACharacterBase::GetPlayerIndex_Implementation()
 {
-	return AIManager->ManagerIndex;
+	return ST->GetPlayerIndex();
 }
 
 void ACharacterBase::Move(const FInputActionValue& Value)
@@ -202,7 +206,7 @@ void ACharacterBase::SetMaterial(bool bIsDead)
 	else
 	{
 		//Player0 == Green
-		if (AIManager->ManagerIndex == 0)
+		if (ST->GetPlayerIndex() == 0)
 		{
 			MeshPlayer->SetMaterial(0, DA_UI->PlayerGreenIA_Mat0);
 			MeshPlayer->SetMaterial(1, DA_UI->PlayerGreenIA_Mat1);
@@ -249,8 +253,8 @@ void ACharacterBase::SetupDeadMapping()
 
 void ACharacterBase::StartSpear()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Spear"));
-	AIManager->UpdateState(EIAState::SPEAR);
+	UE_LOGFMT(LogTemp, Warning, "Input Spear - #{0}", GetPlayerIndex_Implementation());
+	ST->UpdateState(SpearTag);
 }
 
 void ACharacterBase::Died()
@@ -282,8 +286,8 @@ void ACharacterBase::Revive()
 
 void ACharacterBase::StartShield()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Shield"));
-	AIManager->UpdateState(EIAState::SHIELD);
+	UE_LOGFMT(LogTemp, Warning, "Input Shield - #{0}", GetPlayerIndex_Implementation());
+	ST->UpdateState(ShieldTag);
 	if(DAShield)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = DAShield->MaxSpeed;
@@ -292,17 +296,17 @@ void ACharacterBase::StartShield()
 
 void ACharacterBase::StartBall()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Ball"));
+	UE_LOGFMT(LogTemp, Warning, "Input Ball - #{0}", GetPlayerIndex_Implementation());
 	if (!GetCharacterMovement()->IsFalling())
-		AIManager->UpdateState(EIAState::BALL);
+		ST->UpdateState(BallTag);
 }
 
 void ACharacterBase::StartNeutral()
 {
 	if(bIsShieldActivate)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Input Neutral"));
-		AIManager->UpdateState(EIAState::RANDOM_MOVE);
+		UE_LOGFMT(LogTemp, Warning, "Input Neutral - #{0}", GetPlayerIndex_Implementation());
+		ST->UpdateState(NeutralTag);
 	}
 }
 
