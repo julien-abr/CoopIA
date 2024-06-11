@@ -31,6 +31,7 @@ class COOPIA_API UStateMachineComponent : public UActorComponent
 	friend class UStateShield;
 	friend class UStateRevive;
 	friend class UStateTransition;
+	friend class UStateGameOver;
 	
 	GENERATED_BODY()
 
@@ -57,6 +58,8 @@ public:
 	void AddPlayer(ACharacterBaseIA* IACharacter);
 	
 	void RemoveAI(ACharacterBaseIA* CharacterAI);
+	
+	void DestroyIA();
 
 	TArray<ACharacterBaseIA*> SplitAI();
 
@@ -87,8 +90,6 @@ private:
 	void ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ, int& count);
 
 	void HideIA();
-
-	void DestroyIA();
 
 	UPROPERTY(VisibleInstanceOnly)
 	TObjectPtr<UState> CurrentState;
@@ -137,6 +138,4 @@ private:
 	int PlayerIndex;
 	
 	FTimerHandle HandleHexRaycast;
-
-	//int8 NumberIAToSucceed;
 };

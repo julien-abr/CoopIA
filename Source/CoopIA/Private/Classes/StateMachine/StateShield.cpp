@@ -53,4 +53,6 @@ void UStateShield::OnStateTick()
 void UStateShield::OnStateLeave()
 {
 	Super::OnStateLeave();
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	TimerHandle.Invalidate();
 }
