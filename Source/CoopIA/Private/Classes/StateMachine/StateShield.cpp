@@ -40,8 +40,7 @@ void UStateShield::OnStateEnter(class UStateMachineComponent*& StateMachineCompo
 	ST->ShieldActor->Show();
 	//TODO::Leave shield here and not in Hide
 	ST->Player->SetupShield(ST->ShieldActor);
-
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&] { ST->IARandomMove();}), ST->DA_StateMachine->DataAssetIA->RandomMoveTime, true);
+	
 	UE_LOG(LogTemp, Warning, TEXT("SHIELD => OK"));
 }
 

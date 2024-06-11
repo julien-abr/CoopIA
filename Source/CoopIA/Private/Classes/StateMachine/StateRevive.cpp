@@ -20,8 +20,8 @@ void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRe
 	ST->HidePrevious();
 	ST->PlayerController->UnPossess();
 	ST->PlayerController->SetControlRotation(FRotator());
-
-	//TODO::Puzzle or Other Map
+	
+	//TODO::Reset velocity player
 	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
 	if (GameState && GameState->GetZoneType() == EZoneType::Puzzle)
 	{
