@@ -40,4 +40,6 @@ void UStateNeutral::OnStateTick()
 void UStateNeutral::OnStateLeave()
 {
 	Super::OnStateLeave();
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	TimerHandle.Invalidate();
 }
