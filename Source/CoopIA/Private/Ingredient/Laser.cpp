@@ -53,7 +53,6 @@ void ALaser::Tick(float DeltaTime)
 	int count = 0;
 
 	ReflectLaser(start, end, _body->GetComponentRotation().Yaw, count, this);
-	UE_LOGFMT(LogTemp, Log, "{0}", count);
 	HideAllLaser(count + 1);
 }
 
@@ -90,6 +89,7 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 
 		return;
 	}
+
 	_laserEffectArray[count]->SetVisibility(true);
 	_laserEffectArray[count]->SetNiagaraVariableVec3(FString("Beam End"), end);
 }
