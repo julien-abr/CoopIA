@@ -56,6 +56,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void GetAllHex();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCorruptionStart();
 private:
 	UPROPERTY()
 	TMap<int, FHexArray> _hexLineMap;

@@ -26,6 +26,9 @@ public:
 
 	virtual void RayHitAction_Implementation() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRayHit();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> _door;
 };
