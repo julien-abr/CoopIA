@@ -3,14 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/GameStateBase.h"
 #include "Classes/Data/Enum/ZoneType.h"
 #include "Classes/Data/Enum/PlayerGlobalState.h"
 #include "Data/Enum/ELevelSide.h"
 #include "GameStateBaseCoop.generated.h"
 
+class UStateMachineComponent;
 class ADeathManager;
 class AAIManager;
+class APlayerControllerBase;
 /**
  * 
  */
@@ -22,31 +25,40 @@ class COOPIA_API AGameStateBaseCoop : public AGameStateBase
 public:
 	AGameStateBaseCoop();
 	
-	void Init(TArray<AAIManager*>& ArrayAIManager);
+	void Init(TArray<APlayerControllerBase*>& ArrayPlayerController);
 	
-	EZoneType GetZoneType() { return ZoneType; }
-	ELevelSide GetLevelSide() {return LevelSide;}
-	const FVector GetRespawnLoc() { return RespawnLoc; }
+	EZoneType GetZoneType() const { return ZoneType; }
+	ELevelSide GetLevelSide() const {return LevelSide;}
+	FVector GetRespawnLoc() const { return RespawnLoc; }
 
 	void SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side, const FVector Location);
 
-	const AActor* GetPlayer(int Index);
+	const AActor* GetPlayer(int Index) const;
 
-	EPlayerGlobalState GetPlayer0GlobalState() {return Player0GlobalState;}
-	EPlayerGlobalState GetPlayer1GlobalState() {return Player1GlobalState;}
+	EPlayerGlobalState GetPlayer0GlobalState() const {return Player0GlobalState;}
+	EPlayerGlobalState GetPlayer1GlobalState() const {return Player1GlobalState;}
 	
 private:
 	UPROPERTY()
-	TObjectPtr<AAIManager> AIManager0;
+	TObjectPtr<UStateMachineComponent> ST_Player0;
 
 	UPROPERTY()
-	TObjectPtr<AAIManager> AIManager1;
+	TObjectPtr<UStateMachineComponent> ST_Player1;
 	
 	UPROPERTY(VisibleAnywhere)
 	EZoneType ZoneType = EZoneType::Running;
 
 	UPROPERTY(VisibleAnywhere)
 	FVector RespawnLoc;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag DeadTag;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag ReviveTag;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag GameOverTag;
 
 	ELevelSide LevelSide = ELevelSide::MIDDLE;
 
@@ -67,5 +79,5 @@ private:
 	UFUNCTION()
 	void OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState);
 
-	void CheckGameOver();
+	bool IsGameOver() const;
 };

@@ -8,8 +8,8 @@
 #include "GameplayTagContainer.h"
 #include "DeathManager.generated.h"
 
-class AAIManager;
 class UBoxComponent;
+class UStateMachineComponent;
 
 // Delegate signature
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPlayerGlobalStateChangedSignature, int32 /* PlayerIndex */, EPlayerGlobalState /* NewPlayerState */);
@@ -36,10 +36,10 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<AAIManager> Manager0;
+	TObjectPtr<UStateMachineComponent> ST_Player0;
 
 	UPROPERTY()
-	TObjectPtr<AAIManager> Manager1;
+	TObjectPtr<UStateMachineComponent> ST_Player1;
 
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))
 	FGameplayTag PlayerTag;

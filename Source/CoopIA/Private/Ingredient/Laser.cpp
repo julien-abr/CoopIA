@@ -22,11 +22,6 @@ ALaser::ALaser()
 
 	_firePoint = CreateDefaultSubobject<UArrowComponent>("FirePoint");
 	_firePoint->SetupAttachment(_body);
-
-	//_body->SetStaticMesh(_laserCylinder);
-
-	//_laserCylinder = CreateDefaultSubobject<UStaticMeshComponent>("Laser");
-	//_laserCylinder->SetupAttachment(_firePoint);
 }
 
 // Called when the game starts or when spawned
@@ -34,21 +29,17 @@ void ALaser::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!laserEffect)
+		return;
+
 	for(int i = 0; i < reflexionNbr; i++)
 	{
-		//UStaticMeshComponent* a = CreateDefaultSubobject<UStaticMeshComponent>(std::to_string(i).c_str());
-		UStaticMeshComponent* meshComp = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), std::to_string(i).c_str());
-		meshComp->RegisterComponent();
-		meshComp->AttachToComponent(_firePoint, FAttachmentTransformRules::KeepRelativeTransform);
-		meshComp->CreationMethod = EComponentCreationMethod::Instance;
-		meshComp->SetStaticMesh(_laserCylinder);
-		meshComp->SetRelativeLocation(FVector());
-		meshComp->SetRelativeRotation(FRotator(-90, 0, 0));
-		meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		_laserCylinderArray.Add(meshComp);
+		TObjectPtr<UNiagaraComponent> NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(laserEffect, _firePoint, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
+		NiagaraComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		_laserEffectArray.Add(NiagaraComp);
 	}
 
-	HideAllLaser();
+	HideAllLaser(0);
 }
 
 // Called every frame
@@ -61,11 +52,11 @@ void ALaser::Tick(float DeltaTime)
 
 	int count = 0;
 
-	HideAllLaser();
 	ReflectLaser(start, end, _body->GetComponentRotation().Yaw, count, this);
+	HideAllLaser(count + 1);
 }
 
-void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, int count, AActor* actor)
+void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, int& count, AActor* actor)
 {
 	if (count >= reflexionNbr)
 		return;
@@ -73,14 +64,13 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 	FCollisionQueryParams param;
 	param.AddIgnoredActor(actor);
 
-	_laserCylinderArray[count]->SetWorldLocation(start);
-	_laserCylinderArray[count]->SetWorldRotation(FRotator(-90, rotZ, 0));
+	_laserEffectArray[count]->SetWorldLocation(start);
 
 	FHitResult hitResult;
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic, param))
 	{
-		_laserCylinderArray[count]->SetVisibility(true);
-		_laserCylinderArray[count]->SetWorldScale3D(FVector(laserSize, laserSize, (hitResult.Distance + 1) / 100));
+		_laserEffectArray[count]->SetVisibility(true);
+		_laserEffectArray[count]->SetNiagaraVariableVec3(FString("Beam End"), hitResult.ImpactPoint);
 
 		if(hitResult.GetActor()->Implements<URayHit>())
 		{
@@ -89,7 +79,6 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 
 		if(hitResult.GetActor()->ActorHasTag("Reflect"))
 		{
-
 			FVector hitPos = hitResult.ImpactPoint;
 			FVector dir = (end - start).GetUnsafeNormal();
 			FVector reflectDir = dir - 2 * UKismetMathLibrary::Dot_VectorVector(dir, hitResult.ImpactNormal) * hitResult.ImpactNormal;
@@ -100,16 +89,15 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 
 		return;
 	}
-	_laserCylinderArray[count]->SetVisibility(true);
-	_laserCylinderArray[count]->SetWorldScale3D(FVector(laserSize, laserSize, (end.Length() + 1) / 100));
+
+	_laserEffectArray[count]->SetVisibility(true);
+	_laserEffectArray[count]->SetNiagaraVariableVec3(FString("Beam End"), end);
 }
 
-void ALaser::HideAllLaser()
+void ALaser::HideAllLaser(int count)
 {
-	for(int i = 0; i < _laserCylinderArray.Num(); i++)
+	for(int i = count; i < _laserEffectArray.Num(); i++)
 	{
-		_laserCylinderArray[i]->SetVisibility(false);
+		_laserEffectArray[i]->SetVisibility(false);
 	}
 }
-
-//hitResult.GetActor()->IsA<>()

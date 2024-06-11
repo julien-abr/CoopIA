@@ -4,10 +4,10 @@
 #include "Classes/GameStateBaseCoop.h"
 #include "Classes/AIManager.h"
 #include "Classes/DeathManager.h"
+#include "Classes/PlayerControllerBase.h"
 
 //Libraries
-#include "Classes/Data/EIAState.h"
-#include "Classes/AIManager.h"
+#include "Classes/StateMachine/StateMachineComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameStateBaseCoop::AGameStateBaseCoop()
@@ -22,10 +22,19 @@ AGameStateBaseCoop::AGameStateBaseCoop()
 	}
 }
 
-void AGameStateBaseCoop::Init(TArray<AAIManager*>& ArrayAIManager)
+void AGameStateBaseCoop::Init(TArray<APlayerControllerBase*>& ArrayPlayerController)
 {
-	AIManager0 = ArrayAIManager[0];
-	AIManager1 = ArrayAIManager[1];
+	for (const auto PlayerController : ArrayPlayerController)
+	{
+		if(PlayerController->GetPlayerIndex() == 0)
+		{
+			ST_Player0 = PlayerController->GetStateMachineComponent();
+		}
+		else
+		{
+			ST_Player1 = PlayerController->GetStateMachineComponent();
+		}
+	}
 }
 
 void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side, const FVector Location)
@@ -35,15 +44,15 @@ void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Si
 	RespawnLoc = Location;
 }
 
-const AActor* AGameStateBaseCoop::GetPlayer(int Index)
+const AActor* AGameStateBaseCoop::GetPlayer(int Index) const
 {
 	if(Index == 0)
 	{	
-		return AIManager0->GetCurrentActor();
+		return ST_Player0->GetCurrentActor();
 	}
 	else if(Index == 1)
 	{
-		return AIManager1->GetCurrentActor();
+		return ST_Player1->GetCurrentActor();
 	}
 	return nullptr;
 }
@@ -54,14 +63,18 @@ void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGl
 	{
 		if(Player0GlobalState != NewPlayerState)
 		{		
-			Player0GlobalState = NewPlayerState;		
-			if(NewPlayerState == EPlayerGlobalState::Alive)
-			{
-				AIManager0->UpdateState(EIAState::REVIVE);
-			}
+			Player0GlobalState = NewPlayerState;
+			if(IsGameOver()){}
 			else
-			{			
-				AIManager0->UpdateState(EIAState::DEAD);
+			{
+				if(NewPlayerState == EPlayerGlobalState::Alive)
+				{
+					ST_Player0->UpdateState(ReviveTag);
+				}
+				else
+				{			
+					ST_Player0->UpdateState(DeadTag);
+				}
 			}
 		}
 	}
@@ -70,30 +83,39 @@ void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGl
 		if(Player1GlobalState != NewPlayerState)
 		{		
 			Player1GlobalState = NewPlayerState;
-			if(NewPlayerState == EPlayerGlobalState::Alive)
-			{
-				AIManager1->UpdateState(EIAState::REVIVE);
-			}
+			if(IsGameOver()){}
 			else
-			{			
-				AIManager1->UpdateState(EIAState::DEAD);
+			{
+				if(NewPlayerState == EPlayerGlobalState::Alive)
+				{
+				
+					ST_Player1->UpdateState(ReviveTag);
+				}
+				else
+				{			
+					ST_Player1->UpdateState(DeadTag);
+				}
 			}
 		}
 	}
-
-	CheckGameOver();
 }
 
-void AGameStateBaseCoop::CheckGameOver()
+bool AGameStateBaseCoop::IsGameOver() const
 {
-	if(Player0GlobalState == EPlayerGlobalState::Dead && Player1GlobalState == EPlayerGlobalState::Dead)
+	bool bGameOver = false;
+
+	if ((Player0GlobalState == EPlayerGlobalState::Dead && Player1GlobalState == EPlayerGlobalState::Dead) ||
+		(Player0GlobalState == EPlayerGlobalState::Dead && ST_Player1->GetIACount() <= 1) ||
+		(Player1GlobalState == EPlayerGlobalState::Dead && ST_Player0->GetIACount() <= 1))
 	{
-		//Play game over menu
-		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
+		bGameOver = true;
+		ST_Player0->UpdateStateFromTransition(GameOverTag);
+		ST_Player1->UpdateStateFromTransition(GameOverTag);
+
+		FTimerHandle timer;
+		GetWorldTimerManager().SetTimer(timer, FTimerDelegate::CreateLambda([&] { UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap); }), 1.0f, false);
+		
 	}
-	else if (Player0GlobalState == EPlayerGlobalState::Dead && AIManager1->GetIAcount() <= 1 || Player1GlobalState == EPlayerGlobalState::Dead && AIManager0->GetIAcount() <= 1)
-	{
-		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap);
-	}
+	return bGameOver;
 }
 

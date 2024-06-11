@@ -23,6 +23,9 @@ public:
 	// Sets default values for this actor's properties
 	ACameraTrigger();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isTwoPlayer = true;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

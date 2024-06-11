@@ -13,7 +13,7 @@ class COOPIA_API AWallBreaking : public AActor
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> wall;
-	
+
 public:	
 	// Sets default values for this actor's properties
 	AWallBreaking();
@@ -26,8 +26,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> destroyActorPrefab;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWallBreak();
+
+private:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

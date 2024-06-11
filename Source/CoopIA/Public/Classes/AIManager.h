@@ -7,6 +7,10 @@
 #include "Classes/Data/EIAState.h"
 #include "AIManager.generated.h"
 
+class UStateMachineComponent;
+class APlayerControllerBase;
+class ACharacterBase;
+class AMainCamera;
 
 UCLASS()
 class COOPIA_API AAIManager : public AActor
@@ -17,7 +21,7 @@ public:
 	// Sets default values for this actor's properties
 	AAIManager();
 
-	void Init(class ACharacterBase* Character, class AMainCamera* Camera);
+	void Init(APlayerControllerBase* PlayerControllerRef);
 	
 	void AddPlayer(class ACharacterBaseIA* IA);
 
@@ -34,9 +38,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	int32 ManagerIndex;
 
@@ -79,6 +80,9 @@ private:
 
 	void TeleportIA();
 	void TeleportIAFailed(ACharacterBaseIA* IA, FVector PlayerLoc, float DestinationZ);
+
+	UPROPERTY(VisibleInstanceOnly)
+	TObjectPtr<UStateMachineComponent> StateMachineComponent;
 	
 	UPROPERTY(EditAnywhere, category = "c++", meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UDA_IA> DataAssetIA;

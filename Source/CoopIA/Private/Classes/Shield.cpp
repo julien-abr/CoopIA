@@ -17,7 +17,6 @@ AShield::AShield()
 void AShield::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AShield::SetOwner(class ACharacterBase* Character)

@@ -34,6 +34,9 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPressure();
+
 	UPROPERTY(EditAnywhere)
 	bool isUnique;
 
