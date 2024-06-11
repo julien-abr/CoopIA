@@ -17,7 +17,6 @@ public:
 	virtual void OnStateEnter(class UStateMachineComponent*& StateMachineComponentRef) override;
 	virtual void OnStateTick() override;
 	virtual void OnStateLeave() override;
-
 private:
 	FTimerHandle TimerHandle;
 };

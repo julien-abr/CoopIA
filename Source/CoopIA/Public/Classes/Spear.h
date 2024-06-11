@@ -81,6 +81,15 @@ public:
 
 	ESpearState GetSpearState() { return SpearState; }
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEnterSpear();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDashLoad();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDash();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

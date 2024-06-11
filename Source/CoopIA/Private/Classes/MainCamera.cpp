@@ -69,8 +69,8 @@ void AMainCamera::FollowPlayers()
 
 	if(m_ActorPlayer0)
 		m_arrayActors.Add(m_ActorPlayer0);
-	//if (m_ActorPlayer1)
-		//m_arrayActors.Add(m_ActorPlayer1);
+	if (m_ActorPlayer1 && isTwoPlayer)
+		m_arrayActors.Add(m_ActorPlayer1);
 
 	SpringArm->TargetArmLength = DACamera->DistanceCamFollow;
 	const FVector AverragePlayersLoc = UGameplayStatics::GetActorArrayAverageLocation(m_arrayActors);
