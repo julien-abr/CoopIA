@@ -135,16 +135,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 }
 
-EIAState ACharacterBase::GetAIState_Implementation()
-{
-	if(bIsShieldActivate)
-	{
-		return EIAState::RANDOM_MOVE;
-	}
-	
-	return EIAState::SHIELD;
-}
-
 int32 ACharacterBase::GetPlayerIndex_Implementation()
 {
 	return ST->GetPlayerIndex();
@@ -172,6 +162,11 @@ void ACharacterBase::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
+
+	if (ST->GetCurrentState() == ShieldTag)
+		OnMoveShield();
+	else if (ST->GetCurrentState() == NeutralTag)
+		OnMoveNeutral();
 }
 
 void ACharacterBase::Hide()
@@ -262,6 +257,7 @@ void ACharacterBase::Died()
 	CharacterMovementComponent->GroundFriction = 0.f;
 	CharacterMovementComponent->BrakingDecelerationWalking = 200;
 	CharacterMovementComponent->BrakingDecelerationFalling = 200;
+	OnDie();
 }
 
 void ACharacterBase::Revive() const
@@ -297,6 +293,7 @@ void ACharacterBase::StartNeutral()
 	{
 		UE_LOGFMT(LogTemp, Warning, "Input Neutral - #{0}", GetPlayerIndex_Implementation());
 		ST->UpdateState(NeutralTag);
+		OnEnterNeutral();
 	}
 }
 

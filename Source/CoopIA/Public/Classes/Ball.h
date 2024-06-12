@@ -50,9 +50,6 @@ public:
 	
 	void Hide();
 	void Show();
-	
-	//Interface IPlayerInterface
-	virtual EIAState GetAIState_Implementation() override;
 
 	virtual int32 GetPlayerIndex_Implementation() override;
 

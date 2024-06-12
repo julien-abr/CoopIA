@@ -127,6 +127,8 @@ void AHexBehaviour::SecondPreventAnim()
 
 void AHexBehaviour::FallAnim()
 {
+	_isDead = true;
+
 	if (!_dMatGrassDisolve || !_dMatFloorDisolve)
 		UE_LOGFMT(LogTemp, Log, "Ya un serpent dans ma botte");
 
