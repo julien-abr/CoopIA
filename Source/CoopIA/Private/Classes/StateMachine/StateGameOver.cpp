@@ -15,7 +15,6 @@ void UStateGameOver::OnStateEnter(class UStateMachineComponent*& StateMachineCom
 	Super::OnStateEnter(StateMachineComponentRef);
 	
 	UE_LOGFMT(LogTemp, Warning, "Enter GameOver - #{0}", ST->PlayerIndex);
-	ST->HidePrevious();
 	ST->DestroyIA();
 	ST->MainCamera->SetPlayer(nullptr, ST->PlayerIndex);
 	ST->PlayerController->UnPossess();
@@ -28,9 +27,7 @@ void UStateGameOver::OnStateEnter(class UStateMachineComponent*& StateMachineCom
 		ST->Player->SetActorLocation(GameState->GetRespawnLoc(), false, nullptr, ETeleportType::TeleportPhysics);
 	}
 	ST->Player->SetActorRelativeRotation(ST->Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
-	ST->PlayerController->Possess(ST->Player);
-
-	
+	ST->PlayerController->Possess(ST->Player);	
 }
 
 void UStateGameOver::OnStateTick()

@@ -11,19 +11,19 @@ void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineCompone
 	Super::OnStateEnter(StateMachineComponentRef);
 	UE_LOG(LogTemp, Warning, TEXT("Enter STATE TRANSITION"));
 
-	 
-	const bool bShouldPlayTransition = (ST->NextTag != FGameplayTag::EmptyTag && ST->NextTag != ST->DA_StateMachine->NeutralState);
 
-	if(bShouldPlayTransition)
+	if(ST->NextTag != FGameplayTag::EmptyTag && ST->NextTag != ST->DA_StateMachine->NeutralState)
 	{
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
 		{
 			//VFX HERE
+			UE_LOG(LogTemp, Warning, TEXT("Play vfx transition"));
 			ST->UpdateStateFromTransition(ST->NextTag);
-		}), 0.5, false);
+		}), ST->DA_StateMachine->TransitonTime, false);
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("No vfx transition"));
 		ST->UpdateStateFromTransition(ST->NextTag);
 	}
 }
@@ -37,4 +37,8 @@ void UStateTransition::OnStateLeave()
 {
 	Super::OnStateLeave();
 	UE_LOG(LogTemp, Warning, TEXT("TRANSITION => OK"));
+	if (ST->OnHidePrevious.IsBound())
+	{
+		ST->OnHidePrevious.Execute();
+	}
 }
