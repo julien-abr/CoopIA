@@ -123,7 +123,7 @@ const int UStateMachineComponent::GetIACount() const
 
 void UStateMachineComponent::RemoveAI(ACharacterBaseIA* CharacterAI)
 {
-	if(CharacterAI)
+	if(CharacterAI->IsValidLowLevel())
 		ArrayIA.Remove(CharacterAI);
 }
 
