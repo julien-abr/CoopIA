@@ -75,6 +75,8 @@ void ARails::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 
 	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass())&& Cast<ABall>(OtherActor))
 	{
+		boulesInRails.AddUnique(OtherActor);
+
 		if (OverlappedComp == _exit) _arrow->SetRelativeLocation(_exitPos->GetRelativeLocation());
 		if (OverlappedComp == _enter) _arrow->SetRelativeLocation(_enterPos->GetRelativeLocation());
 		if (OverlappedComp == _enter || OverlappedComp == _exit)
@@ -86,7 +88,8 @@ void ARails::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 			}
 			else
 			{
-				MoveWalls(-1000.f);
+				if (boulesInRails.Num() == 1)
+					MoveWalls(-1000.f);
 			}
 			inEnterExitBox = true;
 			return;
@@ -107,7 +110,12 @@ void ARails::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	{
 		if (OverlappedComp == _box)
 		{
-			if (!inEnterExitBox) MoveWalls(1000.f);
+			if (!inEnterExitBox)
+			{
+				boulesInRails.Remove(OtherActor);
+				if (boulesInRails.Num() == 0)
+					MoveWalls(1000.f);
+			}
 			inMainBox = false;
 			return;
 		}
@@ -116,7 +124,9 @@ void ARails::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		{
 			if (!inMainBox)
 			{
-				MoveWalls(1000.f);
+				boulesInRails.Remove(OtherActor);
+				if (boulesInRails.Num() == 0)
+					MoveWalls(1000.f);
 			}
 			inEnterExitBox = false;
 			return;
