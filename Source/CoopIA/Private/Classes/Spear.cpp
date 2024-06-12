@@ -240,16 +240,10 @@ void ASpear::Show()
 	SetActorHiddenInGame(false);
 }
 
-EIAState ASpear::GetAIState_Implementation()
-{
-	return EIAState::SPEAR;
-}
-
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	if (ST)
-		return ST->GetPlayerIndex();
-	return 0;
+	checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+	return ST->GetPlayerIndex();
 }
 
 bool ASpear::CheckIsFalling()

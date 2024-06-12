@@ -92,8 +92,7 @@ public:
 	ACharacterBase();
 
 	void Init(UStateMachineComponent* StateMachineComponent);
-
-	virtual EIAState GetAIState_Implementation() override;
+	
 	virtual int32 GetPlayerIndex_Implementation() override;
 
 	const bool HasShieldActivate() const { return bIsShieldActivate;}
