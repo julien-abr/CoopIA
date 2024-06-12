@@ -20,6 +20,8 @@ class AShield;
 class AMainCamera;
 class UNavigationSystemV1;
 
+DECLARE_DELEGATE(FHideDelegate);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COOPIA_API UStateMachineComponent : public UActorComponent
 {
@@ -67,22 +69,24 @@ public:
 
 	//============== Getter ===================
 	const AActor* GetCurrentActor() const;
-	const int GetIACount() const;
+	int GetIACount() const;
 	const FGameplayTag& GetCurrentState() const;
-	const int GetPlayerIndex() const;
+	int GetPlayerIndex() const;
 	
 private:
+	FHideDelegate OnHidePrevious;
+	
 	void InitializeState(const FGameplayTag& Tag);
 
 	void AddToHistoric(const FGameplayTag& Tag);
 
-	void HidePrevious() const;
+	void Hide(const FGameplayTag& Tag) const;
 
 	const FGameplayTag& GetLastTagTransitionExcluded() const;
 
-	const FVector GetPositionForState() const;
+	FVector GetPositionForState() const;
 
-	const FRotator GetRotationForState() const;
+	FRotator GetRotationForState() const;
 
 	void FindLastHex();
 

@@ -55,7 +55,7 @@ void UStateMachineComponent::GetOtherST()
 	TArray<AActor*> PlayerControllerBaseFounded;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerControllerBase::StaticClass(), PlayerControllerBaseFounded);
 
-	for (auto Controller : PlayerControllerBaseFounded)
+	for (const auto Controller : PlayerControllerBaseFounded)
 	{
 		APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(Controller);
 		if(PlayerControllerBase != PlayerController)
@@ -106,7 +106,7 @@ const FGameplayTag& UStateMachineComponent::GetCurrentState() const
 	return CurrentStateTag;
 }
 
-const int UStateMachineComponent::GetPlayerIndex() const
+int UStateMachineComponent::GetPlayerIndex() const
 {
 	return PlayerIndex;
 }
@@ -116,7 +116,7 @@ const AActor* UStateMachineComponent::GetCurrentActor() const
 	return CurrentActor;
 }
 
-const int UStateMachineComponent::GetIACount() const
+int UStateMachineComponent::GetIACount() const
 {
 	return ArrayIA.Num();
 }
@@ -143,6 +143,7 @@ TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
 
 	for (auto IA_Splited : CharacterIASplited)
 	{
+		IA_Splited->Init(OtherST->PlayerIndex);
 		ArrayIA.Remove(IA_Splited);
 	}
 
@@ -154,42 +155,38 @@ bool UStateMachineComponent::CanUpdateState() const
 	return CurrentStateTag != DA_StateMachine->TransitionState;
 }
 
-void UStateMachineComponent::HidePrevious() const
+void UStateMachineComponent::Hide(const FGameplayTag& Tag) const
 {
-	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
-	if(PreviousTag == DA_StateMachine->NeutralState)
+	if(Tag == DA_StateMachine->NeutralState)
 	{
 		if(Player)
 			Player->Hide();
 	}
-	else if(PreviousTag == DA_StateMachine->BallState)
+	else if(Tag == DA_StateMachine->BallState)
 	{
 		//BALL
 		if(BallActor)
 			BallActor->Hide();
 	}
-	else if(PreviousTag == DA_StateMachine->SpearState)
+	else if(Tag == DA_StateMachine->SpearState)
 	{
 		//SPEAR
 		if(SpearActor)
 			SpearActor->Hide();
 	}
-	else if(PreviousTag == DA_StateMachine->ShieldState)
+	else if(Tag == DA_StateMachine->ShieldState)
 	{
 		//SHIELD
 		if(Player)
-		{
 			Player->Hide();
-			Player->DeactivateShield();
-		}
 	}
-	else if(PreviousTag == DA_StateMachine->DeadState)
+	else if(Tag == DA_StateMachine->DeadState)
 	{
 		//DEAD
 		if(Player)
 			Player->Hide();
 	}
-	else if(PreviousTag == DA_StateMachine->ReviveState)
+	else if(Tag == DA_StateMachine->ReviveState)
     {
     	//REVIVE
     	if(Player)
@@ -217,12 +214,15 @@ const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 	return FGameplayTag::EmptyTag;
 }
 
-const FVector UStateMachineComponent::GetPositionForState() const
+FVector UStateMachineComponent::GetPositionForState() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
 	UE_LOGFMT(LogTemp,Warning, "Previous Tag : {0} - #{1}", *PreviousTag.ToString(), PlayerIndex);
+
+	if(CurrentActor)
+		return CurrentActor->GetActorLocation() + FVector::UpVector * 10;
 	
-	if(PreviousTag == DA_StateMachine->InitState)
+	/*if(PreviousTag == DA_StateMachine->InitState)
 	{
 		//Init
 		return Player->GetActorLocation();
@@ -251,12 +251,12 @@ const FVector UStateMachineComponent::GetPositionForState() const
 	{
 		//REVIVE
 		return Player->GetActorLocation();
-	}
+	}*/
 	checkf(nullptr, TEXT("No State in GetPositionState, last state : %s"), *CurrentState.GetName());
 	return FVector();
 }
 
-const FRotator UStateMachineComponent::GetRotationForState() const
+FRotator UStateMachineComponent::GetRotationForState() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
 	UE_LOG(LogTemp, Warning, TEXT("Previous Tag : %s"), *PreviousTag.ToString());
@@ -308,8 +308,7 @@ void UStateMachineComponent::FindLastHex()
 		
 		if(GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams()))
 		{
-			AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor());
-			if(Hex)
+			if(AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor()))
 			{
 				PlayerLastHexPos = Hex->GetRespawnLoc();
 			}
@@ -346,19 +345,18 @@ void UStateMachineComponent::ShowAndTeleportIA()
 	for(auto IA : ArrayIA)
 	{
 		FNavLocation NavLoc;
-		FRotator Rotation = IA->GetActorRotation();
-		bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 300.f, NavLoc);
-		if(bFindDestination)
+		const FRotator Rotation = IA->GetActorRotation();
+		if(NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 300.f, NavLoc))
 		{
 			FVector TargetLoc = NavLoc.Location;
 			IA->SetActorLocationAndRotation(TargetLoc + (FVector::UpVector * DestinationZ), Rotation);
 			IA->Show();
 		}
-		else
+		/*else
 		{
 			int count = 0;
 			ShowAndTeleportIAFailed(IA, PlayerLoc, DestinationZ, count);
-		}
+		}*/
 	}
 }
 
@@ -366,7 +364,7 @@ void UStateMachineComponent::ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVect
 {
 	count++;
 
-	FRotator Rotation = IA->GetActorRotation();
+	const FRotator Rotation = IA->GetActorRotation();
 
 	if(count == 10)
 	{
@@ -376,7 +374,7 @@ void UStateMachineComponent::ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVect
 	}
 
 	FNavLocation NavLoc;
-	if(bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 200.f, NavLoc))
+	if(NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 200.f, NavLoc))
 	{
 		FVector TargetLoc = NavLoc.Location;
 		IA->SetActorLocationAndRotation(TargetLoc + (FVector::UpVector * DestinationZ), Rotation);

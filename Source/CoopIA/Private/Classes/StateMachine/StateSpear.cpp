@@ -14,7 +14,6 @@ void UStateSpear::OnStateEnter(class UStateMachineComponent*& StateMachineCompon
 
 	UE_LOG(LogTemp, Warning, TEXT("Enter STATE SPEAR"));
 	ST->HideIA();
-	ST->HidePrevious();
 	ST->PlayerController->UnPossess();
 	ST->PlayerController->SetControlRotation(FRotator());
 
@@ -26,7 +25,6 @@ void UStateSpear::OnStateEnter(class UStateMachineComponent*& StateMachineCompon
 	ST->CurrentActor = ST->SpearActor;
 	ST->MainCamera->SetPlayer(ST->SpearActor, ST->PlayerIndex);
 	ST->PlayerController->Possess(ST->SpearActor);
-	UE_LOG(LogTemp, Warning, TEXT("SPEAR => OK"));
 }
 
 void UStateSpear::OnStateTick()
@@ -37,4 +35,6 @@ void UStateSpear::OnStateTick()
 void UStateSpear::OnStateLeave()
 {
 	Super::OnStateLeave();
+	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->SpearState);});
+	UE_LOG(LogTemp, Warning, TEXT("SPEAR => OK"));
 }
