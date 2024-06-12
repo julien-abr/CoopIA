@@ -107,7 +107,7 @@ public:
 
 	void Died();
 	
-	void Revive();
+	void Revive() const;
 
 	UFUNCTION()
 	void ImpulseTowardActor();
@@ -132,9 +132,6 @@ protected:
 	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
 
 	//Interfaces
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
@@ -184,11 +181,11 @@ private:
 
 	bool bIsShieldActivate;
 
-	void SetMaterial(bool bIsDead);
+	void SetMaterial(bool bIsDead) const;
 
-	void SetupDefaultMapping();
+	void SetupDefaultMapping() const;
 
-	void SetupDeadMapping();
+	void SetupDeadMapping() const;
 
 	void StartSpear();
 	void StartBall();

@@ -17,12 +17,11 @@ void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRe
 	Super::OnStateEnter(StateMachineComponentRef);
 	
 	UE_LOGFMT(LogTemp, Warning, "Enter Revive - #{0}", ST->PlayerIndex);
-	ST->HidePrevious();
 	ST->PlayerController->UnPossess();
 	ST->PlayerController->SetControlRotation(FRotator());
 	
 	//TODO::Reset velocity player
-	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
+	const AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
 	if (GameState && GameState->GetZoneType() == EZoneType::Puzzle)
 	{
 		ST->Player->SetActorLocation(GameState->GetRespawnLoc(), false, nullptr, ETeleportType::TeleportPhysics);
@@ -33,14 +32,9 @@ void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRe
 	
 	if(ST->OtherST)
 	{
-		const TArray<ACharacterBaseIA*> ArrayIASplit = ST->OtherST->SplitAI();
-		for (auto IA : ArrayIASplit)
-		{
-			ST->AddPlayer(IA);
-		}
+		ST->ArrayIA = ST->OtherST->SplitAI();
 	}
-
-	//InitIA();
+	
 	ST->CurrentActor = ST->Player;
 	ST->MainCamera->SetPlayer(ST->Player, ST->PlayerIndex);
 
@@ -56,4 +50,6 @@ void UStateRevive::OnStateTick()
 void UStateRevive::OnStateLeave()
 {
 	Super::OnStateLeave();
+	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->ReviveState);});
+	UE_LOG(LogTemp, Warning, TEXT("REVIVE => OK"));
 }

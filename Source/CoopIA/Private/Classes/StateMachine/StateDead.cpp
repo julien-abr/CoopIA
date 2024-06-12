@@ -16,7 +16,6 @@ void UStateDead::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	ST->DestroyIA();
 	ST->MainCamera->SetPlayer(nullptr, ST->PlayerIndex);
 	
-	ST->HidePrevious();
 	ST->PlayerController->UnPossess();
 	ST->PlayerController->SetControlRotation(FRotator());
 
@@ -36,4 +35,5 @@ void UStateDead::OnStateTick()
 void UStateDead::OnStateLeave()
 {
 	Super::OnStateLeave();
+	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->DeadState);});
 }
