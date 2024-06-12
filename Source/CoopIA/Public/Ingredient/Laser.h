@@ -46,5 +46,6 @@ private :
 
 	void HideAllLaser(int count);
 
+	UPROPERTY()
 	TArray<TObjectPtr<UNiagaraComponent>> _laserEffectArray;
 };
