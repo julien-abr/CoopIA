@@ -40,10 +40,16 @@ void AWallBreaking::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		{
 			if(spear->GetSpearState() == ESpearState::DASHING)
 			{
-				Destroy();
 				OnWallBreak();
+
+				if(destroyActorPrefab)
+				{
+					AActor* actor = GetWorld()->SpawnActor<AActor>(destroyActorPrefab, GetActorLocation(), GetActorRotation());
+					actor->SetLifeSpan(2.f);
+				}
+
+				Destroy();
 			}
 		}
 	}
 }
-
