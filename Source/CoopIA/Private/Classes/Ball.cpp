@@ -75,16 +75,10 @@ void ABall::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
-EIAState ABall::GetAIState_Implementation()
-{
-	return EIAState::BALL;
-}
-
 int32 ABall::GetPlayerIndex_Implementation()
 {
-	if (ST)
-		return ST->GetPlayerIndex();
-	return 0;
+	checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+	return ST->GetPlayerIndex();
 }
 
 bool ABall::CheckIsFalling()

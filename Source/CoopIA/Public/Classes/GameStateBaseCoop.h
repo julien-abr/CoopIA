@@ -31,7 +31,9 @@ public:
 	ELevelSide GetLevelSide() const {return LevelSide;}
 	FVector GetRespawnLoc() const { return RespawnLoc; }
 
-	void SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side, const FVector Location);
+	void SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side);
+
+	void SetZoneRespawnLocation(const FVector& Location);
 
 	const AActor* GetPlayer(int Index) const;
 
@@ -60,6 +62,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	FGameplayTag GameOverTag;
 
+	UPROPERTY(VisibleAnywhere)
 	ELevelSide LevelSide = ELevelSide::MIDDLE;
 
 	UPROPERTY(VisibleAnywhere)
