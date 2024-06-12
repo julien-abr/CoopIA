@@ -135,16 +135,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 }
 
-EIAState ACharacterBase::GetAIState_Implementation()
-{
-	if(bIsShieldActivate)
-	{
-		return EIAState::RANDOM_MOVE;
-	}
-	
-	return EIAState::SHIELD;
-}
-
 int32 ACharacterBase::GetPlayerIndex_Implementation()
 {
 	return ST->GetPlayerIndex();
