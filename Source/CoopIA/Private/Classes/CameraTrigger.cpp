@@ -58,8 +58,13 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		}
 
 		AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
-		if (GameState && ActorRespawn)
-			GameState->SetZoneInfo(ZoneType, LevelSide, ActorRespawn->GetActorLocation());
+		if (GameState)
+			GameState->SetZoneInfo(ZoneType, LevelSide);
+
+		if(ActorRespawn)
+		{
+			GameState->SetZoneRespawnLocation(ActorRespawn->GetActorLocation());
+		}
 
 		if(WallActor)
 		{

@@ -10,6 +10,7 @@
 //Libraries
 #include "Classes/CharacterBase.h"
 #include "Classes/MainCamera.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRef)
@@ -20,12 +21,11 @@ void UStateRevive::OnStateEnter(UStateMachineComponent*& StateMachineComponentRe
 	ST->PlayerController->UnPossess();
 	ST->PlayerController->SetControlRotation(FRotator());
 	
-	//TODO::Reset velocity player
-	const AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld()));
-	if (GameState && GameState->GetZoneType() == EZoneType::Puzzle)
+	if (const AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(GetWorld())); GameState && GameState->GetZoneType() == EZoneType::Puzzle)
 	{
 		ST->Player->SetActorLocation(GameState->GetRespawnLoc(), false, nullptr, ETeleportType::TeleportPhysics);
-	}	
+	}
+	
 	ST->Player->SetActorRelativeRotation(ST->Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
 	ST->PlayerController->Possess(ST->Player);
 	ST->Player->Revive();

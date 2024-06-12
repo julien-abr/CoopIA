@@ -37,23 +37,29 @@ void AGameStateBaseCoop::Init(TArray<APlayerControllerBase*>& ArrayPlayerControl
 	}
 }
 
-void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side, const FVector Location)
+void AGameStateBaseCoop::SetZoneInfo(const EZoneType& Zone, const ELevelSide& Side)
 {
 	ZoneType = Zone;
 	LevelSide = Side;
+}
+
+void AGameStateBaseCoop::SetZoneRespawnLocation(const FVector& Location)
+{
 	RespawnLoc = Location;
 }
 
-const AActor* AGameStateBaseCoop::GetPlayer(int Index) const
+const AActor* AGameStateBaseCoop::GetPlayer(const int Index) const
 {
 	if(Index == 0)
 	{	
 		return ST_Player0->GetCurrentActor();
 	}
-	else if(Index == 1)
+	if(Index == 1)
 	{
 		return ST_Player1->GetCurrentActor();
 	}
+
+	checkf(nullptr, TEXT("Cant Get Player in GameStateBaseCoop"));
 	return nullptr;
 }
 
