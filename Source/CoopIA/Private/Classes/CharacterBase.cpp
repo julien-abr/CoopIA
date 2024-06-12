@@ -76,7 +76,7 @@ void ACharacterBase::Init(UStateMachineComponent* StateMachineComponent)
 void ACharacterBase::ImpulseTowardActor()
 {
 	const UWorld* World = GetWorld();
-	AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(World));
+	const AGameStateBaseCoop* GameState = Cast<AGameStateBaseCoop>(UGameplayStatics::GetGameState(World));
 	const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(this);
 	const AActor* OtherPlayer = (Index == 0) ? GameState->GetPlayer(1) : GameState->GetPlayer(0);
 	const FVector End = OtherPlayer->GetActorLocation();
@@ -133,17 +133,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	{
 		UE_LOG(LogTemplateCharacterBase, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-
-}
-
-EIAState ACharacterBase::GetAIState_Implementation()
-{
-	if(bIsShieldActivate)
-	{
-		return EIAState::RANDOM_MOVE;
-	}
-	
-	return EIAState::SHIELD;
 }
 
 int32 ACharacterBase::GetPlayerIndex_Implementation()
@@ -154,7 +143,7 @@ int32 ACharacterBase::GetPlayerIndex_Implementation()
 void ACharacterBase::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	const FVector2D MovementVector = Value.Get<FVector2D>();
 	
 	if (Controller != nullptr)
 	{
@@ -173,13 +162,11 @@ void ACharacterBase::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
-}
 
-void ACharacterBase::Look(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-	
+	if (ST->GetCurrentState() == ShieldTag)
+		OnMoveShield();
+	else if (ST->GetCurrentState() == NeutralTag)
+		OnMoveNeutral();
 }
 
 void ACharacterBase::Hide()
@@ -194,7 +181,7 @@ void ACharacterBase::Show()
 	SetActorHiddenInGame(false);
 }
 
-void ACharacterBase::SetMaterial(bool bIsDead)
+void ACharacterBase::SetMaterial(bool bIsDead) const
 {
 	USkeletalMeshComponent* MeshPlayer = GetMesh();
 	if (bIsDead)
@@ -224,10 +211,10 @@ void ACharacterBase::SetMaterial(bool bIsDead)
 	}
 }
 
-void ACharacterBase::SetupDefaultMapping()
+void ACharacterBase::SetupDefaultMapping() const
 {
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -238,10 +225,10 @@ void ACharacterBase::SetupDefaultMapping()
 	}
 }
 
-void ACharacterBase::SetupDeadMapping()
+void ACharacterBase::SetupDeadMapping() const
 {
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -270,9 +257,10 @@ void ACharacterBase::Died()
 	CharacterMovementComponent->GroundFriction = 0.f;
 	CharacterMovementComponent->BrakingDecelerationWalking = 200;
 	CharacterMovementComponent->BrakingDecelerationFalling = 200;
+	OnDie();
 }
 
-void ACharacterBase::Revive()
+void ACharacterBase::Revive() const
 {
 	SetMaterial(false);
 	SetupDefaultMapping();
@@ -288,13 +276,8 @@ void ACharacterBase::Revive()
 void ACharacterBase::StartShield()
 {
 	UE_LOGFMT(LogTemp, Warning, "Input Shield - #{0}", GetPlayerIndex_Implementation());
-	if(ST->CanUpdateState())
+	if(ST->CanUpdateState() && !bIsShieldActivate)
 		ST->UpdateState(ShieldTag);
-	
-	if(DAShield)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = DAShield->MaxSpeed;
-	}
 }
 
 void ACharacterBase::StartBall()
@@ -310,6 +293,7 @@ void ACharacterBase::StartNeutral()
 	{
 		UE_LOGFMT(LogTemp, Warning, "Input Neutral - #{0}", GetPlayerIndex_Implementation());
 		ST->UpdateState(NeutralTag);
+		OnEnterNeutral();
 	}
 }
 
@@ -320,8 +304,14 @@ void ACharacterBase::SetupShield(class AShield* Shield)
 		ShieldActor = Shield;
 	}
 	
+	ShieldActor->Show();
+	if(DAShield)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DAShield->MaxSpeed;
+	}
+	
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -386,8 +376,8 @@ void ACharacterBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		
 	if(OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
 	{
-		int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
-		int32 OwnerIndex = IPlayerInterface::Execute_GetPlayerIndex(this);
+		const int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
+		const int32 OwnerIndex = IPlayerInterface::Execute_GetPlayerIndex(this);
 		if(Index != OwnerIndex)
 		{
 			//Play effect + revive

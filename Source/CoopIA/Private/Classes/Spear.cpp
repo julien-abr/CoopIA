@@ -116,6 +116,8 @@ void ASpear::StartHold()
 {
 	if(!bCanDash) {return;}
 
+	OnDashLoad();
+
 	GetCharacterMovement()->MaxWalkSpeed = DASpear->SpearDashMoveSpeed;
 	HoldTimer = 0.f;
 	bCanUpdateTimer = true;
@@ -130,6 +132,8 @@ void ASpear::DashUp()
 
 	const FVector LaunchZForce = FVector(0.f, 0.f, DASpear->DashZBaseVelocity);
 	LaunchCharacter(LaunchZForce, false, false);
+
+	OnDash();
 
 	GetWorld()->GetTimerManager().SetTimer(TimerDashForward, this, &ASpear::DashForward, DASpear->TimerBetweenDashUPForward, false);
 	bCanDash = false;
@@ -238,18 +242,13 @@ void ASpear::Show()
 	GetCapsuleComponent()->SetCollisionObjectType(ChannelPlayer);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
-}
-
-EIAState ASpear::GetAIState_Implementation()
-{
-	return EIAState::SPEAR;
+	OnEnterSpear();
 }
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	if (ST)
-		return ST->GetPlayerIndex();
-	return 0;
+	checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+	return ST->GetPlayerIndex();
 }
 
 bool ASpear::CheckIsFalling()

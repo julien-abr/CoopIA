@@ -56,6 +56,11 @@ public:
 	void SecondPreventAnim();
 	void FallAnim();
 
+	bool isDead()
+	{
+		return _isDead;
+	}
+
 private:
 	FTimerHandle _preventTimer;
 
@@ -76,6 +81,8 @@ private:
 	bool _mustDissolve;
 	int _state;
 	float _timer;
+
+	bool _isDead = false;
 
 	void ChangeMaterialColor(TObjectPtr<UMaterialInstanceDynamic> dynMat, FLinearColor color);
 	void DissolveMaterial(TObjectPtr<UMaterialInstanceDynamic> dynMat);

@@ -18,30 +18,26 @@ void UStateShield::OnStateEnter(class UStateMachineComponent*& StateMachineCompo
 	UE_LOG(LogTemp, Warning, TEXT("Enter STATE SHIELD"));
 	
 	const FGameplayTag& PreviousStateTag = ST->GetLastTagTransitionExcluded();
-	const bool bShouldInitNeutral =  (PreviousStateTag != FGameplayTag::EmptyTag && PreviousStateTag != ST->DA_StateMachine->NeutralState);
 
-	if(bShouldInitNeutral)
+	ST->Player->Show();
+	if(PreviousStateTag != FGameplayTag::EmptyTag && PreviousStateTag != ST->DA_StateMachine->NeutralState)
 	{
-		ST->HidePrevious();
+		bHasInitNeutral = true;
+		UE_LOG(LogTemp, Warning, TEXT("Enter STATE SHIELD Not from Neutral"));
 		ST->PlayerController->UnPossess();
 		ST->PlayerController->SetControlRotation(FRotator());
 		const FVector Destination = ST->GetPositionForState();
 
 		ST->Player->SetActorLocation(Destination, false, nullptr, ETeleportType::TeleportPhysics);
 		ST->Player->SetActorRelativeRotation(ST->Player->GetActorRotation(), false, nullptr, ETeleportType::TeleportPhysics);
-		ST->Player->Show();
-
 		ST->CurrentActor = ST->Player;
 		ST->MainCamera->SetPlayer(ST->Player, ST->PlayerIndex);
 		ST->PlayerController->Possess(ST->Player);
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("Enter STATE SHIELD from Neutral"));
 	ST->HideIA();
-	ST->ShieldActor->Show();
-	//TODO::Leave shield here and not in Hide
 	ST->Player->SetupShield(ST->ShieldActor);
-	
-	UE_LOG(LogTemp, Warning, TEXT("SHIELD => OK"));
 }
 
 void UStateShield::OnStateTick()
@@ -52,4 +48,19 @@ void UStateShield::OnStateTick()
 void UStateShield::OnStateLeave()
 {
 	Super::OnStateLeave();
+	if(bHasInitNeutral)
+	{
+		ST->OnHidePrevious.BindLambda([&]
+		{
+			ST->Hide(ST->DA_StateMachine->NeutralState);
+			ST->Hide(ST->DA_StateMachine->ShieldState);
+		});
+	}
+	else
+	{
+		ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->ShieldState);});
+	}
+	
+	ST->Player->DeactivateShield();
+	UE_LOG(LogTemp, Warning, TEXT("SHIELD => OK"));
 }

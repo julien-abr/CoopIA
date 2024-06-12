@@ -30,6 +30,9 @@ public:
 	
 	void RevivePlayer(int32 Index);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSpiritDeath();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
