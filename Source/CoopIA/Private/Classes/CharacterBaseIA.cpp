@@ -55,9 +55,9 @@ void ACharacterBaseIA::BeginPlay()
 	TArray<AActor*> ArrayPlayerControllerBase;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerControllerBase::StaticClass(), ArrayPlayerControllerBase);
 
-	for (auto ActorController : ArrayPlayerControllerBase)
+	for (const auto ActorController : ArrayPlayerControllerBase)
 	{
-		APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(ActorController);
+		const APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(ActorController);
 		if(PlayerControllerBase->GetPlayerIndex() == 0)
 		{
 			ST_Player0 = PlayerControllerBase->GetStateMachineComponent();

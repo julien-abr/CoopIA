@@ -15,6 +15,9 @@ class COOPIA_API UDA_StateMachine : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere)
+	float TransitonTime = 0.5f;
+	
+	UPROPERTY(EditAnywhere)
 	FGameplayTag DefaultState;
 
 	UPROPERTY(EditAnywhere)

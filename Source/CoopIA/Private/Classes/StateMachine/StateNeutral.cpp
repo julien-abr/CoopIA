@@ -14,7 +14,6 @@ void UStateNeutral::OnStateEnter(class UStateMachineComponent*& StateMachineComp
 	Super::OnStateEnter(StateMachineComponentRef);
 
 	UE_LOG(LogTemp, Warning, TEXT("Enter STATE NEUTRAL"));
-	ST->HidePrevious();
 	ST->PlayerController->UnPossess();
 	ST->PlayerController->SetControlRotation(FRotator());
 	const FVector Destination = ST->GetPositionForState();
@@ -29,7 +28,6 @@ void UStateNeutral::OnStateEnter(class UStateMachineComponent*& StateMachineComp
 	
 	ST->ShowAndTeleportIA();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&] { ST->IARandomMove();}), ST->DA_StateMachine->DataAssetIA->RandomMoveTime, true);
-	UE_LOG(LogTemp, Warning, TEXT("NEUTRAL => OK"));
 }
 
 void UStateNeutral::OnStateTick()
@@ -40,6 +38,8 @@ void UStateNeutral::OnStateTick()
 void UStateNeutral::OnStateLeave()
 {
 	Super::OnStateLeave();
+	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->NeutralState);});
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	TimerHandle.Invalidate();
+	UE_LOG(LogTemp, Warning, TEXT("NEUTRAL => OK"));
 }
