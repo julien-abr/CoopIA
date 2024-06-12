@@ -57,6 +57,8 @@ private:
 
 	IInteract* InteractInterface;
 
+	TArray<TObjectPtr<AActor>> boulesInRails;
+
 	bool inMainBox;
 	bool inEnterExitBox;
 
