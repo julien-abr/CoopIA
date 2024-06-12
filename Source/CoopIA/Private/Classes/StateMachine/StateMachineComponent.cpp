@@ -131,6 +131,9 @@ TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
 {
 	TArray<ACharacterBaseIA*> CharacterIASplited;
 
+	if(ArrayIA.Num() == 1)
+		return CharacterIASplited;
+
 	int numberIASplited = 0;
 	while (numberIASplited < ArrayIA.Num() / 2)
 	{
@@ -146,6 +149,11 @@ TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
 	return CharacterIASplited;
 }
 
+bool UStateMachineComponent::CanUpdateState() const
+{
+	return CurrentStateTag != DA_StateMachine->TransitionState;
+}
+
 void UStateMachineComponent::HidePrevious() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
@@ -154,19 +162,15 @@ void UStateMachineComponent::HidePrevious() const
 		if(Player)
 			Player->Hide();
 	}
-	if(PreviousTag == DA_StateMachine->BallState)
+	else if(PreviousTag == DA_StateMachine->BallState)
 	{
 		//BALL
-		if(Player)
-			Player->Hide();
 		if(BallActor)
 			BallActor->Hide();
 	}
 	else if(PreviousTag == DA_StateMachine->SpearState)
 	{
 		//SPEAR
-		if(Player)
-			Player->Hide();
 		if(SpearActor)
 			SpearActor->Hide();
 	}
@@ -185,13 +189,19 @@ void UStateMachineComponent::HidePrevious() const
 		if(Player)
 			Player->Hide();
 	}
+	else if(PreviousTag == DA_StateMachine->ReviveState)
+    {
+    	//REVIVE
+    	if(Player)
+    		Player->Hide();
+    }
 }
 
 const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 {
 	if(!StateHistoric.Num() - 2 >= 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EXIT IN GET LAST TAG"));
+		UE_LOGFMT(LogTemp, Warning, "EXIT IN GET LAST TAG - #{0}", PlayerIndex);
 		return FGameplayTag::EmptyTag;
 	}
 	
@@ -210,11 +220,11 @@ const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 const FVector UStateMachineComponent::GetPositionForState() const
 {
 	const FGameplayTag& PreviousTag = GetLastTagTransitionExcluded();
-	UE_LOG(LogTemp,Warning,TEXT("Previous Tag : %s"), *PreviousTag.ToString());
+	UE_LOGFMT(LogTemp,Warning, "Previous Tag : {0} - #{1}", *PreviousTag.ToString(), PlayerIndex);
 	
 	if(PreviousTag == DA_StateMachine->InitState)
 	{
-		//NEUTRAl
+		//Init
 		return Player->GetActorLocation();
 	}
 	if(PreviousTag == DA_StateMachine->NeutralState)
@@ -224,7 +234,7 @@ const FVector UStateMachineComponent::GetPositionForState() const
 	}
 	if (PreviousTag == DA_StateMachine->BallState)
 	{
-		//SPEAR
+		//BALL
 		return BallActor->GetActorLocation();
 	}
 	if(PreviousTag == DA_StateMachine->SpearState)
@@ -242,6 +252,7 @@ const FVector UStateMachineComponent::GetPositionForState() const
 		//REVIVE
 		return Player->GetActorLocation();
 	}
+	checkf(nullptr, TEXT("No State in GetPositionState, last state : %s"), *CurrentState.GetName());
 	return FVector();
 }
 
@@ -262,7 +273,7 @@ const FRotator UStateMachineComponent::GetRotationForState() const
 	}
 	if (PreviousTag == DA_StateMachine->BallState)
 	{
-		//SPEAR
+		//BALL
 		return BallActor->GetActorRotation();
 	}
 	if (PreviousTag == DA_StateMachine->SpearState)
@@ -280,6 +291,8 @@ const FRotator UStateMachineComponent::GetRotationForState() const
 		//REVIVE
 		return Player->GetActorRotation();
 	}
+	
+	checkf(nullptr, TEXT("No State in GetRotationState, last state : %s"), *CurrentState.GetName());
 	return FRotator();
 }
 
@@ -306,15 +319,21 @@ void UStateMachineComponent::FindLastHex()
 
 void UStateMachineComponent::IARandomMove()
 {
-	//TEMP ArrayIA chelou ici quand il reste une seule IA a chacun
-
-	for(auto IA : ArrayIA)
+	//UE_LOG(LogTemp, Warning, TEXT("IA RANDOM MOVE for player: %d"), PlayerIndex);
+	if(!CurrentStateTag.MatchesTag(DA_StateMachine->NeutralState))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IA RANDOM MOVE FALSE : %s, DA : %s"), *CurrentStateTag.ToString(), *DA_StateMachine->NeutralState.ToString());
+		return;
+	}
+	
+	for(auto const IA : ArrayIA)
 	{
 		if(CurrentActor)
 		{
 			const FVector halfSize = FVector(DA_StateMachine->DataAssetIA->RandomMoveDistanceFromPlayer, DA_StateMachine->DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
 			const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
-			IA->Move(Destination, DA_StateMachine->DataAssetIA->BaseAcceptanceRadius);
+			if(IA->IsValidLowLevel())
+				IA->Move(Destination, DA_StateMachine->DataAssetIA->BaseAcceptanceRadius);
 		}
 	}
 }
@@ -357,12 +376,10 @@ void UStateMachineComponent::ShowAndTeleportIAFailed(ACharacterBaseIA* IA, FVect
 	}
 
 	FNavLocation NavLoc;
-	bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 200.f, NavLoc);
-	if(bFindDestination)
+	if(bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 200.f, NavLoc))
 	{
 		FVector TargetLoc = NavLoc.Location;
 		IA->SetActorLocationAndRotation(TargetLoc + (FVector::UpVector * DestinationZ), Rotation);
-		//IA->TeleportTo(FVector(TargetLoc.X, TargetLoc.Y, TargetLoc.Z + DestinationZ), Rotation);
 		IA->Show();
 	}
 	else

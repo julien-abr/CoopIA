@@ -72,7 +72,7 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		else if(OtherActorTag.HasTag(AITag))
 		{
 			ACharacterBaseIA* AI = Cast<ACharacterBaseIA>(OtherActor);
-			if (!AI) { return; }
+			if (!AI->IsValidLowLevel()) { return; }
 			UE_LOGFMT(LogTemp, Warning, "AI falled in DeathZone - #{0}", AI->PlayerIndex);
 			if (AI->PlayerIndex == 0)
 			{
