@@ -57,6 +57,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSpiritNeutral();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSpiritPickup();
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;

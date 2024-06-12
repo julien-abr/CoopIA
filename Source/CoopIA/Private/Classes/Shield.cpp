@@ -50,6 +50,7 @@ void AShield::Show()
 {
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
+	OnEnterShield();
 }
 
 
