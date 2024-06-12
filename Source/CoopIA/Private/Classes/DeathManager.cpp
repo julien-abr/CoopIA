@@ -54,7 +54,7 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 {		
 	if(OtherActor->GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Hit Zone : %s"), *OtherActor->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Entity Hit Zone : %s"), *OtherActor->GetName());
 		const IGameplayTagAssetInterface* Interface = Cast<IGameplayTagAssetInterface>(OtherActor);
 		FGameplayTagContainer OtherActorTag;
 		Interface->GetOwnedGameplayTags(OtherActorTag);
@@ -82,6 +82,8 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			{
 				ST_Player1->RemoveAI(AI);
 			}
+
+			OnSpiritDeath();
 		}
 	}
 }

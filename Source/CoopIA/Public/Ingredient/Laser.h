@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
 #include "CoreMinimal.h"
