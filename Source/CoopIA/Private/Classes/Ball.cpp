@@ -21,6 +21,7 @@ ABall::ABall()
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+	CanBeEjected = true;
 }
 
 // Called every frame
@@ -73,6 +74,26 @@ void ABall::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		//Shield
 		EnhancedInputComponent->BindAction(ShieldAction, ETriggerEvent::Started, this, &ABall::StartShield);
 	}
+}
+
+ARails* ABall::GetCurrentRail()
+{
+	return CurrentRail;
+}
+
+void ABall::SetCurrentRail(ARails* rails)
+{
+	CurrentRail = rails;
+}
+
+bool ABall::GetCanBeEjected()
+{
+	return CanBeEjected;
+}
+
+void ABall::SetCanBeEjected(bool ejected)
+{
+	CanBeEjected = ejected;
 }
 
 int32 ABall::GetPlayerIndex_Implementation()
