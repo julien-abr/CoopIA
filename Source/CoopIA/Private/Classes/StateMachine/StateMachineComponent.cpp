@@ -305,8 +305,7 @@ void UStateMachineComponent::FindLastHex()
 		FVector End = Start - (FVector::UpVector * 200);	
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(CurrentActor);
-
-		//TODO::Check hex eboulement
+		
 		if(GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams()))
 		{
 			if(AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor()))

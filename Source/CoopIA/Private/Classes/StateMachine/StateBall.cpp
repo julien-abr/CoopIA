@@ -27,8 +27,6 @@ void UStateBall::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	ST->CurrentActor = ST->BallActor;
 	ST->MainCamera->SetPlayer(ST->BallActor, ST->PlayerIndex);
 	ST->PlayerController->Possess(ST->BallActor);
-
-	ST->BallActor->OnEnterBall();
 }
 
 void UStateBall::OnStateTick()
@@ -41,4 +39,5 @@ void UStateBall::OnStateLeave()
 	Super::OnStateLeave();
 	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->BallState);});
 	UE_LOG(LogTemp, Warning, TEXT("BALL => OK"));
+	ST->BallActor->SetCanBeEjected(true);
 }

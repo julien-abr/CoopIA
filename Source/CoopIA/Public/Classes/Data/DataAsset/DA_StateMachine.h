@@ -58,13 +58,4 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABall> BallBP;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class ABallPlayerUI> BallBP_UI;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> PlayerJ1;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> PlayerJ2;
 };

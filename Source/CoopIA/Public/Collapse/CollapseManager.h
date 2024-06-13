@@ -6,8 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "FPuzzleZoneData.h"
-#include "Components/ArrowComponent.h"
-#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "CollapseManager.generated.h"
 
@@ -26,14 +24,8 @@ UCLASS()
 class COOPIA_API ACollapseManager : public AActor
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere)
-	UArrowComponent* _arrowPoint;
-
+	
 public:	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UBoxComponent* collapseDeathZone;
-
 	// Sets default values for this actor's properties
 	ACollapseManager();
 
@@ -77,21 +69,12 @@ private:
 	FTimerHandle _collapseTimer;
 
 	int _key;
-
-	UPROPERTY()
-	TObjectPtr<AGameStateBaseCoop> _gameStateCoop;
-	float yPos = 0;
-
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
-	FGameplayTag PlayerTag;
+	AGameStateBaseCoop* _gameStateCoop;
 
 	void NextKey();
 	void FirstPreventCollapseLine();
 	void SecondPreventCollapseLine();
 	void CollapseLine();
-
-	UFUNCTION()
-	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	//TOOL ONLY
 public :

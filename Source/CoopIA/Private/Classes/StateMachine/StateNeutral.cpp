@@ -28,8 +28,6 @@ void UStateNeutral::OnStateEnter(class UStateMachineComponent*& StateMachineComp
 	
 	ST->ShowAndTeleportIA();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&] { ST->IARandomMove();}), ST->DA_StateMachine->DataAssetIA->RandomMoveTime, true);
-
-	ST->Player->OnEnterNeutral();
 }
 
 void UStateNeutral::OnStateTick()

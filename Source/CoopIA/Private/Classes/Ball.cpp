@@ -6,8 +6,9 @@
 #include "EnhancedInputComponent.h"
 #include "Classes/StateMachine/StateMachineComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Classes/AIManager.h"
 #include "Classes/PlayerControllerBase.h"
-#include "Classes/UI/BallPlayerUI.h"
+#include "Classes/Data/EIAState.h"
 
 // Sets default values
 ABall::ABall()
@@ -20,6 +21,7 @@ ABall::ABall()
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+	CanBeEjected = true;
 }
 
 // Called every frame
@@ -74,6 +76,26 @@ void ABall::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+ARails* ABall::GetCurrentRail()
+{
+	return CurrentRail;
+}
+
+void ABall::SetCurrentRail(ARails* rails)
+{
+	CurrentRail = rails;
+}
+
+bool ABall::GetCanBeEjected()
+{
+	return CanBeEjected;
+}
+
+void ABall::SetCanBeEjected(bool ejected)
+{
+	CanBeEjected = ejected;
+}
+
 int32 ABall::GetPlayerIndex_Implementation()
 {
 	checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
@@ -114,15 +136,8 @@ void ABall::StartShield()
 		ST->UpdateState(ShieldTag);
 }
 
-void ABall::InitActorUI(ABallPlayerUI* PlayerUI)
-{
-	BallPlayerUI = PlayerUI;
-}
-
 void ABall::Hide()
 {
-	if(BallPlayerUI)
-		BallPlayerUI->SetActorHiddenInGame(true);
 	SetSimulatePhysics(false);
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
@@ -130,8 +145,6 @@ void ABall::Hide()
 
 void ABall::Show()
 {
-	if(BallPlayerUI)
-		BallPlayerUI->SetActorHiddenInGame(false);
 	SetSimulatePhysics(true);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
