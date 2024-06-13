@@ -25,7 +25,9 @@ class COOPIA_API ADeathManager : public AActor
 public:
 	// Sets default values for this actor's properties
 	ADeathManager();
-	
+
+	void SetDeathManagerHight(float Zpos);
+
 	FOnPlayerGlobalStateChangedSignature OnPlayerGlobalStateChangedDelegate;
 	
 	void RevivePlayer(int32 Index);
