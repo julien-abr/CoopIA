@@ -20,6 +20,11 @@ ADeathManager::ADeathManager()
 	DeathZone->SetupAttachment(RootComponent);
 }
 
+void ADeathManager::SetDeathManagerHight(float Zpos)
+{
+	SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, Zpos));
+}
+
 void ADeathManager::RevivePlayer(int32 Index)
 {
 	OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Alive);

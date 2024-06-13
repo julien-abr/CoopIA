@@ -9,7 +9,7 @@
 #include "GameFramework/Pawn.h"
 #include "Ball.generated.h"
 
-class ARails;
+class ABallPlayerUI;
 class UInputMappingContext;
 class UInputAction;
 struct FGameplayTagContainer;
@@ -49,6 +49,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetSimulatePhysics(const bool enable);
 	
+	void InitActorUI(ABallPlayerUI* PlayerUI);
+    	
 	void Hide();
 	void Show();
 
@@ -69,20 +71,9 @@ protected:
 	//Interfaces
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override {TagContainer = ActorTags; };
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<ARails> CurrentRail;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool CanBeEjected;
-
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	ARails* GetCurrentRail();
-	void SetCurrentRail(ARails* rails);
-	bool GetCanBeEjected();
-	void SetCanBeEjected(bool ejected);
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
@@ -93,6 +84,9 @@ private:
 	
 	TObjectPtr<class ST> AIManager;
 
+	UPROPERTY()
+	TObjectPtr<ABallPlayerUI> BallPlayerUI;
+
 	UPROPERTY(EditAnywhere)
 	FGameplayTag SpearTag;
 	
@@ -101,8 +95,6 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	FGameplayTag ShieldTag;
-
-	
 	
 	UFUNCTION(BlueprintCallable)
 		bool CheckIsFalling();
