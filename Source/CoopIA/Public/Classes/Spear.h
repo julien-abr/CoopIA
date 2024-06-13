@@ -75,9 +75,6 @@ public:
 	void Show();
 	
 	virtual int32 GetPlayerIndex_Implementation() override;
-	
-	UFUNCTION(BlueprintImplementableEvent)
-    	void UpdatePlayerCountUI(const UTexture2D* Texture);
 
 	ESpearState GetSpearState() { return SpearState; }
 

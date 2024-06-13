@@ -3,9 +3,6 @@
 
 #include "Collapse/CollapseManager.h"
 
-#include "GameplayTagAssetInterface.h"
-#include "Classes/DeathManager.h"
-#include "Data/Interface/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Logging/StructuredLog.h"
@@ -17,19 +14,12 @@ ACollapseManager::ACollapseManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	_arrowPoint = CreateDefaultSubobject<UArrowComponent>("Point");
-	_arrowPoint->SetupAttachment(RootComponent);
-
-	collapseDeathZone = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathZoneBox"));
-	collapseDeathZone->SetupAttachment(_arrowPoint);
 }
 
 // Called when the game starts or when spawned
 void ACollapseManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	collapseDeathZone->OnComponentBeginOverlap.AddDynamic(this, &ACollapseManager::OnBoxBeginOverlap);
 
 	GetAllHex();
 
@@ -53,13 +43,6 @@ void ACollapseManager::BeginPlay()
 	_key = it->Key - 450;
 
 	NextKey();
-
-	ADeathManager* deathManager = Cast<ADeathManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ADeathManager::StaticClass()));
-	if(deathManager)
-	{
-		deathManager->SetDeathManagerHight(-4000.f);
-		yPos = deathManager->GetActorLocation().Y;
-	}
 }
 
 // Called every frame
@@ -96,8 +79,6 @@ void ACollapseManager::GetAllHex()
 void ACollapseManager::NextKey()
 {
 	_key += 450; //450 = distance btw each Hex on X
-
-	SetActorLocation(FVector(_key, yPos, -2000));
 
 	//Go Next
 	if(!_hexLineMap.Contains(_key))
@@ -277,27 +258,6 @@ void ACollapseManager::CollapseLine()
 	}
 
 	NextKey();
-}
-
-void ACollapseManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor->GetClass()->ImplementsInterface(UGameplayTagAssetInterface::StaticClass()))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[COLLASPE] Entity Hit Zone : %s"), *OtherActor->GetName());
-		const IGameplayTagAssetInterface* Interface = Cast<IGameplayTagAssetInterface>(OtherActor);
-		FGameplayTagContainer OtherActorTag;
-		Interface->GetOwnedGameplayTags(OtherActorTag);
-		if (OtherActorTag.HasTag(PlayerTag))
-		{
-			if (OtherActor->GetClass()->ImplementsInterface(UPlayerInterface::StaticClass()))
-			{
-				UE_LOGFMT(LogTemp, Warning, "[COLLASPE] Player hit CollaspeZone");
-				if(_gameStateCoop)
-					_gameStateCoop->CollaspeGameOver();
-			}
-		}
-	}
 }
 
 //TOOL ONLY

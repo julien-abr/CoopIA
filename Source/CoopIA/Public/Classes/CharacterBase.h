@@ -97,9 +97,6 @@ public:
 
 	const bool HasShieldActivate() const { return bIsShieldActivate;}
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void UpdatePlayerCountUI(const UTexture2D* Texture);
-
 	void SetupShield(class AShield* Shield);
 	void DeactivateShield();
 

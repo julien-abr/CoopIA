@@ -54,6 +54,16 @@ void ARails::BeginPlay()
 
 }
 
+void ARails::IgnoreCollisionsWith(APawn* Ball, bool shouldIgnore)
+{
+	Ball->MoveIgnoreActorAdd(this);
+	
+	/*_right->IgnoreActorWhenMoving(Ball, shouldIgnore);
+	_left->IgnoreActorWhenMoving(Ball, shouldIgnore);
+	_top->IgnoreActorWhenMoving(Ball, shouldIgnore);
+	_bottom->IgnoreActorWhenMoving(Ball, shouldIgnore);*/
+}
+
 // Called every frame
 void ARails::Tick(float DeltaTime)
 {
@@ -72,8 +82,8 @@ void ARails::MoveWalls(float height)
 void ARails::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
-	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass())&& Cast<ABall>(OtherActor))
+	ABall* OtherBall = Cast<ABall>(OtherActor);
+	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass())&& IsValid(OtherBall))
 	{
 		boulesInRails.AddUnique(OtherActor);
 
@@ -88,6 +98,7 @@ void ARails::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 			}
 			else
 			{
+				OtherBall->SetCurrentRail(this);
 				if (boulesInRails.Num() == 1)
 					MoveWalls(-1000.f);
 			}
@@ -106,7 +117,8 @@ void ARails::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 void ARails::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass()) && Cast<ABall>(OtherActor))
+	ABall* OtherBall = Cast<ABall>(OtherActor);
+	if (OtherActor->GetClass()->ImplementsInterface(UInteract::StaticClass()) && IsValid(OtherBall))
 	{
 		if (OverlappedComp == _box)
 		{
@@ -134,6 +146,8 @@ void ARails::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		inMainBox = false;
 		InteractInterface = Cast<IInteract>(OtherActor);
 		InteractInterface->Execute_DeactivateRail(OtherActor);
+
+		_right->IgnoreActorWhenMoving(OtherActor, true);
 
 	}
 }
