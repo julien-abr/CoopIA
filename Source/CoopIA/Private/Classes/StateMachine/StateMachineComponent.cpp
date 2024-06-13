@@ -124,7 +124,10 @@ int UStateMachineComponent::GetIACount() const
 void UStateMachineComponent::RemoveAI(ACharacterBaseIA* CharacterAI)
 {
 	if(CharacterAI->IsValidLowLevel())
-		ArrayIA.Remove(CharacterAI);
+	{
+		if(ArrayIA.Contains(CharacterAI))
+			ArrayIA.Remove(CharacterAI);
+	}
 }
 
 TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
