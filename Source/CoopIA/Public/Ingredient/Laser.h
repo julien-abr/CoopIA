@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
 #include "CoreMinimal.h"
@@ -19,10 +18,11 @@ class COOPIA_API ALaser : public AActor
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* _body;
 
-	UPROPERTY(VisibleAnywhere)
+public:	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UArrowComponent* _firePoint;
 
-public:	
 	// Sets default values for this actor's properties
 	ALaser();
 
@@ -34,17 +34,19 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int reflexionNbr = 5;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UNiagaraSystem> laserEffect;
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void HideAllLaser(int count);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetLaserPos(int count, FVector start, FVector end);
 
 private :
 	UFUNCTION()
 	void ReflectLaser(const FVector& start, const FVector& end, float rotZ, int& count, AActor* actor);
 
-	void HideAllLaser(int count);
-
+	UPROPERTY()
 	TArray<TObjectPtr<UNiagaraComponent>> _laserEffectArray;
 };

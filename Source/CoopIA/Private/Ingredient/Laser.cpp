@@ -7,8 +7,6 @@
 #include "Components/StaticMeshComponent.h"
 #include "Data/Interface/RayHit.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Logging/StructuredLog.h"
 
 // Sets default values
 ALaser::ALaser()
@@ -28,18 +26,6 @@ ALaser::ALaser()
 void ALaser::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!laserEffect)
-		return;
-
-	for(int i = 0; i < reflexionNbr; i++)
-	{
-		TObjectPtr<UNiagaraComponent> NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(laserEffect, _firePoint, NAME_None, FVector(0.f), FRotator(0.f), EAttachLocation::Type::KeepRelativeOffset, true);
-		NiagaraComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		_laserEffectArray.Add(NiagaraComp);
-	}
-
-	HideAllLaser(0);
 }
 
 // Called every frame
@@ -64,13 +50,10 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 	FCollisionQueryParams param;
 	param.AddIgnoredActor(actor);
 
-	_laserEffectArray[count]->SetWorldLocation(start);
-
 	FHitResult hitResult;
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_WorldDynamic, param))
 	{
-		_laserEffectArray[count]->SetVisibility(true);
-		_laserEffectArray[count]->SetNiagaraVariableVec3(FString("Beam End"), hitResult.ImpactPoint);
+		SetLaserPos(count, start, hitResult.ImpactPoint);
 
 		if(hitResult.GetActor()->Implements<URayHit>())
 		{
@@ -90,14 +73,5 @@ void ALaser::ReflectLaser(const FVector& start, const FVector& end, float rotZ, 
 		return;
 	}
 
-	_laserEffectArray[count]->SetVisibility(true);
-	_laserEffectArray[count]->SetNiagaraVariableVec3(FString("Beam End"), end);
-}
-
-void ALaser::HideAllLaser(int count)
-{
-	for(int i = count; i < _laserEffectArray.Num(); i++)
-	{
-		_laserEffectArray[i]->SetVisibility(false);
-	}
+	SetLaserPos(count, start, end);
 }

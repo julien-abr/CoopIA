@@ -74,6 +74,10 @@ void ACharacterBaseIA::BeginPlay()
 		if (CurrentST)
 			CurrentST->AddPlayer(this);
 	}
+	else
+	{
+		OnSpiritNeutral();
+	}
 }
 
 void ACharacterBaseIA::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -141,5 +145,7 @@ void ACharacterBaseIA::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 		if (CurrentST)
 			CurrentST->AddPlayer(this);
 		bIAtoReceive = false;
+
+		OnSpiritPickup();
 	}
 }
