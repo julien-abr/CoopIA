@@ -42,8 +42,6 @@ public:
 
 	EPlayerGlobalState GetPlayer0GlobalState() const {return Player0GlobalState;}
 	EPlayerGlobalState GetPlayer1GlobalState() const {return Player1GlobalState;}
-	
-	TSoftObjectPtr<UWorld> GetGameOverMap() const {return GameOverMap;}
 
 	UFUNCTION(BlueprintCallable)
 	void GameOver();
@@ -53,6 +51,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OpenVictoryMap();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenGameOverMap();
 private:
 	UPROPERTY()
 	TObjectPtr<UStateMachineComponent> ST_Player0;
@@ -83,12 +84,6 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	EPlayerGlobalState Player1GlobalState;
-
-	UPROPERTY(EditAnywhere)
-	TAssetPtr<UWorld> GameOverMap;
-
-	UPROPERTY(EditAnywhere)
-	TAssetPtr<UWorld> VictoryMap;
 	
 	bool bGameIsPaused = false;
 

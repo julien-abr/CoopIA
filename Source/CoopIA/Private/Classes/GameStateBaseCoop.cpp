@@ -68,10 +68,8 @@ void AGameStateBaseCoop::GameOver()
 	GameOverBP();
 	ST_Player0->UpdateStateFromTransition(GameOverTag);
 	ST_Player1->UpdateStateFromTransition(GameOverTag);
-
-	FTimerHandle timer;
-	if(GameOverMap)
-		GetWorldTimerManager().SetTimer(timer, FTimerDelegate::CreateLambda([&] { UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap); }), 0.5f, false);
+	
+	OpenGameOverMap();
 }
 
 void AGameStateBaseCoop::Victory()
@@ -139,9 +137,7 @@ bool AGameStateBaseCoop::IsGameOver()
 		ST_Player0->UpdateStateFromTransition(GameOverTag);
 		ST_Player1->UpdateStateFromTransition(GameOverTag);
 
-		FTimerHandle timer;
-		if(GameOverMap)
-			GetWorldTimerManager().SetTimer(timer, FTimerDelegate::CreateLambda([&] { UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap); }), .5f, false);
+		OpenGameOverMap();
 		
 	}
 	return bGameOver;
