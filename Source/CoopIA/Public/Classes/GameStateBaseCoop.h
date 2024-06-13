@@ -26,7 +26,7 @@ public:
 	AGameStateBaseCoop();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void GameOver();
+	void GameOverBP();
 	
 	void Init(TArray<APlayerControllerBase*>& ArrayPlayerController);
 	
@@ -42,8 +42,17 @@ public:
 
 	EPlayerGlobalState GetPlayer0GlobalState() const {return Player0GlobalState;}
 	EPlayerGlobalState GetPlayer1GlobalState() const {return Player1GlobalState;}
+	
+	TSoftObjectPtr<UWorld> GetGameOverMap() const {return GameOverMap;}
 
-	void CollaspeGameOver();
+	UFUNCTION(BlueprintCallable)
+	void GameOver();
+	
+	UFUNCTION(BlueprintCallable)
+	void Victory();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenVictoryMap();
 private:
 	UPROPERTY()
 	TObjectPtr<UStateMachineComponent> ST_Player0;
@@ -77,6 +86,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TAssetPtr<UWorld> GameOverMap;
+
+	UPROPERTY(EditAnywhere)
+	TAssetPtr<UWorld> VictoryMap;
 	
 	bool bGameIsPaused = false;
 
