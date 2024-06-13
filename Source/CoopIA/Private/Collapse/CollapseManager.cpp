@@ -294,7 +294,7 @@ void ACollapseManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 			{
 				UE_LOGFMT(LogTemp, Warning, "[COLLASPE] Player hit CollaspeZone");
 				if(_gameStateCoop)
-					_gameStateCoop->CollaspeGameOver();
+					_gameStateCoop->GameOver();
 			}
 		}
 	}
