@@ -293,7 +293,6 @@ void ACharacterBase::StartNeutral()
 	{
 		UE_LOGFMT(LogTemp, Warning, "Input Neutral - #{0}", GetPlayerIndex_Implementation());
 		ST->UpdateState(NeutralTag);
-		OnEnterNeutral();
 	}
 }
 
