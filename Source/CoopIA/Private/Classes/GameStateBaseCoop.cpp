@@ -63,6 +63,16 @@ const AActor* AGameStateBaseCoop::GetPlayer(const int Index) const
 	return nullptr;
 }
 
+void AGameStateBaseCoop::CollaspeGameOver()
+{
+	ST_Player0->UpdateStateFromTransition(GameOverTag);
+	ST_Player1->UpdateStateFromTransition(GameOverTag);
+
+	FTimerHandle timer;
+	GetWorldTimerManager().SetTimer(timer, FTimerDelegate::CreateLambda([&] { UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap); }), 1.0f, false);
+
+}
+
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
 {
 	if(PlayerIndex == 0)
