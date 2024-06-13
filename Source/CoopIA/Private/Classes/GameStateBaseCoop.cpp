@@ -116,7 +116,7 @@ void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGl
 	}
 }
 
-bool AGameStateBaseCoop::IsGameOver() const
+bool AGameStateBaseCoop::IsGameOver()
 {
 	bool bGameOver = false;
 
@@ -125,6 +125,7 @@ bool AGameStateBaseCoop::IsGameOver() const
 		(Player1GlobalState == EPlayerGlobalState::Dead && ST_Player0->GetIACount() <= 1))
 	{
 		bGameOver = true;
+		GameOver();
 		ST_Player0->UpdateStateFromTransition(GameOverTag);
 		ST_Player1->UpdateStateFromTransition(GameOverTag);
 
