@@ -25,6 +25,8 @@ void UStateSpear::OnStateEnter(class UStateMachineComponent*& StateMachineCompon
 	ST->CurrentActor = ST->SpearActor;
 	ST->MainCamera->SetPlayer(ST->SpearActor, ST->PlayerIndex);
 	ST->PlayerController->Possess(ST->SpearActor);
+
+	ST->SpearActor->OnEnterSpear();
 }
 
 void UStateSpear::OnStateTick()

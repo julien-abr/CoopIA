@@ -9,6 +9,7 @@
 #include "GameFramework/Pawn.h"
 #include "Ball.generated.h"
 
+class ABallPlayerUI;
 class UInputMappingContext;
 class UInputAction;
 struct FGameplayTagContainer;
@@ -48,6 +49,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetSimulatePhysics(const bool enable);
 	
+	void InitActorUI(ABallPlayerUI* PlayerUI);
+    	
 	void Hide();
 	void Show();
 
@@ -80,6 +83,9 @@ private:
 	TObjectPtr<UStateMachineComponent> ST;
 	
 	TObjectPtr<class ST> AIManager;
+
+	UPROPERTY()
+	TObjectPtr<ABallPlayerUI> BallPlayerUI;
 
 	UPROPERTY(EditAnywhere)
 	FGameplayTag SpearTag;

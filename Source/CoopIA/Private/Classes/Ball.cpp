@@ -6,9 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "Classes/StateMachine/StateMachineComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Classes/AIManager.h"
 #include "Classes/PlayerControllerBase.h"
-#include "Classes/Data/EIAState.h"
+#include "Classes/UI/BallPlayerUI.h"
 
 // Sets default values
 ABall::ABall()
@@ -115,8 +114,15 @@ void ABall::StartShield()
 		ST->UpdateState(ShieldTag);
 }
 
+void ABall::InitActorUI(ABallPlayerUI* PlayerUI)
+{
+	BallPlayerUI = PlayerUI;
+}
+
 void ABall::Hide()
 {
+	if(BallPlayerUI)
+		BallPlayerUI->SetActorHiddenInGame(true);
 	SetSimulatePhysics(false);
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);
@@ -124,6 +130,8 @@ void ABall::Hide()
 
 void ABall::Show()
 {
+	if(BallPlayerUI)
+		BallPlayerUI->SetActorHiddenInGame(false);
 	SetSimulatePhysics(true);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);

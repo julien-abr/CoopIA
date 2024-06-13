@@ -242,7 +242,6 @@ void ASpear::Show()
 	GetCapsuleComponent()->SetCollisionObjectType(ChannelPlayer);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
-	OnEnterSpear();
 }
 
 int32 ASpear::GetPlayerIndex_Implementation()
