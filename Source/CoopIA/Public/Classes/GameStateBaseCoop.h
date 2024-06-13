@@ -24,6 +24,9 @@ class COOPIA_API AGameStateBaseCoop : public AGameStateBase
 	
 public:
 	AGameStateBaseCoop();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void GameOver();
 	
 	void Init(TArray<APlayerControllerBase*>& ArrayPlayerController);
 	
@@ -82,5 +85,5 @@ private:
 	UFUNCTION()
 	void OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState);
 
-	bool IsGameOver() const;
+	bool IsGameOver();
 };

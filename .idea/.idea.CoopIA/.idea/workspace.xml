@@ -13,16 +13,16 @@
   <component name="ChangeListManager">
     <list default="true" id="f81690e7-72c4-44ee-b68e-30d40399b254" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform_02.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform_02.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/IA_Effect.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/IA_Effect.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Map/Test_WIP/Test_ToolGp.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Map/Test_WIP/Test_ToolGp.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/Level1_Louis.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/Level1_Louis.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_StateMachine.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_StateMachine.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/Level_tuto_01_test1.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/Level_tuto_01_test1.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/Level_tuto_02.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/Level_tuto_02.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateMachineComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateMachineComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateInit.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateInit.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/CharacterBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DA_StateMachine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DA_StateMachine.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -317,7 +317,7 @@
       <workItem from="1718044483407" duration="4689000" />
       <workItem from="1718089087542" duration="6726000" />
       <workItem from="1718175722034" duration="9214000" />
-      <workItem from="1718261951016" duration="1626000" />
+      <workItem from="1718261951016" duration="3814000" />
     </task>
     <servers />
   </component>
