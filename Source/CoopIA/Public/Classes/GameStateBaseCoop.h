@@ -42,7 +42,8 @@ public:
 
 	EPlayerGlobalState GetPlayer0GlobalState() const {return Player0GlobalState;}
 	EPlayerGlobalState GetPlayer1GlobalState() const {return Player1GlobalState;}
-	
+
+	void CollaspeGameOver();
 private:
 	UPROPERTY()
 	TObjectPtr<UStateMachineComponent> ST_Player0;
