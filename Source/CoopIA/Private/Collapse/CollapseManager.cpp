@@ -256,6 +256,8 @@ void ACollapseManager::CollapseLine()
 	{
 		for (auto it = collaspeActorArray.CreateIterator(); it; ++it)
 		{
+			if(!collaspeActorArray[it.GetIndex()]) {continue;}
+
 			//Zone exceed
 			if (collaspeActorArray[it.GetIndex()]->GetActorLocation().X < _key)
 			{
@@ -294,7 +296,7 @@ void ACollapseManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 			{
 				UE_LOGFMT(LogTemp, Warning, "[COLLASPE] Player hit CollaspeZone");
 				if(_gameStateCoop)
-					_gameStateCoop->CollaspeGameOver();
+					_gameStateCoop->GameOver();
 			}
 		}
 	}

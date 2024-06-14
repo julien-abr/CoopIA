@@ -9,11 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="0e89a2e9-8907-41ad-979d-24d35127dc88" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Map/MM.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Map/MM.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/Menus/LVL_Game_Over.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/Menus/LVL_Game_Over.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Yingjou/Animation/BP_MainCharacterAnimation.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Yingjou/Animation/BP_MainCharacterAnimation.uasset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -189,7 +186,7 @@
       <workItem from="1717574969995" duration="6021000" />
       <workItem from="1717661770552" duration="5984000" />
       <workItem from="1718049218420" duration="2498000" />
-      <workItem from="1718266865722" duration="4385000" />
+      <workItem from="1718266865722" duration="5067000" />
     </task>
     <servers />
   </component>

@@ -63,14 +63,22 @@ const AActor* AGameStateBaseCoop::GetPlayer(const int Index) const
 	return nullptr;
 }
 
-void AGameStateBaseCoop::CollaspeGameOver()
+void AGameStateBaseCoop::GameOver()
 {
+	GameOverBP();
 	ST_Player0->UpdateStateFromTransition(GameOverTag);
 	ST_Player1->UpdateStateFromTransition(GameOverTag);
+	
+	OpenGameOverMap();
+}
 
-	FTimerHandle timer;
-	GetWorldTimerManager().SetTimer(timer, FTimerDelegate::CreateLambda([&] { UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap); }), 1.0f, false);
-
+void AGameStateBaseCoop::Victory()
+{
+	GameOverBP();
+	ST_Player0->UpdateStateFromTransition(GameOverTag);
+	ST_Player1->UpdateStateFromTransition(GameOverTag);
+	
+	OpenVictoryMap();
 }
 
 void AGameStateBaseCoop::OnPlayerGlobalStateChanged(int32 PlayerIndex, EPlayerGlobalState NewPlayerState)
@@ -125,12 +133,11 @@ bool AGameStateBaseCoop::IsGameOver()
 		(Player1GlobalState == EPlayerGlobalState::Dead && ST_Player0->GetIACount() <= 1))
 	{
 		bGameOver = true;
-		GameOver();
+		GameOverBP();
 		ST_Player0->UpdateStateFromTransition(GameOverTag);
 		ST_Player1->UpdateStateFromTransition(GameOverTag);
 
-		FTimerHandle timer;
-		GetWorldTimerManager().SetTimer(timer, FTimerDelegate::CreateLambda([&] { UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), GameOverMap); }), 1.0f, false);
+		OpenGameOverMap();
 		
 	}
 	return bGameOver;
