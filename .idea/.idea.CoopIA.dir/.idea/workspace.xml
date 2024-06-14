@@ -9,9 +9,19 @@
   <component name="ChangeListManager">
     <list default="true" id="0e89a2e9-8907-41ad-979d-24d35127dc88" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Character/BP_CharacterBase.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CoopIA/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Smoke_Umbrella.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Smoke_Umbrella.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_TransformGreen.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_TransformGreen.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/IA_Effect.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/IA_Effect.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_StateMachine.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_StateMachine.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Yingjou/Animation/BP_MainCharacterAnimation.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Yingjou/Animation/BP_MainCharacterAnimation.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateTransition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateTransition.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DA_StateMachine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DA_StateMachine.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,6 +197,7 @@
       <workItem from="1717661770552" duration="5984000" />
       <workItem from="1718049218420" duration="2498000" />
       <workItem from="1718266865722" duration="5067000" />
+      <workItem from="1718354778307" duration="2950000" />
     </task>
     <servers />
   </component>
