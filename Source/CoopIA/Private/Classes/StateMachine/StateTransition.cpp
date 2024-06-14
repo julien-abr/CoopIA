@@ -40,9 +40,11 @@ void UStateTransition::OnStateTick()
 void UStateTransition::OnStateLeave()
 {
 	Super::OnStateLeave();
-	UE_LOG(LogTemp, Warning, TEXT("TRANSITION => OK"));
 	if (ST->OnHidePrevious.IsBound())
 	{
 		ST->OnHidePrevious.Execute();
 	}
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	TimerHandle.Invalidate();
+	UE_LOG(LogTemp, Warning, TEXT("TRANSITION => OK"));
 }
