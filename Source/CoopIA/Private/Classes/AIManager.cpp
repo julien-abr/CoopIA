@@ -87,6 +87,8 @@ void AAIManager::IARandomMove()
 
 	for(auto IA : ArrayIA)
 	{
+		if (!IA) { continue; }
+
 		if(CurrentActor)
 		{
 			const FVector halfSize = FVector(DataAssetIA->RandomMoveDistanceFromPlayer, DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
@@ -164,7 +166,9 @@ void AAIManager::UpdateState(const EIAState& State)
 
 	NumberIAToSucceed = ArrayIA.Num();
     for(auto IA : ArrayIA)
-    {	
+    {
+		if (!IA) { continue; }
+
         IA->MoveToActor(CurrentActor, DataAssetIA->BaseAcceptanceRadius);
     }
 }
@@ -182,6 +186,8 @@ TArray<ACharacterBaseIA*> AAIManager::SplitAI()
 
 	for (auto IA_Splited : CharacterIASplited)
 	{
+		if(!IA_Splited) {continue;}
+
 		ArrayIA.Remove(IA_Splited);
 	}
 
@@ -198,6 +204,8 @@ void AAIManager::PlayerDied(EIAState State)
 	IAState = EIAState::DEAD;
 	for(auto IA : ArrayIA)
 	{
+		if (!IA) { continue; }
+
 		IA->Destroy();
 	}
 	ArrayIA.Empty();
@@ -250,6 +258,8 @@ void AAIManager::InitIA()
 {
 	for (auto IA : ArrayIA)
 	{
+		if(!IA) {continue;}
+
 		IA->Init(ManagerIndex);
 	}
 }
@@ -342,6 +352,8 @@ void AAIManager::TeleportIA()
 
 	for(auto IA : ArrayIA)
 	{
+		if (!IA) { continue; }
+
 		FNavLocation NavLoc;
 		FRotator Rotation = IA->GetActorRotation();
 		bool bFindDestination = NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 300.f, NavLoc);
