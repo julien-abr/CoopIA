@@ -3,6 +3,7 @@
 
 #include "Ingredient/PressurePlate.h"
 
+#include "Kismet/KismetSystemLibrary.h"
 #include "Logging/StructuredLog.h"
 
 APressurePlate::APressurePlate()
@@ -20,8 +21,12 @@ void APressurePlate::BeginPlay()
 
 	if(object)
 	{
-		object->SetActorHiddenInGame(!makeObjectAppear);
-		object->SetActorEnableCollision(makeObjectAppear);
+		initialPos = object->GetActorLocation();
+		if (!makeObjectDisappear)
+		{
+			object->SetActorLocation(FVector(initialPos.X, initialPos.Y, -5000));
+		}
+		object->SetActorEnableCollision(makeObjectDisappear);
 	}
 }
 
@@ -36,8 +41,13 @@ void APressurePlate::OnOverlapBegin(class AActor* OverlappedActor, class AActor*
 
 		if (object)
 		{
-			object->SetActorHiddenInGame(makeObjectAppear);
-			object->SetActorEnableCollision(!makeObjectAppear);
+			/*if (!makeObjectDisappear)
+			{
+				object->SetActorHiddenInGame(makeObjectDisappear);
+			}*/
+				
+			MoveObjectAnim(makeObjectDisappear);
+			object->SetActorEnableCollision(!makeObjectDisappear);
 
 			if (isUnique)
 			{
@@ -59,9 +69,39 @@ void APressurePlate::OnOverlapEnd(class AActor* OverlappedActor, class AActor* O
 		{
 			if (object)
 			{
-				object->SetActorHiddenInGame(!makeObjectAppear);
-				object->SetActorEnableCollision(makeObjectAppear);
+				//object->SetActorHiddenInGame(!makeObjectDisappear);
+				object->SetActorEnableCollision(makeObjectDisappear);
+
+				MoveObjectAnim(!makeObjectDisappear);
 			}
 		}
 	}
+}
+
+void APressurePlate::MoveObjectAnim(bool IsDisappearing)
+{
+	USceneComponent* objectComponent = object->GetRootComponent();
+
+	if(!IsDisappearing)
+	{
+
+		FLatentActionInfo latentInfoMesh;
+		latentInfoMesh.CallbackTarget = objectComponent;
+		UKismetSystemLibrary::MoveComponentTo(objectComponent, initialPos, GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
+
+	}
+	else
+	{
+		FLatentActionInfo latentInfoMesh;
+		latentInfoMesh.CallbackTarget = objectComponent;
+		UKismetSystemLibrary::MoveComponentTo(objectComponent, FVector(initialPos.X, initialPos.Y, -5000), GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
+		//GetWorld()->GetTimerManager().SetTimer<APressurePlate>(TriggerDisappearTimerHandle, this, &APressurePlate::TriggerObjectDisappear, _fallAnimTime, false);
+
+	}
+}
+
+void APressurePlate::TriggerObjectDisappear()
+{
+	object->SetActorHiddenInGame(makeObjectDisappear);
+	object->SetActorEnableCollision(!makeObjectDisappear);
 }

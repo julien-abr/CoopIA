@@ -34,18 +34,32 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
 
+	UFUNCTION()
+	void MoveObjectAnim(bool IsDisappearing);
+
+	UFUNCTION()
+	void TriggerObjectDisappear();
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPressure();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _fallAnimTime = 5.0f;
 
 	UPROPERTY(EditAnywhere)
 	bool isUnique;
 
 	UPROPERTY(EditAnywhere)
-	bool makeObjectAppear;
+	bool makeObjectDisappear;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> object;
 	
 private:
+	UPROPERTY()
 	TArray<AActor*> actorList;
+
+	FVector initialPos;
+
+	FTimerHandle TriggerDisappearTimerHandle;
 };
