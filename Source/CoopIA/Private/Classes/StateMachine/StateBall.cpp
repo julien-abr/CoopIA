@@ -27,6 +27,8 @@ void UStateBall::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	ST->CurrentActor = ST->BallActor;
 	ST->MainCamera->SetPlayer(ST->BallActor, ST->PlayerIndex);
 	ST->PlayerController->Possess(ST->BallActor);
+
+	ST->BallActor->OnEnterBall();
 }
 
 void UStateBall::OnStateTick()

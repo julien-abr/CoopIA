@@ -123,8 +123,11 @@ int UStateMachineComponent::GetIACount() const
 
 void UStateMachineComponent::RemoveAI(ACharacterBaseIA* CharacterAI)
 {
-	if(CharacterAI->IsValidLowLevel())
-		ArrayIA.Remove(CharacterAI);
+	if(CharacterAI)
+	{
+		if(ArrayIA.Contains(CharacterAI))
+			ArrayIA.Remove(CharacterAI);
+	}
 }
 
 TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
@@ -143,6 +146,8 @@ TArray<ACharacterBaseIA*> UStateMachineComponent::SplitAI()
 
 	for (auto IA_Splited : CharacterIASplited)
 	{
+		if(!IA_Splited) {continue;}
+
 		IA_Splited->Init(OtherST->PlayerIndex);
 		ArrayIA.Remove(IA_Splited);
 	}
@@ -305,7 +310,8 @@ void UStateMachineComponent::FindLastHex()
 		FVector End = Start - (FVector::UpVector * 200);	
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(CurrentActor);
-		
+
+		//TODO::Check hex eboulement
 		if(GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams()))
 		{
 			if(AHexBehaviour* Hex = Cast<AHexBehaviour>(HitResult.GetActor()))
@@ -327,11 +333,13 @@ void UStateMachineComponent::IARandomMove()
 	
 	for(auto const IA : ArrayIA)
 	{
+		if(!IA) {continue;}
+
 		if(CurrentActor)
 		{
 			const FVector halfSize = FVector(DA_StateMachine->DataAssetIA->RandomMoveDistanceFromPlayer, DA_StateMachine->DataAssetIA->RandomMoveDistanceFromPlayer,CurrentActor->GetActorLocation().Z);
 			const FVector Destination = UKismetMathLibrary::RandomPointInBoundingBox(CurrentActor->GetActorLocation(), halfSize);
-			if(IA->IsValidLowLevel())
+			if(IA)
 				IA->Move(Destination, DA_StateMachine->DataAssetIA->BaseAcceptanceRadius);
 		}
 	}
@@ -344,6 +352,8 @@ void UStateMachineComponent::ShowAndTeleportIA()
 
 	for(auto IA : ArrayIA)
 	{
+		if (!IA) { continue; }
+
 		FNavLocation NavLoc;
 		const FRotator Rotation = IA->GetActorRotation();
 		if(NavSystem->GetRandomReachablePointInRadius(PlayerLoc, 300.f, NavLoc))
@@ -390,6 +400,8 @@ void UStateMachineComponent::HideIA()
 {
 	for(auto IA : ArrayIA)
 	{
+		if(!IA) {continue;}
+
 		IA->Hide();
 	}
 }
@@ -397,6 +409,8 @@ void UStateMachineComponent::DestroyIA()
 {
 	for(auto IA : ArrayIA)
 	{
+		if (!IA) { continue; }
+
 		IA->Destroy();
 	}
 	ArrayIA.Empty();

@@ -4,8 +4,11 @@
 #include "Classes/StateMachine/StateTransition.h"
 
 #include "Classes/CharacterBase.h"
+#include "Classes/CharacterBaseIA.h"
 #include "Classes/Data/DataAsset/DA_StateMachine.h"
 #include "Classes/StateMachine/StateMachineComponent.h"
+#include "Classes/UI/TransitionEffect.h"
+#include "Classes/UI/TransitionEffectPlayer.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineComponentRef)
@@ -18,6 +21,18 @@ void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineCompone
 	
 	if(ST->NextTag != FGameplayTag::EmptyTag && ST->NextTag != ST->DA_StateMachine->NeutralState)
 	{
+		FActorSpawnParameters SpawnInfoEffect;
+		SpawnInfoEffect.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+		ATransitionEffectPlayer* transitionPlayerEffect = GetWorld()->SpawnActor<ATransitionEffectPlayer>(ST->DA_StateMachine->TransitionEffectPlayerBP, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoEffect);
+		transitionPlayerEffect->Init(ST->GetPlayerIndex(), ST->DA_StateMachine->TransitonTime);
+		for(auto IA : ST->ArrayIA)
+		{
+			IA->Hide();
+			ATransitionEffect* transitionEffect = GetWorld()->SpawnActor<ATransitionEffect>(ST->DA_StateMachine->TransitionEffectBP, IA->GetActorLocation(), FRotator(), SpawnInfoEffect);
+			transitionEffect->Init(ST->GetPlayerIndex(), ST->CurrentActor->GetActorLocation(), ST->DA_StateMachine->TransitonTime);
+		}
+		
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
 		{
 			//VFX HERE
@@ -27,8 +42,22 @@ void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineCompone
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No vfx transition"));
-		ST->UpdateStateFromTransition(ST->NextTag);
+		FActorSpawnParameters SpawnInfoEffect;
+		SpawnInfoEffect.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+		ATransitionEffectPlayer* transitionPlayerEffect = GetWorld()->SpawnActor<ATransitionEffectPlayer>(ST->DA_StateMachine->TransitionEffectPlayerBP, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoEffect);
+		transitionPlayerEffect->Init(ST->GetPlayerIndex(), ST->DA_StateMachine->TransitonTime);
+		for(auto IA : ST->ArrayIA)
+		{
+			ATransitionEffect* transitionEffect = GetWorld()->SpawnActor<ATransitionEffect>(ST->DA_StateMachine->TransitionEffectBP, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoEffect);
+			transitionEffect->Init(ST->GetPlayerIndex(), ST->CurrentActor->GetActorLocation(), ST->DA_StateMachine->TransitonTime);
+		}
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
+		{
+			//Transition on ourself => go high and fall to the player
+			UE_LOG(LogTemp, Warning, TEXT("No vfx ON IA transition"));
+			ST->UpdateStateFromTransition(ST->NextTag);
+		}), ST->DA_StateMachine->TransitonTime, false);
 	}
 }
 
@@ -40,9 +69,11 @@ void UStateTransition::OnStateTick()
 void UStateTransition::OnStateLeave()
 {
 	Super::OnStateLeave();
-	UE_LOG(LogTemp, Warning, TEXT("TRANSITION => OK"));
 	if (ST->OnHidePrevious.IsBound())
 	{
 		ST->OnHidePrevious.Execute();
 	}
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	TimerHandle.Invalidate();
+	UE_LOG(LogTemp, Warning, TEXT("TRANSITION => OK"));
 }

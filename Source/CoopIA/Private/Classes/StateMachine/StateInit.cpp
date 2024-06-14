@@ -13,6 +13,7 @@
 
 //Libraries
 #include "Classes/Ball.h"
+#include "Classes/UI/BallPlayerUI.h"
 #include "Kismet/GameplayStatics.h"
 
 void UStateInit::OnStateEnter(class UStateMachineComponent*& StateMachineComponentRef)
@@ -22,6 +23,10 @@ void UStateInit::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	
 	//Set Player to be the pawn of the controller
 	ST->Player = Cast<ACharacterBase>(ST->PlayerController->GetPawn());
+
+	const UTexture2D* PlayerUI = (ST->PlayerIndex == 0) ? ST->DA_StateMachine->PlayerJ1 : ST->DA_StateMachine->PlayerJ2;
+	ST->Player->UpdatePlayerCountUI(PlayerUI);
+	
 	//Set Current Actor
 	ST->CurrentActor = ST->Player;
 	
@@ -35,6 +40,7 @@ void UStateInit::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	SpawnInfoSpear.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	ST->SpearActor = GetWorld()->SpawnActor<ASpear>(ST->DA_StateMachine->SpearBP, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoSpear);
 	ST->SpearActor->Hide();
+	ST->SpearActor->UpdatePlayerCountUI(PlayerUI);
 
 	//SHIELD
 	FActorSpawnParameters SpawnInfoShield;
@@ -48,6 +54,11 @@ void UStateInit::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	FActorSpawnParameters SpawnInfoBall;
 	SpawnInfoBall.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	ST->BallActor = GetWorld()->SpawnActor<ABall>(ST->DA_StateMachine->BallBP, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoBall);
+
+	//Create BALL UI
+	ABallPlayerUI* BallPlayerUI = GetWorld()->SpawnActor<ABallPlayerUI>(ST->DA_StateMachine->BallBP_UI, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoBall);
+	BallPlayerUI->Init(ST->BallActor, PlayerUI);
+	ST->BallActor->InitActorUI(BallPlayerUI);
 	ST->BallActor->Hide();
 	UE_LOG(LogTemp, Warning, TEXT("INIT => OK"));
 	

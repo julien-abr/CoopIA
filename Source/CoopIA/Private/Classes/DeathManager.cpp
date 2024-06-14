@@ -20,6 +20,11 @@ ADeathManager::ADeathManager()
 	DeathZone->SetupAttachment(RootComponent);
 }
 
+void ADeathManager::SetDeathManagerHight(float Zpos)
+{
+	SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, Zpos));
+}
+
 void ADeathManager::RevivePlayer(int32 Index)
 {
 	OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Alive);
@@ -31,22 +36,27 @@ void ADeathManager::BeginPlay()
 	Super::BeginPlay();
 
 	DeathZone->OnComponentBeginOverlap.AddDynamic(this, &ADeathManager::OnBoxBeginOverlap);
-	
-	TArray<AActor*> ArrayPlayerControllerBase;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerControllerBase::StaticClass(), ArrayPlayerControllerBase);
 
-	for (auto ActorController : ArrayPlayerControllerBase)
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&]
 	{
-		APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(ActorController);
-		if(PlayerControllerBase->GetPlayerIndex() == 0)
+		TArray<AActor*> ArrayPlayerControllerBase;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerControllerBase::StaticClass(), ArrayPlayerControllerBase);
+
+		for (auto ActorController : ArrayPlayerControllerBase)
 		{
-			ST_Player0 = PlayerControllerBase->GetStateMachineComponent();
+			APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(ActorController);
+			if(PlayerControllerBase->GetPlayerIndex() == 0)
+			{
+				ST_Player0 = PlayerControllerBase->GetStateMachineComponent();
+			}
+			else
+			{
+				ST_Player1 =  PlayerControllerBase->GetStateMachineComponent();
+			}
 		}
-		else
-		{
-			ST_Player1 =  PlayerControllerBase->GetStateMachineComponent();
-		}
-	}
+	}), 0.1f, false);
+
 }
 
 void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -72,16 +82,23 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		else if(OtherActorTag.HasTag(AITag))
 		{
 			ACharacterBaseIA* AI = Cast<ACharacterBaseIA>(OtherActor);
-			if (!AI->IsValidLowLevel()) { return; }
+			if (!AI) { return; }
 			UE_LOGFMT(LogTemp, Warning, "AI falled in DeathZone - #{0}", AI->PlayerIndex);
-			if (AI->PlayerIndex == 0)
+			switch (AI->PlayerIndex)
 			{
-				ST_Player0->RemoveAI(AI);
+			case 0:
+				if(ST_Player0)
+					ST_Player0->RemoveAI(AI);
+				break;
+			case 1:
+				if(ST_Player1)
+					ST_Player1->RemoveAI(AI);
+				break;
+			default:
+				break;
 			}
-			else
-			{
-				ST_Player1->RemoveAI(AI);
-			}
+
+			OtherActor->Destroy();
 
 			OnSpiritDeath();
 		}
