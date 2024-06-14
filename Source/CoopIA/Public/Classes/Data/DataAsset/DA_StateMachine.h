@@ -67,4 +67,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UTexture2D> PlayerJ2;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ATransitionEffect> TransitionEffectBP;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ATransitionEffectPlayer> TransitionEffectPlayerBP;
 };

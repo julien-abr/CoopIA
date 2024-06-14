@@ -135,4 +135,5 @@ void ABall::Show()
 	SetSimulatePhysics(true);
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
+	OnEnterBall();
 }
