@@ -78,17 +78,17 @@ void APressurePlate::MoveObjectAnim(bool IsDisappearing)
 
 	if(!IsDisappearing)
 	{
-
+		
 		FLatentActionInfo latentInfoMesh;
 		latentInfoMesh.CallbackTarget = objectComponent;
-		UKismetSystemLibrary::MoveComponentTo(objectComponent, initialPos, GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
+		UKismetSystemLibrary::MoveComponentTo(objectComponent, initialPos, object->GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
 
 	}
 	else
 	{
 		FLatentActionInfo latentInfoMesh;
 		latentInfoMesh.CallbackTarget = objectComponent;
-		UKismetSystemLibrary::MoveComponentTo(objectComponent, FVector(initialPos.X, initialPos.Y, -5000), GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
+		UKismetSystemLibrary::MoveComponentTo(objectComponent, FVector(initialPos.X, initialPos.Y, -5000), object->GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
 
 	}
 }
