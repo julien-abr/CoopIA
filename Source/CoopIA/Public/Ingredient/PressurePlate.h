@@ -37,9 +37,6 @@ public:
 	UFUNCTION()
 	void MoveObjectAnim(bool IsDisappearing);
 
-	UFUNCTION()
-	void TriggerObjectDisappear();
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPressure();
 

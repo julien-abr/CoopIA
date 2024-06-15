@@ -33,7 +33,9 @@ public:
 	void RevivePlayer(int32 Index);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnSpiritDeath();
+	void OnPlayerDeath(const int32 Index, FVector deathPos);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSpiritDeath(const int32 Index, FVector deathPos);
 
 protected:
 	// Called when the game starts or when spawned

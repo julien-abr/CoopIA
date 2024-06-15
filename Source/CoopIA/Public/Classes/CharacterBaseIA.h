@@ -62,7 +62,7 @@ public:
 	void OnSpiritNeutral();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnSpiritPickup();
+	void OnSpiritPickup(const int32 Index);
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
 	FGameplayTagContainer ActorTags;

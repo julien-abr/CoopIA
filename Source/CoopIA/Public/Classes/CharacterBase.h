@@ -120,9 +120,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnMoveNeutral();
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnMoveShield();
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnDie();
+	void OnMoveShield(const int32 Index);
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnRevive();
 

@@ -76,6 +76,7 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 				int32 Index = IPlayerInterface::Execute_GetPlayerIndex(OtherActor);
 				UE_LOGFMT(LogTemp, Warning, "Player hit DeathZone - #{0}", Index);
 				OnPlayerGlobalStateChangedDelegate.Broadcast(Index, EPlayerGlobalState::Dead);
+				OnPlayerDeath(Index, OtherActor->GetActorLocation());
 			}
 
 		}
@@ -98,9 +99,9 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 				break;
 			}
 
-			OtherActor->Destroy();
+			OnSpiritDeath(AI->PlayerIndex, OtherActor->GetActorLocation());
 
-			OnSpiritDeath();
+			OtherActor->Destroy();
 		}
 	}
 }
