@@ -41,11 +41,6 @@ void APressurePlate::OnOverlapBegin(class AActor* OverlappedActor, class AActor*
 
 		if (object)
 		{
-			/*if (!makeObjectDisappear)
-			{
-				object->SetActorHiddenInGame(makeObjectDisappear);
-			}*/
-				
 			MoveObjectAnim(makeObjectDisappear);
 			object->SetActorEnableCollision(!makeObjectDisappear);
 
@@ -69,7 +64,6 @@ void APressurePlate::OnOverlapEnd(class AActor* OverlappedActor, class AActor* O
 		{
 			if (object)
 			{
-				//object->SetActorHiddenInGame(!makeObjectDisappear);
 				object->SetActorEnableCollision(makeObjectDisappear);
 
 				MoveObjectAnim(!makeObjectDisappear);
@@ -95,13 +89,6 @@ void APressurePlate::MoveObjectAnim(bool IsDisappearing)
 		FLatentActionInfo latentInfoMesh;
 		latentInfoMesh.CallbackTarget = objectComponent;
 		UKismetSystemLibrary::MoveComponentTo(objectComponent, FVector(initialPos.X, initialPos.Y, -5000), GetActorRotation(), false, true, _fallAnimTime, true, EMoveComponentAction::Move, latentInfoMesh);
-		//GetWorld()->GetTimerManager().SetTimer<APressurePlate>(TriggerDisappearTimerHandle, this, &APressurePlate::TriggerObjectDisappear, _fallAnimTime, false);
 
 	}
-}
-
-void APressurePlate::TriggerObjectDisappear()
-{
-	object->SetActorHiddenInGame(makeObjectDisappear);
-	object->SetActorEnableCollision(!makeObjectDisappear);
 }

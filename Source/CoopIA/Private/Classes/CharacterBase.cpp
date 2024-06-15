@@ -164,7 +164,7 @@ void ACharacterBase::Move(const FInputActionValue& Value)
 	}
 
 	if (ST->GetCurrentState() == ShieldTag)
-		OnMoveShield();
+		OnMoveShield(ST->GetPlayerIndex());
 	else if (ST->GetCurrentState() == NeutralTag)
 		OnMoveNeutral();
 }
@@ -257,7 +257,6 @@ void ACharacterBase::Died()
 	CharacterMovementComponent->GroundFriction = 0.f;
 	CharacterMovementComponent->BrakingDecelerationWalking = 200;
 	CharacterMovementComponent->BrakingDecelerationFalling = 200;
-	OnDie();
 }
 
 void ACharacterBase::Revive() const

@@ -146,6 +146,6 @@ void ACharacterBaseIA::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 			CurrentST->AddPlayer(this);
 		bIAtoReceive = false;
 
-		OnSpiritPickup();
+		OnSpiritPickup(CurrentST->GetPlayerIndex());
 	}
 }
