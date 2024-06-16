@@ -35,4 +35,6 @@ void ALaserContainer::RayHitAction_Implementation()
 		doorActor->Destroy();
 
 	OnRayHit();
+
+	_door = nullptr;
 }
