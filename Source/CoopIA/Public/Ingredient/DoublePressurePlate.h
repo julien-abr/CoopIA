@@ -18,10 +18,9 @@ class COOPIA_API ADoublePressurePlate : public APressurePlate
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* triggerBox;
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* secondBody;
-
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* secondBody;
 
 	ADoublePressurePlate();
 };

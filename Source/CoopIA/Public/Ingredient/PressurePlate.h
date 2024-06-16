@@ -14,8 +14,6 @@ class COOPIA_API APressurePlate : public ATriggerBox
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* body;
 
 protected:
 
@@ -23,6 +21,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* body;
 
 	APressurePlate();
 
@@ -38,7 +38,9 @@ public:
 	void MoveObjectAnim(bool IsDisappearing);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnPressure();
+	void OnPressure(FVector pressurePos);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEndPressure();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float _fallAnimTime = 5.0f;
