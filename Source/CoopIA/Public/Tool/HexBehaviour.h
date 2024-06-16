@@ -20,12 +20,12 @@ class COOPIA_API AHexBehaviour : public AActor
 	UArrowComponent* _arrowMesh;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* _hexMesh;
-
-	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* _hexCollider;
 
 public:	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* _hexMesh;
+
 	// Sets default values for this actor's properties
 	AHexBehaviour();
 
@@ -60,6 +60,11 @@ public:
 	{
 		return _isDead;
 	}
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartShaking();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StopShaking();
 
 private:
 	FTimerHandle _preventTimer;

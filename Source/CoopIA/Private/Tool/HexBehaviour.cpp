@@ -111,6 +111,8 @@ UStaticMeshComponent* AHexBehaviour::GetMesh()
 
 void AHexBehaviour::FirstPreventAnim()
 {
+	StartShaking();
+
 	this->SetActorTickEnabled(true);
 
 	FTimerDelegate Delegate;
@@ -127,6 +129,8 @@ void AHexBehaviour::SecondPreventAnim()
 
 void AHexBehaviour::FallAnim()
 {
+	StopShaking();
+
 	_isDead = true;
 
 	if (!_dMatGrassDisolve || !_dMatFloorDisolve)

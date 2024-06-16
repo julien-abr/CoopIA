@@ -5,6 +5,9 @@
 
 ADoublePressurePlate::ADoublePressurePlate()
 {
+	secondBody = CreateDefaultSubobject<UStaticMeshComponent>("SecondBody");
+	secondBody->SetupAttachment(RootComponent);
+
 	triggerBox = CreateDefaultSubobject<UBoxComponent>("SecondTrigger");
-	triggerBox->SetupAttachment(RootComponent);
+	triggerBox->SetupAttachment(secondBody);
 }
