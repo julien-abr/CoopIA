@@ -99,7 +99,7 @@ void ADeathManager::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 				break;
 			}
 
-			OnSpiritDeath(AI->PlayerIndex, OtherActor->GetActorLocation());
+			AI->OnSpiritDeath(AI->PlayerIndex, OtherActor->GetActorLocation());
 
 			OtherActor->Destroy();
 		}
