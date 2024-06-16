@@ -37,17 +37,20 @@ void APressurePlate::OnOverlapBegin(class AActor* OverlappedActor, class AActor*
 		if(!actorList.Contains(OtherActor))
 			actorList.Add(OtherActor);
 
-		OnPressure();
-
-		if (object)
+		if (actorList.Num() == 1)
 		{
-			MoveObjectAnim(makeObjectDisappear);
-			object->SetActorEnableCollision(!makeObjectDisappear);
+			OnPressure(OtherActor->GetActorLocation());
 
-			if (isUnique)
+			if (object)
 			{
-				OnActorBeginOverlap.RemoveDynamic(this, &APressurePlate::OnOverlapBegin);
-				OnActorEndOverlap.RemoveDynamic(this, &APressurePlate::OnOverlapEnd);
+				MoveObjectAnim(makeObjectDisappear);
+				object->SetActorEnableCollision(!makeObjectDisappear);
+
+				if (isUnique)
+				{
+					OnActorBeginOverlap.RemoveDynamic(this, &APressurePlate::OnOverlapBegin);
+					OnActorEndOverlap.RemoveDynamic(this, &APressurePlate::OnOverlapEnd);
+				}
 			}
 		}
 	}
@@ -62,6 +65,8 @@ void APressurePlate::OnOverlapEnd(class AActor* OverlappedActor, class AActor* O
 
 		if(actorList.Num() == 0)
 		{
+			OnEndPressure();
+
 			if (object)
 			{
 				object->SetActorEnableCollision(makeObjectDisappear);
