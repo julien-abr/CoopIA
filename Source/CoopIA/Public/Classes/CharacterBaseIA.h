@@ -59,8 +59,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void OnSpiritDeath(const int32 Index, FVector deathPos);
+	UFUNCTION(BlueprintImplementableEvent)
 	void OnSpiritNeutral();
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnSpiritPickup(const int32 Index);
 private:

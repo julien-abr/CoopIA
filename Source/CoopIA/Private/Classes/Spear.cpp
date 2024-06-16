@@ -95,7 +95,14 @@ void ASpear::Tick(float DeltaSeconds)
 
 	if(bCanUpdateTimer)
 	{
-		HoldTimer += DeltaSeconds;
+		if (HoldTimer >= DASpear->SpearHoldTimer)
+		{
+			HoldTimer = DASpear->SpearHoldTimer;
+			bCanUpdateTimer = false;
+			OnDashFinishLoad();
+		}
+		else
+			HoldTimer += DeltaSeconds;
 	}
 
 	float Velocity = GetCharacterMovement()->Velocity.Length();
@@ -108,6 +115,7 @@ void ASpear::Tick(float DeltaSeconds)
 	if(Velocity <= 250  && SpearState != ESpearState::STATIC)
 	{
 		SpearState = ESpearState::STATIC;
+		OnEndDash();
 	}
 
 }
@@ -133,8 +141,6 @@ void ASpear::DashUp()
 	const FVector LaunchZForce = FVector(0.f, 0.f, DASpear->DashZBaseVelocity);
 	LaunchCharacter(LaunchZForce, false, false);
 
-	OnDash();
-
 	GetWorld()->GetTimerManager().SetTimer(TimerDashForward, this, &ASpear::DashForward, DASpear->TimerBetweenDashUPForward, false);
 	bCanDash = false;
 	bStartHold = false;
@@ -143,11 +149,8 @@ void ASpear::DashUp()
 
 void ASpear::DashForward()
 {
-	if(HoldTimer > DASpear->SpearHoldTimer)
-	{
-		HoldTimer =  DASpear->SpearHoldTimer;
-	}
-	
+	OnDash();
+
 	//UE_LOG(LogTemp, Warning, TEXT("HoldTimer : %f"), HoldTimer);
 	const float DashPower = UKismetMathLibrary::Lerp(DASpear->SpearMinPower, DASpear->SpearMaxPower, HoldTimer/DASpear->SpearHoldTimer);
 	const FVector DashForce = UKismetMathLibrary::GetForwardVector(GetActorRotation()) * DashPower;

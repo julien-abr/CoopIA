@@ -411,6 +411,7 @@ void UStateMachineComponent::DestroyIA()
 	{
 		if (!IA) { continue; }
 
+		IA->OnSpiritDeath(PlayerIndex, IA->GetActorLocation());
 		IA->Destroy();
 	}
 	ArrayIA.Empty();

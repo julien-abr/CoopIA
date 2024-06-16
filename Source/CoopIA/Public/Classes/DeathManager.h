@@ -34,8 +34,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPlayerDeath(const int32 Index, FVector deathPos);
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnSpiritDeath(const int32 Index, FVector deathPos);
 
 protected:
 	// Called when the game starts or when spawned
