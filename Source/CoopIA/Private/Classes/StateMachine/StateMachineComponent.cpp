@@ -11,6 +11,7 @@
 #include "Classes/Spear.h"
 #include "Classes/Data/DataAsset/DA_IA.h"
 #include "Classes/Data/DataAsset/DA_StateMachine.h"
+#include "CoopIA/CoopIAGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Tool/HexBehaviour.h"
@@ -42,12 +43,15 @@ void UStateMachineComponent::Init(APlayerControllerBase* ControllerRef, UDA_Stat
 {
 	if(!DA_StateMachineRef || !ControllerRef){return;}
 
+	GameMode = Cast<ACoopIAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	PlayerController = ControllerRef;
 	DA_StateMachine = DA_StateMachineRef;
 	PlayerIndex = PlayerController->GetPlayerIndex();
 	InitializeState(DA_StateMachine->DefaultState);
 	
 	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &UStateMachineComponent::FindLastHex, 1, true);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleUI, this, &UStateMachineComponent::UpdateIACountUI, .5, true);
 }
 
 void UStateMachineComponent::GetOtherST()
@@ -319,6 +323,14 @@ void UStateMachineComponent::FindLastHex()
 				PlayerLastHexPos = Hex->GetRespawnLoc();
 			}
 		}
+	}
+}
+
+void UStateMachineComponent::UpdateIACountUI()
+{
+	if(GameMode)
+	{
+		GameMode->UpdateIACount(PlayerIndex, ArrayIA.Num());
 	}
 }
 
