@@ -187,6 +187,11 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+void ASpear::Init(UStateMachineComponent* StateMachineComponent)
+{
+	ST = StateMachineComponent;
+}
+
 void ASpear::Move(const FInputActionValue& Value)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Move"));
@@ -253,7 +258,7 @@ int32 ASpear::GetPlayerIndex_Implementation()
 
 	if(!ST)
 	{
-		if (APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(Controller))
+		if (const APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(Controller))
 		{
 			ST = PlayerControllerBase->GetStateMachineComponent();
 		}

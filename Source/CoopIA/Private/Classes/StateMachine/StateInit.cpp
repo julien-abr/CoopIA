@@ -40,6 +40,7 @@ void UStateInit::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	SpawnInfoSpear.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	ST->SpearActor = GetWorld()->SpawnActor<ASpear>(ST->DA_StateMachine->SpearBP, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoSpear);
 	ST->SpearActor->Hide();
+	ST->SpearActor->Init(ST);
 	ST->SpearActor->UpdatePlayerCountUI(PlayerUI);
 
 	//SHIELD
@@ -58,8 +59,8 @@ void UStateInit::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	//Create BALL UI
 	ABallPlayerUI* BallPlayerUI = GetWorld()->SpawnActor<ABallPlayerUI>(ST->DA_StateMachine->BallBP_UI, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoBall);
 	BallPlayerUI->Init(ST->BallActor, PlayerUI);
-	ST->BallActor->InitActorUI(BallPlayerUI);
 	ST->BallActor->Hide();
+	ST->BallActor->Init(BallPlayerUI, ST);	
 	UE_LOG(LogTemp, Warning, TEXT("INIT => OK"));
 	
 	ST->UpdateState(ST->DA_StateMachine->NeutralState);

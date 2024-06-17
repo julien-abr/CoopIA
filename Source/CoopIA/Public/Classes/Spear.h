@@ -117,6 +117,8 @@ protected:
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void Init(UStateMachineComponent* StateMachineComponent);
 	
 private:
 	UPROPERTY(EditAnywhere)
