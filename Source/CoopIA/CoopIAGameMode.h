@@ -19,6 +19,10 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
     void UpdateUI(const int playerIndex, const UTexture2D* texture);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateIACount(const int playerIndex, const int Count);
+
 
 private:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))

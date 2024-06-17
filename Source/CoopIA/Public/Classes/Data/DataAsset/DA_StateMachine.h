@@ -78,7 +78,10 @@ public:
 	TObjectPtr<class UTexture2D> ShieldTexture;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> PlayerTexture;
+	TObjectPtr<class UTexture2D> PlayerRedTexture;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> PlayerGreenTexture;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ATransitionEffect> TransitionEffectBP;

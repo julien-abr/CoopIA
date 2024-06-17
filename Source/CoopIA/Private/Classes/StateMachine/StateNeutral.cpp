@@ -32,7 +32,10 @@ void UStateNeutral::OnStateEnter(class UStateMachineComponent*& StateMachineComp
 
 	//UI
 	if(ST->GameMode)
-		ST->GameMode->UpdateUI(ST->PlayerIndex, ST->DA_StateMachine->PlayerTexture);
+	{
+		const UTexture2D* Texture = (ST->PlayerIndex == 0) ? ST->DA_StateMachine->PlayerGreenTexture : ST->DA_StateMachine->PlayerRedTexture;
+		ST->GameMode->UpdateUI(ST->PlayerIndex, Texture);
+	}		
 	ST->Player->OnEnterNeutral();
 }
 

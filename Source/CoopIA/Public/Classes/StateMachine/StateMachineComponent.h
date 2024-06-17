@@ -90,6 +90,8 @@ private:
 	FRotator GetRotationForState() const;
 
 	void FindLastHex();
+	
+	void UpdateIACountUI();
 
 	void IARandomMove();
 
@@ -148,4 +150,5 @@ private:
 	int PlayerIndex;
 	
 	FTimerHandle HandleHexRaycast;
+	FTimerHandle TimerHandleUI;
 };

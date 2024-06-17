@@ -50,6 +50,8 @@ void UStateMachineComponent::Init(APlayerControllerBase* ControllerRef, UDA_Stat
 	InitializeState(DA_StateMachine->DefaultState);
 	
 	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &UStateMachineComponent::FindLastHex, 1, true);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleUI, this, &UStateMachineComponent::UpdateIACountUI, .5, true);
 }
 
 void UStateMachineComponent::GetOtherST()
@@ -321,6 +323,14 @@ void UStateMachineComponent::FindLastHex()
 				PlayerLastHexPos = Hex->GetRespawnLoc();
 			}
 		}
+	}
+}
+
+void UStateMachineComponent::UpdateIACountUI()
+{
+	if(GameMode)
+	{
+		GameMode->UpdateIACount(PlayerIndex, ArrayIA.Num());
 	}
 }
 
