@@ -144,7 +144,7 @@ void ASpear::DashUp()
 	GetWorld()->GetTimerManager().SetTimer(TimerDashForward, this, &ASpear::DashForward, DASpear->TimerBetweenDashUPForward, false);
 	bCanDash = false;
 	bStartHold = false;
-	GetWorld()->GetTimerManager().SetTimer(TimerDash, FTimerDelegate::CreateLambda([&] { bCanDash = true; }), DASpear->TimerDash, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerDash, FTimerDelegate::CreateLambda([&] { bCanDash = true; OnDashAvailable(); }), DASpear->TimerDash, false);
 }
 
 void ASpear::DashForward()
