@@ -54,15 +54,15 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OpenGameOverMap();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EZoneType ZoneType = EZoneType::Running;
 private:
 	UPROPERTY()
 	TObjectPtr<UStateMachineComponent> ST_Player0;
 
 	UPROPERTY()
 	TObjectPtr<UStateMachineComponent> ST_Player1;
-	
-	UPROPERTY(VisibleAnywhere)
-	EZoneType ZoneType = EZoneType::Running;
 
 	UPROPERTY(VisibleAnywhere)
 	FVector RespawnLoc;
