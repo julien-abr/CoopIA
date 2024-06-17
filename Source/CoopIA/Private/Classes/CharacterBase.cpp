@@ -367,8 +367,24 @@ void ACharacterBase::ShieldRotateRightCompleted()
 	ShieldActor->RotationRightCompleted();
 }
 
+bool ACharacterBase::CheckIsFalling()
+{
+	FHitResult HitResult;
+	FVector Start = GetActorLocation();
+	FVector End = Start - (FVector::UpVector * 200);
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params, FCollisionResponseParams());
+
+	if (HitResult.GetActor())
+		return false;
+
+	return true;
+}
+
 void ACharacterBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(GetCapsuleComponent()->GetCollisionObjectType() != collisionChannelDead) {return;}
 		

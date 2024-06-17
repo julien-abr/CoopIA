@@ -86,9 +86,14 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDashLoad();
-
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnDash();
+	void OnDashFinishLoad();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDash(const int32 Index);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEndDash();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDashAvailable();
 
 protected:
 	// Called when the game starts or when spawned
@@ -148,3 +153,4 @@ private:
 	void StartShield();
 
 };
+
