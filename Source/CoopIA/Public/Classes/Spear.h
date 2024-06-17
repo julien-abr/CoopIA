@@ -89,7 +89,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDashFinishLoad();
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnDash();
+	void OnDash(const int32 Index);
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnEndDash();
 
@@ -151,3 +151,4 @@ private:
 	void StartShield();
 
 };
+

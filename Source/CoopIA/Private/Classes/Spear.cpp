@@ -149,7 +149,7 @@ void ASpear::DashUp()
 
 void ASpear::DashForward()
 {
-	OnDash();
+	OnDash(ST->GetPlayerIndex());
 
 	//UE_LOG(LogTemp, Warning, TEXT("HoldTimer : %f"), HoldTimer);
 	const float DashPower = UKismetMathLibrary::Lerp(DASpear->SpearMinPower, DASpear->SpearMaxPower, HoldTimer/DASpear->SpearHoldTimer);
