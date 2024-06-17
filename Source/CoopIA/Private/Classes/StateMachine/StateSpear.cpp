@@ -7,6 +7,7 @@
 #include "Classes/PlayerControllerBase.h"
 #include "Classes/Spear.h"
 #include "Classes/StateMachine/StateMachineComponent.h"
+#include "CoopIA/CoopIAGameMode.h"
 
 void UStateSpear::OnStateEnter(class UStateMachineComponent*& StateMachineComponentRef)
 {
@@ -25,7 +26,10 @@ void UStateSpear::OnStateEnter(class UStateMachineComponent*& StateMachineCompon
 	ST->CurrentActor = ST->SpearActor;
 	ST->MainCamera->SetPlayer(ST->SpearActor, ST->PlayerIndex);
 	ST->PlayerController->Possess(ST->SpearActor);
-
+	
+	//UI
+	if(ST->GameMode)
+		ST->GameMode->UpdateUI(ST->PlayerIndex, ST->DA_StateMachine->SpearTexture);
 	ST->SpearActor->OnEnterSpear();
 }
 

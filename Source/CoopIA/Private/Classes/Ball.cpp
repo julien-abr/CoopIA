@@ -114,9 +114,10 @@ void ABall::StartShield()
 		ST->UpdateState(ShieldTag);
 }
 
-void ABall::InitActorUI(ABallPlayerUI* PlayerUI)
+void ABall::Init(ABallPlayerUI* PlayerUI, UStateMachineComponent* StateMachineComponent)
 {
 	BallPlayerUI = PlayerUI;
+	ST = StateMachineComponent;
 }
 
 void ABall::Hide()
