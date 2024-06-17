@@ -10,6 +10,7 @@
 #include "Classes/Data/DataAsset/DA_IA.h"
 #include "Classes/Data/DataAsset/DA_StateMachine.h"
 #include "Classes/StateMachine/StateMachineComponent.h"
+#include "CoopIA/CoopIAGameMode.h"
 
 void UStateShield::OnStateEnter(class UStateMachineComponent*& StateMachineComponentRef)
 {
@@ -37,6 +38,10 @@ void UStateShield::OnStateEnter(class UStateMachineComponent*& StateMachineCompo
 
 	UE_LOG(LogTemp, Warning, TEXT("Enter STATE SHIELD from Neutral"));
 	ST->HideIA();
+
+	//UI
+	if(ST->GameMode)
+		ST->GameMode->UpdateUI(ST->PlayerIndex, ST->DA_StateMachine->ShieldTexture);
 	ST->Player->SetupShield(ST->ShieldActor);
 }
 

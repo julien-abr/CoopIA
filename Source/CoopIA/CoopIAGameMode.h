@@ -16,6 +16,9 @@ public:
 	ACoopIAGameMode();
 
 	virtual void BeginPlay() override;
+	
+	UFUNCTION(BlueprintImplementableEvent)
+    void UpdateUI(const int playerIndex, const UTexture2D* texture);
 
 private:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = true))

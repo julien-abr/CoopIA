@@ -19,6 +19,7 @@ class ABall;
 class AShield;
 class AMainCamera;
 class UNavigationSystemV1;
+class ACoopIAGameMode;
 
 DECLARE_DELEGATE(FHideDelegate);
 
@@ -125,6 +126,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AActor> CurrentActor;
+
+	UPROPERTY()
+	TObjectPtr<ACoopIAGameMode> GameMode;
 	
 	UPROPERTY()
 	TObjectPtr<AMainCamera> MainCamera;

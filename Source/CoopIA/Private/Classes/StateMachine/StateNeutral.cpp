@@ -8,6 +8,7 @@
 #include "Classes/PlayerControllerBase.h"
 #include "Classes/Data/DataAsset/DA_IA.h"
 #include "Classes/StateMachine/StateMachineComponent.h"
+#include "CoopIA/CoopIAGameMode.h"
 
 void UStateNeutral::OnStateEnter(class UStateMachineComponent*& StateMachineComponentRef)
 {
@@ -29,6 +30,9 @@ void UStateNeutral::OnStateEnter(class UStateMachineComponent*& StateMachineComp
 	ST->ShowAndTeleportIA();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([&] { ST->IARandomMove();}), ST->DA_StateMachine->DataAssetIA->RandomMoveTime, true);
 
+	//UI
+	if(ST->GameMode)
+		ST->GameMode->UpdateUI(ST->PlayerIndex, ST->DA_StateMachine->PlayerTexture);
 	ST->Player->OnEnterNeutral();
 }
 

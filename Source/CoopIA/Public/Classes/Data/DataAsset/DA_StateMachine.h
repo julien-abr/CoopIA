@@ -69,6 +69,18 @@ public:
 	TObjectPtr<class UTexture2D> PlayerJ2;
 
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> BallTexture;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> SpearTexture;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> ShieldTexture;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> PlayerTexture;
+
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ATransitionEffect> TransitionEffectBP;
 
 	UPROPERTY(EditAnywhere)
