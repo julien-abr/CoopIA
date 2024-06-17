@@ -7,6 +7,7 @@
 #include "Classes/MainCamera.h"
 #include "Classes/PlayerControllerBase.h"
 #include "Classes/StateMachine/StateMachineComponent.h"
+#include "CoopIA/CoopIAGameMode.h"
 
 
 void UStateBall::OnStateEnter(class UStateMachineComponent*& StateMachineComponentRef)
@@ -28,6 +29,10 @@ void UStateBall::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	ST->MainCamera->SetPlayer(ST->BallActor, ST->PlayerIndex);
 	ST->PlayerController->Possess(ST->BallActor);
 
+	//UI
+	if(ST->GameMode)
+		ST->GameMode->UpdateUI(ST->PlayerIndex, ST->DA_StateMachine->BallTexture);
+	
 	ST->BallActor->OnEnterBall();
 }
 
