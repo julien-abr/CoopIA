@@ -92,6 +92,8 @@ public:
 	void OnDash(const int32 Index);
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnEndDash();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDashAvailable();
 
 protected:
 	// Called when the game starts or when spawned

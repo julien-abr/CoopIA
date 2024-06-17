@@ -144,7 +144,7 @@ void ASpear::DashUp()
 	GetWorld()->GetTimerManager().SetTimer(TimerDashForward, this, &ASpear::DashForward, DASpear->TimerBetweenDashUPForward, false);
 	bCanDash = false;
 	bStartHold = false;
-	GetWorld()->GetTimerManager().SetTimer(TimerDash, FTimerDelegate::CreateLambda([&] { bCanDash = true; }), DASpear->TimerDash, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerDash, FTimerDelegate::CreateLambda([&] { bCanDash = true; OnDashAvailable(); }), DASpear->TimerDash, false);
 }
 
 void ASpear::DashForward()
@@ -249,7 +249,16 @@ void ASpear::Show()
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+	//checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+
+	if(!ST)
+	{
+		if (APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(Controller))
+		{
+			ST = PlayerControllerBase->GetStateMachineComponent();
+		}
+	}
+
 	return ST->GetPlayerIndex();
 }
 
@@ -257,7 +266,7 @@ bool ASpear::CheckIsFalling()
 {
 	FHitResult HitResult;
 	FVector Start = GetActorLocation();
-	FVector End = Start - (FVector::UpVector * 100);
+	FVector End = Start - (FVector::UpVector * 200);
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
