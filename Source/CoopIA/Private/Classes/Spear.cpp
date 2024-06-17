@@ -257,7 +257,7 @@ bool ASpear::CheckIsFalling()
 {
 	FHitResult HitResult;
 	FVector Start = GetActorLocation();
-	FVector End = Start - (FVector::UpVector * 100);
+	FVector End = Start - (FVector::UpVector * 200);
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
