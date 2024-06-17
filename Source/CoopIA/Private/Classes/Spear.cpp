@@ -249,7 +249,16 @@ void ASpear::Show()
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+	//checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+
+	if(!ST)
+	{
+		if (APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(Controller))
+		{
+			ST = PlayerControllerBase->GetStateMachineComponent();
+		}
+	}
+
 	return ST->GetPlayerIndex();
 }
 
