@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "WindCurrent.generated.h"
 
+class AShield;
 class IInteract;
 
 UCLASS()
@@ -55,7 +56,7 @@ private:
 	//AActor* actorInWind;
 	TArray<AActor*> actorsInWind;
 
-	TArray<AActor*> shieldsInWind;
+	TArray<AShield*> shieldsInWind;
 
 	float windCurrentAngle;
 	float windShieldAngle;
