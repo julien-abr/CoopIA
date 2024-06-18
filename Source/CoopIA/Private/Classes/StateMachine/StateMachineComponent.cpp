@@ -51,7 +51,7 @@ void UStateMachineComponent::Init(APlayerControllerBase* ControllerRef, UDA_Stat
 	
 	GetWorld()->GetTimerManager().SetTimer(HandleHexRaycast, this, &UStateMachineComponent::FindLastHex, 1, true);
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandleUI, this, &UStateMachineComponent::UpdateIACountUI, .5, true);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandleUI, this, &UStateMachineComponent::UpdateIACountUI, .1, true);
 }
 
 void UStateMachineComponent::GetOtherST()
