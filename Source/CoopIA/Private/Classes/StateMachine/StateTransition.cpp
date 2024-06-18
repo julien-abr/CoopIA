@@ -19,7 +19,7 @@ void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineCompone
 	if(ST->Player)
 		ST->Player->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 
-	bool bSkipAnim = ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->ReviveState || ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->DeadState;
+	bool bSkipAnim = ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->ReviveState || ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->DeadState || ST->NextTag == ST->DA_StateMachine->DeadState;
 	
 	if(bSkipAnim)
 	{
@@ -59,6 +59,8 @@ void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineCompone
 		transitionPlayerEffect->Init(ST->GetPlayerIndex(), ST->DA_StateMachine->TransitonTime);
 		for(auto IA : ST->ArrayIA)
 		{
+			if (!IA) { continue; }
+
 			ATransitionEffect* transitionEffect = GetWorld()->SpawnActor<ATransitionEffect>(ST->DA_StateMachine->TransitionEffectBP, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoEffect);
 			transitionEffect->Init(ST->GetPlayerIndex(), ST->CurrentActor->GetActorLocation(), ST->DA_StateMachine->TransitonTime);
 		}
