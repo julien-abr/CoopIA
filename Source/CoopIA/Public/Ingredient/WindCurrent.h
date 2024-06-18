@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "WindCurrent.generated.h"
@@ -19,6 +20,9 @@ class COOPIA_API AWindCurrent : public AActor
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* _box;
+
+	UPROPERTY(VisibleAnywhere)
+	UArrowComponent* _windDirection;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -52,6 +56,9 @@ private:
 	TArray<AActor*> actorsInWind;
 
 	TArray<AActor*> shieldsInWind;
+
+	float windCurrentAngle;
+	float windShieldAngle;
 
 
 
