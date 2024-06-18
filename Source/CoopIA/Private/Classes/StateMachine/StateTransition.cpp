@@ -19,7 +19,7 @@ void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineCompone
 	if(ST->Player)
 		ST->Player->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 
-	bool bSkipAnim = ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->ReviveState || ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->DeadState;
+	bool bSkipAnim = ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->ReviveState || ST->GetLastTagTransitionExcluded() == ST->DA_StateMachine->DeadState || ST->NextTag== ST->DA_StateMachine->DeadState;
 	
 	if(bSkipAnim)
 	{
