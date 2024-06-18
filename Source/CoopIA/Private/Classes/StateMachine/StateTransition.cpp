@@ -36,6 +36,8 @@ void UStateTransition::OnStateEnter(UStateMachineComponent*& StateMachineCompone
 		transitionPlayerEffect->Init(ST->GetPlayerIndex(), ST->DA_StateMachine->TransitonTime);
 		for(auto IA : ST->ArrayIA)
 		{
+			if (!IA) { continue; }
+
 			IA->Hide();
 			ATransitionEffect* transitionEffect = GetWorld()->SpawnActor<ATransitionEffect>(ST->DA_StateMachine->TransitionEffectBP, IA->GetActorLocation(), FRotator(), SpawnInfoEffect);
 			transitionEffect->Init(ST->GetPlayerIndex(), ST->CurrentActor->GetActorLocation(), ST->DA_StateMachine->TransitonTime);

@@ -9,6 +9,7 @@
 #include "Classes/CharacterBaseIA.h"
 #include "Data/Interface/Interact.h"
 #include "Kismet/GameplayStatics.h"
+#include "Logging/StructuredLog.h"
 
 // Sets default values
 AWindCurrent::AWindCurrent()
@@ -21,6 +22,9 @@ AWindCurrent::AWindCurrent()
 
 	_box = CreateDefaultSubobject<UBoxComponent>("BoxCollision");
 	_box->SetupAttachment(_cube);
+
+	_windDirection = CreateDefaultSubobject<UArrowComponent>("WindDirection");
+	_windDirection->SetupAttachment(_cube);
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +49,9 @@ void AWindCurrent::Tick(float DeltaTime)
 
 	for (int i = 0; i < shieldsInWind.Num(); i++)
 	{
+		//float windShieldAngle = GetDotProductTo(shieldsInWind[i]);
 		if (shieldsInWind[i]) forceDirection = FVector(0);
+
 			//FVector shieldRotation = shieldsInWind[i]->GetActorRotation().Vector();
 	} 
 	
@@ -68,7 +74,14 @@ void AWindCurrent::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		InteractInterfaces.Emplace(Cast<IInteract>(OtherActor));
 		actorsInWind.Emplace(OtherActor);
 
-		if (Cast<AShield>(OtherActor)) shieldsInWind.Emplace(OtherActor);
+		if (Cast<AShield>(OtherActor))
+		{
+			shieldsInWind.Emplace(OtherActor);
+			/*FVector v1 = GetActorRotation().Vector();
+			float dpt = FVector::DotProduct(FVector::ZeroVector, v1);
+			dpt = FMath::Acos(dpt);*/
+			windShieldAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(FVector(_windDirection->GetForwardVector().X, _windDirection->GetForwardVector().Y, 0), FVector(1,0,0))));
+		}
 	}
 }
 
