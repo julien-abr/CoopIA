@@ -59,8 +59,8 @@ void UStateInit::OnStateEnter(class UStateMachineComponent*& StateMachineCompone
 	//Create BALL UI
 	ABallPlayerUI* BallPlayerUI = GetWorld()->SpawnActor<ABallPlayerUI>(ST->DA_StateMachine->BallBP_UI, ST->CurrentActor->GetActorLocation(), FRotator(), SpawnInfoBall);
 	BallPlayerUI->Init(ST->BallActor, PlayerUI);
-	ST->BallActor->Hide();
 	ST->BallActor->Init(BallPlayerUI, ST);	
+	ST->BallActor->Hide();
 	UE_LOG(LogTemp, Warning, TEXT("INIT => OK"));
 	
 	ST->UpdateState(ST->DA_StateMachine->NeutralState);

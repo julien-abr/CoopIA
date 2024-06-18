@@ -81,10 +81,12 @@ void ACharacterBase::ImpulseTowardActor()
 	const AActor* OtherPlayer = (Index == 0) ? GameState->GetPlayer(1) : GameState->GetPlayer(0);
 	const FVector End = OtherPlayer->GetActorLocation();
 	const FVector Start = GetActorLocation();
-	FVector LaunchVelocity;
-	UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
+	FVector LaunchVelocity = End - Start;
+	LaunchVelocity.Normalize(1);
+	LaunchVelocity *= 2000;
+	//UGameplayStatics::SuggestProjectileVelocity_CustomArc(World,LaunchVelocity, Start, End);
 	LaunchVelocity.Z = 0;
-	LaunchCharacter(LaunchVelocity, false, false);	
+	LaunchCharacter(LaunchVelocity, true, false);	
 }
 
 // Called when the game starts or when spawned

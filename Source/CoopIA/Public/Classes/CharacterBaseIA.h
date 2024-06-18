@@ -35,6 +35,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void MoveToActor(AActor* Target, float AcceptanceRadius);
 
+	UFUNCTION(BlueprintCallable)
 	void Show();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Setup")
