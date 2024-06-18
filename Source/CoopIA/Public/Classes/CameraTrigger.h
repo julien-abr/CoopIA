@@ -26,6 +26,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isTwoPlayer = true;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWallActivate();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,7 +46,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
 	ECameraState TriggerCamera;
 
-	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true"), BlueprintReadOnly)
 	TObjectPtr<AActor> WallActor;
 
 	UPROPERTY(EditAnywhere, Category = "TriggerOptions", meta = (AllowPrivateAccess = "true", EditCondition="TriggerCamera == ECameraState::FIXED"))
@@ -69,4 +71,5 @@ private:
 	TObjectPtr<AActor> Player1;
 	
 	bool bCanOverlap = true;
+
 };

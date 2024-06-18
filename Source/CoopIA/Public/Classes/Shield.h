@@ -48,6 +48,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(BlueprintReadWrite)
+	float ShieldAngle;
+
 private:
 	UPROPERTY()
 	TObjectPtr<class ACharacterBase> m_Player;
