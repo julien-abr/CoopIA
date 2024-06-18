@@ -19,6 +19,7 @@ class ABall;
 class AShield;
 class AMainCamera;
 class UNavigationSystemV1;
+class ACoopIAGameMode;
 
 DECLARE_DELEGATE(FHideDelegate);
 
@@ -89,6 +90,8 @@ private:
 	FRotator GetRotationForState() const;
 
 	void FindLastHex();
+	
+	void UpdateIACountUI();
 
 	void IARandomMove();
 
@@ -125,6 +128,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AActor> CurrentActor;
+
+	UPROPERTY()
+	TObjectPtr<ACoopIAGameMode> GameMode;
 	
 	UPROPERTY()
 	TObjectPtr<AMainCamera> MainCamera;
@@ -144,4 +150,5 @@ private:
 	int PlayerIndex;
 	
 	FTimerHandle HandleHexRaycast;
+	FTimerHandle TimerHandleUI;
 };

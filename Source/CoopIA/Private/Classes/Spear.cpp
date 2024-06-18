@@ -187,6 +187,11 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	}
 }
 
+void ASpear::Init(UStateMachineComponent* StateMachineComponent)
+{
+	ST = StateMachineComponent;
+}
+
 void ASpear::Move(const FInputActionValue& Value)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Move"));
@@ -249,7 +254,16 @@ void ASpear::Show()
 
 int32 ASpear::GetPlayerIndex_Implementation()
 {
-	checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+	//checkf(ST, TEXT("ST Null in GetPlayerIndex_Implementation ball"));
+
+	if(!ST)
+	{
+		if (const APlayerControllerBase* PlayerControllerBase = Cast<APlayerControllerBase>(Controller))
+		{
+			ST = PlayerControllerBase->GetStateMachineComponent();
+		}
+	}
+
 	return ST->GetPlayerIndex();
 }
 

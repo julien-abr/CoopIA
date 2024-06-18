@@ -7,6 +7,7 @@
 #include "GameplayTagAssetInterface.h"
 #include "Data/Interface/PlayerInterface.h"
 #include "GameFramework/Pawn.h"
+#include "StateMachine/StateMachineComponent.h"
 #include "Ball.generated.h"
 
 class ABallPlayerUI;
@@ -49,7 +50,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetSimulatePhysics(const bool enable);
 	
-	void InitActorUI(ABallPlayerUI* PlayerUI);
+	void Init(ABallPlayerUI* PlayerUI, UStateMachineComponent* StateMachineComponent);
     	
 	void Hide();
 	void Show();

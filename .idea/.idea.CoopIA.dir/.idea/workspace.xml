@@ -13,15 +13,21 @@
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/CoopIAEditor.target" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor-CoopIA.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Smoke_Umbrella.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Smoke_Umbrella.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_Transform.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_TransformGreen.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Axelle/FX/NS_Spirit_TransformGreen.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/IA_Effect.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/IA_Effect.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_StateMachine.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Data/DataAsset/DA_StateMachine.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelBlockout3.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Arts/UI/Icones/Daruma.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Arts/UI/Icones/Daruma.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Arts/UI/Icones/Kunai.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Arts/UI/Icones/Kunai.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Arts/UI/Icones/Parapluie.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Arts/UI/Icones/Parapluie.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Arts/UI/SpriteSheet/Perso_Rouge_SpriteSheet.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Arts/UI/SpriteSheet/Perso_Rouge_SpriteSheet.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Core/GM_CoopIA.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Core/GM_CoopIA.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Widget/WBP_UI.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CoopIA/Blueprints/Widget/WBP_UI.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/ImGui/Binaries/Win64/UnrealEditor.modules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateTransition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateTransition.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/CoopIAGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateBall.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateBall.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateMachineComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateMachineComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateNeutral.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateNeutral.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateShield.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateShield.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateSpear.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Private/Classes/StateMachine/StateSpear.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DA_StateMachine.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DA_StateMachine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/StateMachine/StateMachineComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/CoopIA/Public/Classes/StateMachine/StateMachineComponent.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,6 +204,7 @@
       <workItem from="1718049218420" duration="2498000" />
       <workItem from="1718266865722" duration="5067000" />
       <workItem from="1718354778307" duration="2950000" />
+      <workItem from="1718571103439" duration="441000" />
     </task>
     <servers />
   </component>
