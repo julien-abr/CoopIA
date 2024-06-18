@@ -32,9 +32,5 @@ void ALaserContainer::RayHitAction_Implementation()
 
 	OnRayHit();
 
-	AActor* doorActor = Cast<AActor>(_door);
-	if (doorActor)
-		doorActor->Destroy();
-
 	_door = nullptr;
 }

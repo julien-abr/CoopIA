@@ -70,6 +70,7 @@ void ACameraTrigger::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 		{
 			WallActor->SetActorEnableCollision(true);
 			WallActor->SetActorHiddenInGame(false);
+			OnWallActivate();
 		}
 		bCanOverlap = false;
 	}
