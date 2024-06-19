@@ -43,6 +43,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnBallsLaunch();
+
 private:
 	/*UPROPERTY()
 	TScriptInterface<IInteract> InteractInterfaceP1;
