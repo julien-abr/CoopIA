@@ -4,6 +4,7 @@
 #include "Classes/StateMachine/StateNeutral.h"
 
 #include "Classes/CharacterBase.h"
+#include "Classes/CharacterBaseIA.h"
 #include "Classes/MainCamera.h"
 #include "Classes/PlayerControllerBase.h"
 #include "Classes/Data/DataAsset/DA_IA.h"
@@ -37,11 +38,20 @@ void UStateNeutral::OnStateEnter(class UStateMachineComponent*& StateMachineComp
 		ST->GameMode->UpdateUI(ST->PlayerIndex, Texture);
 	}		
 	ST->Player->OnEnterNeutral();
+
 }
 
 void UStateNeutral::OnStateTick()
 {
 	Super::OnStateTick();
+
+	for (auto IA : ST->ArrayIA)
+	{
+		if (!IA) { continue; }
+
+		IA->Show();
+	}
+	
 }
 
 void UStateNeutral::OnStateLeave()
