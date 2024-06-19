@@ -118,6 +118,7 @@ void ABall::Init(ABallPlayerUI* PlayerUI, UStateMachineComponent* StateMachineCo
 {
 	BallPlayerUI = PlayerUI;
 	ST = StateMachineComponent;
+	UpdateOverlayMat(ST->GetOverlayMat());
 }
 
 void ABall::Hide()

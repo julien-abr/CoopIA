@@ -66,6 +66,8 @@ public:
 
 	TArray<ACharacterBaseIA*> SplitAI();
 
+	UMaterialInterface* GetOverlayMat();
+
 	bool CanUpdateState() const;
 
 	//============== Getter ===================
