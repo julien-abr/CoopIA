@@ -84,7 +84,6 @@ private:
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UDA_IA> DataAssetIA;
 
-
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<UDA_UI> DA_UI;
 		
