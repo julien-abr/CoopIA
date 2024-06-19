@@ -54,6 +54,7 @@ void AWindCurrent::Tick(float DeltaTime)
 		windShieldAngle = windCurrentAngle - shieldsInWind[i]->ShieldAngle;
 
 		if (abs(windShieldAngle) >= 135 && abs(windShieldAngle) <= 225) forceDirection = FVector(0);
+		else forceDirection = _cube->GetForwardVector() * windForce;
 
 		//float windShieldAngle = GetDotProductTo(shieldsInWind[i]);
 		//if (shieldsInWind[i]) forceDirection = FVector(0);
