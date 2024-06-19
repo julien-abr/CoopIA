@@ -94,6 +94,8 @@ public:
 	void OnEndDash();
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDashAvailable();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDashCooldownAvailable();
 
 protected:
 	// Called when the game starts or when spawned
