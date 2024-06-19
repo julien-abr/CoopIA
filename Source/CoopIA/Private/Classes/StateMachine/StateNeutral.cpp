@@ -57,7 +57,7 @@ void UStateNeutral::OnStateTick()
 void UStateNeutral::OnStateLeave()
 {
 	Super::OnStateLeave();
-	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->NeutralState);});
+	ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideNeutral);
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	TimerHandle.Invalidate();
 	UE_LOG(LogTemp, Warning, TEXT("NEUTRAL => OK"));
