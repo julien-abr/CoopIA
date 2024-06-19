@@ -55,15 +55,12 @@ void UStateShield::OnStateLeave()
 	Super::OnStateLeave();
 	if(bHasInitNeutral)
 	{
-		ST->OnHidePrevious.BindLambda([&]
-		{
-			ST->Hide(ST->DA_StateMachine->NeutralState);
-			ST->Hide(ST->DA_StateMachine->ShieldState);
-		});
+		ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideNeutral);
+		ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideShield);
 	}
 	else
 	{
-		ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->ShieldState);});
+		ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideShield);
 	}
 	
 	ST->Player->DeactivateShield();

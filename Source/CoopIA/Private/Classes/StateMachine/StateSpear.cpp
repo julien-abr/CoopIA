@@ -41,6 +41,6 @@ void UStateSpear::OnStateTick()
 void UStateSpear::OnStateLeave()
 {
 	Super::OnStateLeave();
-	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->SpearState);});
+	ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideSpear);
 	UE_LOG(LogTemp, Warning, TEXT("SPEAR => OK"));
 }

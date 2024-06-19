@@ -21,7 +21,7 @@ class AMainCamera;
 class UNavigationSystemV1;
 class ACoopIAGameMode;
 
-DECLARE_DELEGATE(FHideDelegate);
+DECLARE_MULTICAST_DELEGATE(FHideDelegate);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class COOPIA_API UStateMachineComponent : public UActorComponent
@@ -83,6 +83,13 @@ private:
 
 	void Hide(const FGameplayTag& Tag) const;
 
+	void HideBall();
+	void HideDead();
+	void HideNeutral();
+	void HideRevive();
+	void HideShield();
+	void HideSpear();
+	
 	const FGameplayTag& GetLastTagTransitionExcluded() const;
 
 	FVector GetPositionForState() const;
@@ -142,8 +149,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UStateMachineComponent> OtherST;
 	
-	UPROPERTY(VisibleAnywhere)
-	TArray<TObjectPtr<ACharacterBaseIA>> ArrayIA;
+		UPROPERTY(VisibleAnywhere)
+		TArray<TObjectPtr<ACharacterBaseIA>> ArrayIA;
 
 	FVector PlayerLastHexPos;
 

@@ -35,5 +35,5 @@ void UStateDead::OnStateTick()
 void UStateDead::OnStateLeave()
 {
 	Super::OnStateLeave();
-	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->DeadState);});
+	ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideDead);
 }

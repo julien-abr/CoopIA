@@ -50,6 +50,6 @@ void UStateRevive::OnStateTick()
 void UStateRevive::OnStateLeave()
 {
 	Super::OnStateLeave();
-	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->ReviveState);});
+	ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideRevive);
 	UE_LOG(LogTemp, Warning, TEXT("REVIVE => OK"));
 }
