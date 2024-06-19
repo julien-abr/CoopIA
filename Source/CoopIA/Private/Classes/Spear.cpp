@@ -191,6 +191,7 @@ void ASpear::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ASpear::Init(UStateMachineComponent* StateMachineComponent)
 {
 	ST = StateMachineComponent;
+	SpearMesh->SetOverlayMaterial(ST->GetOverlayMat());
 }
 
 void ASpear::Move(const FInputActionValue& Value)

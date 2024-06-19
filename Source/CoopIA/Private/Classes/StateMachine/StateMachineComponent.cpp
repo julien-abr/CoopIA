@@ -234,6 +234,11 @@ void UStateMachineComponent::HideSpear()
 	Hide(DA_StateMachine->SpearState);
 }
 
+UMaterialInterface* UStateMachineComponent::GetOverlayMat()
+{
+	return (PlayerIndex == 0) ? DA_StateMachine->MOverlayPlayer0 : DA_StateMachine->MOverlayPlayer1;
+}
+
 const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
 {
 	if(!StateHistoric.Num() - 2 >= 0)

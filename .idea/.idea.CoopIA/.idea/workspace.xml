@@ -17,6 +17,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/Data/DataAsset/DA_StateMachine.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/GameStateBaseCoop.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/CoopIA/Public/Classes/StateMachine/StateMachineComponent.h" root0="SKIP_HIGHLIGHTING" />
   </component>
