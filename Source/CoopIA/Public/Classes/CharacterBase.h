@@ -177,8 +177,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<AShield> ShieldActor;
 
-
-
 	bool bIsShieldActivate;
 
 	void SetMaterial(bool bIsDead) const;

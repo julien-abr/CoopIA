@@ -44,6 +44,6 @@ void UStateBall::OnStateTick()
 void UStateBall::OnStateLeave()
 {
 	Super::OnStateLeave();
-	ST->OnHidePrevious.BindLambda([&]{ST->Hide(ST->DA_StateMachine->BallState);});
+	ST->OnHidePrevious.AddUObject(ST, &UStateMachineComponent::HideBall);
 	UE_LOG(LogTemp, Warning, TEXT("BALL => OK"));
 }

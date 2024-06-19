@@ -83,7 +83,8 @@ void UStateTransition::OnStateLeave()
 	Super::OnStateLeave();
 	if (ST->OnHidePrevious.IsBound())
 	{
-		ST->OnHidePrevious.Execute();
+		ST->OnHidePrevious.Broadcast();
+		ST->OnHidePrevious.Clear();
 	}
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	TimerHandle.Invalidate();

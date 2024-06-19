@@ -99,6 +99,7 @@ void UStateMachineComponent::AddToHistoric(const FGameplayTag& Tag)
 	StateHistoric.Add(Tag);
 }
 
+
 void UStateMachineComponent::AddPlayer(ACharacterBaseIA* IACharacter)
 {
 	if(IACharacter)
@@ -201,6 +202,36 @@ void UStateMachineComponent::Hide(const FGameplayTag& Tag) const
     	if(Player)
     		Player->Hide();
     }
+}
+
+void UStateMachineComponent::HideBall()
+{
+	Hide(DA_StateMachine->BallState);
+}
+
+void UStateMachineComponent::HideDead()
+{
+	Hide(DA_StateMachine->DeadState);
+}
+
+void UStateMachineComponent::HideNeutral()
+{
+	Hide(DA_StateMachine->NeutralState);
+}
+
+void UStateMachineComponent::HideRevive()
+{
+	Hide(DA_StateMachine->ReviveState);
+}
+
+void UStateMachineComponent::HideShield()
+{
+	Hide(DA_StateMachine->ShieldState);
+}
+
+void UStateMachineComponent::HideSpear()
+{
+	Hide(DA_StateMachine->SpearState);
 }
 
 const FGameplayTag& UStateMachineComponent::GetLastTagTransitionExcluded() const
