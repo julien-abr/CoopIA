@@ -53,7 +53,8 @@ void ACanon::TriggerLaunch()
 	InteractInterfaceP1->Execute_LaunchPropulseBoule(BouleToLaunchP1, _arrowL->GetForwardVector(), launchForce, maxVelocityBoule);
 	InteractInterfaceP2->Execute_LockPropulseBoule(BouleToLaunchP2, false);
 	InteractInterfaceP2->Execute_LaunchPropulseBoule(BouleToLaunchP2, _arrowR->GetForwardVector(), launchForce, maxVelocityBoule);*/
-	
+
+	OnBallsLaunch();
 }
 
 void ACanon::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
