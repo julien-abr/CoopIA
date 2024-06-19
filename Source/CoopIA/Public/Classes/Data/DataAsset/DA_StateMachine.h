@@ -88,4 +88,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ATransitionEffectPlayer> TransitionEffectPlayerBP;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UMaterialInterface> MOverlayPlayer0;
+	
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UMaterialInterface> MOverlayPlayer1;
 };
